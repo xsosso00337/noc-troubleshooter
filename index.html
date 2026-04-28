@@ -1,135 +1,182 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>TBC機房查修工具</title>
-<style>
-:root{
-  --bg:#07111f;--panel:#0d1b2f;--panel2:#10243d;--card:#132b47;--line:#25415f;
-  --txt:#eaf4ff;--muted:#9fb4c8;--accent:#69d2ff;--good:#4ade80;--warn:#fbbf24;--bad:#fb7185;--info:#93c5fd;
-  --shadow:0 14px 35px rgba(0,0,0,.28);--r:18px
-}
-*{box-sizing:border-box}html,body{margin:0;background:linear-gradient(180deg,#06101d,#09192a 45%,#07111f);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Roboto,Arial,sans-serif}body{padding:14px;max-width:1160px;margin:auto}.top{position:sticky;top:0;z-index:5;background:rgba(7,17,31,.9);backdrop-filter:blur(12px);padding:8px 0 12px;border-bottom:1px solid rgba(255,255,255,.06)}h1{font-size:28px;margin:4px 0 4px}p{line-height:1.65}.sub{color:var(--muted);font-size:14px}.tabs{display:flex;gap:8px;overflow:auto;padding:10px 0 2px}.tab{border:1px solid var(--line);background:var(--panel2);color:var(--txt);padding:10px 13px;border-radius:999px;white-space:nowrap;font-weight:700}.tab.active{background:linear-gradient(135deg,#1c8bb3,#2264d1);border-color:#77d7ff}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:14px}.card{grid-column:span 12;background:linear-gradient(180deg,rgba(19,43,71,.96),rgba(13,27,47,.98));border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}@media(min-width:860px){.half{grid-column:span 6}.third{grid-column:span 4}.two{grid-column:span 8}.four{grid-column:span 4}}h2{font-size:20px;margin:0 0 10px}.h3{font-size:16px;font-weight:900;margin:12px 0 7px;color:#dff6ff}.row{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:640px){.row{grid-template-columns:repeat(2,1fr)}.row3{grid-template-columns:repeat(3,1fr)}}label{font-size:13px;color:var(--muted);font-weight:700}input,select,textarea{width:100%;margin-top:5px;border:1px solid var(--line);background:#091827;color:var(--txt);border-radius:12px;padding:12px;font-size:16px;outline:none}textarea{min-height:110px}button{border:0;border-radius:14px;padding:12px 14px;font-weight:900;color:#06101d;background:var(--accent);cursor:pointer}button.secondary{background:#1b3555;color:var(--txt);border:1px solid var(--line)}button.good{background:var(--good)}button.warn{background:var(--warn)}button.bad{background:var(--bad);color:#fff}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.result{margin-top:12px;border-radius:16px;padding:14px;border:1px solid var(--line);background:#081827;white-space:pre-wrap;line-height:1.75}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#0a1b2e;border-radius:999px;padding:7px 10px;margin:3px 4px 3px 0;color:#cfeeff;font-size:13px;font-weight:800}.status{font-weight:900}.goodtxt{color:var(--good)}.warntxt{color:var(--warn)}.badtxt{color:var(--bad)}.infotxt{color:var(--info)}.list{padding-left:20px;margin:8px 0}.list li{margin:6px 0;line-height:1.55}.step{border-left:4px solid var(--accent);padding:9px 12px;margin:8px 0;background:#0a1d31;border-radius:10px}.small{font-size:13px;color:var(--muted)}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{color:#bdefff;background:#0a1d31}.hide{display:none}.casebtn{width:100%;text-align:left;background:#0b2038;color:var(--txt);border:1px solid var(--line);margin:5px 0}.casebtn strong{display:block;color:#dbf7ff}.kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#06111e;border:1px solid var(--line);border-radius:8px;padding:2px 6px}.footer{color:var(--muted);text-align:center;margin:24px 0 10px;font-size:12px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>機房查修工具</title>
+  <style>
+    :root{
+      --bg:#07111f;--panel:#0d1b2e;--panel2:#10243d;--card:#122a49;--text:#eef6ff;--muted:#9fb2c8;
+      --line:rgba(255,255,255,.12);--ok:#2ee59d;--warn:#ffd166;--bad:#ff5d73;--info:#60a5fa;--purple:#a78bfa;
+      --shadow:0 16px 45px rgba(0,0,0,.35);--r:20px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:radial-gradient(circle at top,#17345a 0%,#07111f 40%,#050913 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;color:var(--text);line-height:1.55}
+    .wrap{width:min(1180px,100%);margin:auto;padding:18px 14px 90px}.hero{position:sticky;top:0;z-index:20;margin:-18px -14px 14px;padding:16px 14px 12px;background:rgba(7,17,31,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .hero-inner{width:min(1180px,100%);margin:auto}.title{display:flex;align-items:center;justify-content:space-between;gap:12px}.title h1{font-size:24px;margin:0;letter-spacing:.04em}.badge{font-size:12px;color:#cfe4ff;border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06)}
+    .nav{display:flex;gap:8px;overflow-x:auto;padding-top:12px}.nav a,.quickbtn{white-space:nowrap;text-decoration:none;color:var(--text);border:1px solid var(--line);background:rgba(255,255,255,.06);padding:9px 12px;border-radius:999px;font-weight:700;font-size:14px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 12;background:linear-gradient(180deg,rgba(18,42,73,.96),rgba(12,26,45,.96));border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+    @media(min-width:850px){.half{grid-column:span 6}.third{grid-column:span 4}.two{grid-column:span 8}.four{grid-column:span 4}.title h1{font-size:30px}}
+    h2{margin:0 0 10px;font-size:21px}h3{margin:14px 0 8px;font-size:16px}.muted{color:var(--muted)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{cursor:pointer;border:0;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:900;padding:12px 14px;box-shadow:0 10px 22px rgba(37,99,235,.22)}.btn.secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);box-shadow:none}.btn.ok{background:linear-gradient(135deg,#059669,#16a34a)}.btn.warn{background:linear-gradient(135deg,#d97706,#f59e0b)}.btn.bad{background:linear-gradient(135deg,#e11d48,#fb7185)}
+    input,select,textarea{width:100%;background:#071426;border:1px solid var(--line);color:var(--text);border-radius:14px;padding:12px;font-size:16px;outline:none}label{display:block;color:#cbd8e8;font-size:13px;font-weight:800;margin:10px 0 6px}.cols{display:grid;grid-template-columns:1fr;gap:10px}@media(min-width:650px){.cols{grid-template-columns:repeat(2,1fr)}.cols3{grid-template-columns:repeat(3,1fr)}.cols4{grid-template-columns:repeat(4,1fr)}}
+    .result{border-radius:18px;padding:14px;margin-top:12px;border:1px solid var(--line);background:rgba(255,255,255,.06)}.result.ok{border-color:rgba(46,229,157,.35);background:rgba(46,229,157,.08)}.result.warn{border-color:rgba(255,209,102,.35);background:rgba(255,209,102,.08)}.result.bad{border-color:rgba(255,93,115,.38);background:rgba(255,93,115,.09)}.result.info{border-color:rgba(96,165,250,.35);background:rgba(96,165,250,.08)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:900;font-size:12px;margin:3px}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}.pill.info{color:#93c5fd}.steps{counter-reset:s}.step{position:relative;margin:10px 0;padding:12px 12px 12px 46px;background:rgba(0,0,0,.15);border:1px solid var(--line);border-radius:16px}.step:before{counter-increment:s;content:counter(s);position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#2563eb;font-weight:900}.table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px}.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}.table th{color:#dbeafe;background:rgba(255,255,255,.06)}.kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:8px}.danger{color:var(--bad);font-weight:900}.good{color:var(--ok);font-weight:900}.warntext{color:var(--warn);font-weight:900}.copy{width:100%;min-height:160px}.footerbar{position:fixed;bottom:0;left:0;right:0;background:rgba(7,17,31,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:10px 12px;z-index:30}.footerbar .row{width:min(1180px,100%);margin:auto;justify-content:space-between}.small{font-size:13px}.hide{display:none!important}
+  </style>
 </head>
 <body>
-<div class="top">
-  <h1>機房查修工具</h1>
-  <div class="sub">故障入口 → 數值判斷 → 推薦工具 → 操作 SOP → 查修紀錄</div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('auto',this)">全自動診斷</button>
-    <button class="tab" onclick="showTab('optical',this)">光纖 / FTB-500</button>
-    <button class="tab" onclick="showTab('rf',this)">RF / HFC</button>
-    <button class="tab" onclick="showTab('tools',this)">工具操作</button>
-    <button class="tab" onclick="showTab('std',this)">標準表</button>
-    <button class="tab" onclick="showTab('log',this)">查修紀錄</button>
-  </div>
-</div>
+  <div class="hero"><div class="hero-inner">
+    <div class="title"><h1>機房查修工具</h1><span class="badge">現場自動判斷版</span></div>
+    <div class="nav">
+      <a href="#fault">故障入口</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
+    </div>
+  </div></div>
 
-<section id="auto" class="page">
-  <div class="grid">
-    <div class="card two">
-      <h2>全自動診斷</h2>
-      <p class="sub">選故障現象，輸入你手上量到的數值。空白沒關係，系統會用現有資料推下一步。</p>
-      <div class="row row3">
-        <div><label>故障現象</label><select id="caseType">
-          <option value="onu_down">ONU 不上線 / PON 異常</option><option value="area_light_down">整區掉光 / 大範圍光異常</option><option value="internet_down">客戶無法上網 / 掉線</option><option value="low_snr">SNR / MER 低</option><option value="cm_reboot">CM 一直 Reboot</option><option value="dtv_bad">DTV 馬賽克 / 無訊號</option><option value="dwdm_bad">DWDM / 光波道異常</option>
-        </select></div>
-        <div><label>位置/距離類型</label><select id="distanceType"><option value="user">用戶側 / 短距離 / 分光後</option><option value="backbone">幹線 / 長距離 / 骨幹</option><option value="unknown">不確定</option></select></div>
-        <div><label>端面狀態</label><select id="face"><option value="unknown">未檢查</option><option value="clean">乾淨</option><option value="dirty">髒污 / 油污 / 灰塵</option><option value="scratch">刮傷 / 端面受損</option></select></div>
+  <main class="wrap">
+    <section class="grid" id="fault">
+      <div class="card two">
+        <h2>故障入口</h2>
+        <p class="muted">選現場症狀，系統直接給你：先查什麼、用哪台、怎麼判斷、下一步。</p>
+        <div class="row">
+          <button class="btn" onclick="fault('onu')">ONU 不上線 / 光弱</button>
+          <button class="btn" onclick="fault('areaOptical')">整區掉光</button>
+          <button class="btn" onclick="fault('internet')">客戶無法上網</button>
+          <button class="btn" onclick="fault('unstable')">間歇掉線</button>
+          <button class="btn" onclick="fault('noise')">上行雜訊 / SNR低</button>
+          <button class="btn" onclick="fault('dwdm')">DWDM 波長異常</button>
+          <button class="btn" onclick="fault('dtv')">DTV 馬賽克 / 無訊號</button>
+        </div>
+        <div id="faultResult" class="result info"><b>請選一個故障現象。</b></div>
       </div>
-      <div class="row row3" style="margin-top:10px">
-        <div><label>PM-500 光功率 dBm</label><input id="optDbm" type="number" step="0.1" placeholder="例：-18、-28、-40"></div>
-        <div><label>DS Power dBmV</label><input id="dsPower" type="number" step="0.1" placeholder="例：-6、+12、-18"></div>
-        <div><label>DS SNR / MER dB</label><input id="dsSnr" type="number" step="0.1" placeholder="例：36、32、28"></div>
-        <div><label>US Power dBmV</label><input id="usPower" type="number" step="0.1" placeholder="例：45、53、57"></div>
-        <div><label>8591E 頻譜狀態</label><select id="spectrum"><option value="unknown">未檢查</option><option value="clean">乾淨 / 平</option><option value="spike">多尖峰 Ingress</option><option value="tone">單頻突刺</option><option value="floor">Noise floor 整體抬高</option></select></div>
-        <div><label>5240S 光譜狀態</label><select id="osa"><option value="unknown">未檢查</option><option value="ok">波道正常</option><option value="lowch">單一 Channel Power 低</option><option value="shift">波長偏移</option><option value="osnr">OSNR 差 / 光譜髒</option></select></div>
+      <div class="card four">
+        <h2>現場總原則</h2>
+        <div class="steps">
+          <div class="step"><b>先看端面</b><br><span class="muted">ViewConn Pro → 髒就清潔，清完重測。</span></div>
+          <div class="step"><b>再量數值</b><br><span class="muted">PM-500 / 860 DSPi 先判斷嚴重度。</span></div>
+          <div class="step"><b>最後定位</b><br><span class="muted">FTB-7200D 找距離；8591E 看雜訊型態。</span></div>
+        </div>
       </div>
-      <div class="btns"><button onclick="runAuto()">開始診斷</button><button class="secondary" onclick="clearAuto()">清空</button><button class="secondary" onclick="copyResult('autoResult')">複製結果</button></div>
-      <div id="autoResult" class="result">請選故障現象並輸入數值後按「開始診斷」。</div>
-    </div>
-    <div class="card four">
-      <h2>現場優先順序</h2>
-      <div class="step"><b>光問題</b><br>ViewConn Pro 看端面 → 清潔筆 → PM-500 量 dBm → FTB-7200D OTDR → FTB-5240S 光譜</div>
-      <div class="step"><b>RF 問題</b><br>860 DSPi 量 Power / MER / BER → 8591E 看頻譜型態 → 往 Tap / Node / 放大器追</div>
-      <div class="step"><b>原則</b><br>先排除接頭髒、波長設錯、量測點錯，再懷疑設備壞。</div>
-    </div>
+    </section>
 
-    <div class="card half">
-      <h2>一鍵故障流程</h2>
-      <button class="casebtn" onclick="presetCase('onu_down')"><strong>ONU 不上線</strong><span>端面 → PM-500 → 光弱則 FTB-7200D</span></button>
-      <button class="casebtn" onclick="presetCase('area_light_down')"><strong>整區掉光</strong><span>PM 無光 → 7200D 長距離找斷點</span></button>
-      <button class="casebtn" onclick="presetCase('internet_down')"><strong>客戶無法上網</strong><span>先分光/RF，再看 CM / CMTS</span></button>
-      <button class="casebtn" onclick="presetCase('low_snr')"><strong>SNR / MER 低</strong><span>860 確認，8591E 抓 ingress</span></button>
-    </div>
-    <div class="card half">
-      <h2>快速結論規則</h2>
-      <span class="pill">光 -8 ~ -20 dBm：正常</span><span class="pill">光 -20 ~ -25：邊緣</span><span class="pill">光 &lt; -25：光弱</span><span class="pill">光 &lt; -30：近斷</span>
-      <span class="pill">US 40~54 dBmV：可接受</span><span class="pill">US &gt;54：過高</span><span class="pill">DS -13~+17：可接受</span><span class="pill">DS SNR ≥35：正常</span><span class="pill">DS SNR &lt;30：嚴重</span>
-    </div>
-  </div>
-</section>
+    <section class="grid" id="optical" style="margin-top:14px">
+      <div class="card two">
+        <h2>光纖診斷：FTB-500 自動流程</h2>
+        <div class="cols cols3">
+          <div><label>端面狀態（ViewConn Pro）</label><select id="face"><option value="unknown">未檢查</option><option value="clean">乾淨</option><option value="dirty">髒污 / 油污 / 灰塵</option><option value="scratch">刮傷 / 破損</option></select></div>
+          <div><label>PM-500 光功率 dBm</label><input id="optdbm" type="number" step="0.1" placeholder="例：-15、-28、-40"></div>
+          <div><label>測試場景</label><select id="opttype"><option value="pon">PON / ONU側</option><option value="catv">CATV 1550</option><option value="trunk">幹線 / 骨幹</option><option value="dwdm">DWDM / CWDM</option></select></div>
+          <div><label>預估距離 km</label><input id="distance" type="number" step="0.1" placeholder="例：2、8、20"></div>
+          <div><label>波長</label><select id="wave"><option>1490</option><option>1310</option><option>1550</option><option>1625</option><option>1650</option></select></div>
+          <div><label>狀況</label><select id="optSym"><option value="noLight">無光 / 光弱</option><option value="unstable">光忽高忽低</option><option value="normalNoService">有光但服務不通</option><option value="dwdmPower">DWDM 通道功率異常</option></select></div>
+        </div>
+        <div class="row" style="margin-top:12px"><button class="btn ok" onclick="diagnoseOptical()">分析光纖</button><button class="btn secondary" onclick="clearOptical()">清空</button></div>
+        <div id="optResult" class="result info"><b>輸入 PM-500 讀值後按分析。</b></div>
+      </div>
+      <div class="card four">
+        <h2>FTB-500 模組定位</h2>
+        <table class="table small"><tr><th>模組</th><th>用途</th></tr><tr><td><b>PM-500</b></td><td>量光功率 dBm，先判斷有沒有光、光弱不弱。</td></tr><tr><td><b>FTB-7200D</b></td><td>OTDR：找斷纖、接頭損耗、彎折、事件距離。</td></tr><tr><td><b>FTB-5240S</b></td><td>OSA：看 DWDM/CWDM 波長、通道 Power、光譜狀態。</td></tr><tr><td><b>ViewConn Pro</b></td><td>檢查光纖端面髒污、刮傷、油污。</td></tr></table>
+      </div>
+    </section>
 
-<section id="optical" class="page hide">
-  <div class="grid">
-    <div class="card half"><h2>光纖診斷 / FTB-500</h2><div class="row"><div><label>端面檢查</label><select id="oface"><option value="clean">乾淨</option><option value="dirty">髒污</option><option value="scratch">刮傷</option><option value="unknown">未檢查</option></select></div><div><label>PM-500 dBm</label><input id="opm" type="number" step="0.1" placeholder="例：-15"></div><div><label>線路類型</label><select id="oline"><option value="user">用戶側 / 短距離</option><option value="backbone">幹線 / 長距離</option><option value="dwdm">DWDM / 波道</option></select></div></div><div class="btns"><button onclick="runOptical()">分析光纖</button><button class="secondary" onclick="copyResult('opticalResult')">複製</button></div><div id="opticalResult" class="result"></div></div>
-    <div class="card half"><h2>FTB-500 模組定位</h2><table><tr><th>模組</th><th>用途</th></tr><tr><td>PM-500</td><td>光功率模組，先量 dBm，判斷有沒有光 / 光弱不弱。</td></tr><tr><td>FTB-7200D</td><td>OTDR 模組，找斷纖、接頭事件、彎折、距離。</td></tr><tr><td>FTB-5240S</td><td>Optical Spectrum Analyzer，查 DWDM/CWDM 波長、Channel Power、OSNR。</td></tr></table></div>
-    <div class="card"><h2>光纖標準流程</h2><div class="step">1. ViewConn Pro 看端面：髒就清潔，刮傷就換跳線或重新端接。</div><div class="step">2. PM-500 選正確波長：PON 下行 1490、上行 1310、CATV 1550、DWDM 看實際波長。</div><div class="step">3. dBm 異常才上 FTB-7200D：短距離 Range 1~5 km、長距離 Range 10~50 km。</div><div class="step">4. DWDM/CWDM 問題才上 FTB-5240S：看波長漂移、單波道功率低、OSNR 差。</div></div>
-  </div>
-</section>
+    <section class="grid" id="rf" style="margin-top:14px">
+      <div class="card two">
+        <h2>RF / DOCSIS 自動判斷</h2>
+        <div class="cols cols4">
+          <div><label>DS Power dBmV</label><input id="dsPower" type="number" step="0.1" placeholder="例：0、-14、18"></div>
+          <div><label>DS SNR / MER dB</label><input id="dsSnr" type="number" step="0.1" placeholder="例：36、32、28"></div>
+          <div><label>US Power dBmV</label><input id="usPower" type="number" step="0.1" placeholder="例：45、53"></div>
+          <div><label>US SNR dB</label><input id="usSnr" type="number" step="0.1" placeholder="例：31、27"></div>
+        </div>
+        <div class="row" style="margin-top:12px"><button class="btn ok" onclick="diagnoseRF()">分析 RF</button><button class="btn secondary" onclick="clearRF()">清空</button></div>
+        <div id="rfResult" class="result info"><b>輸入 860 DSPi / CMTS 讀值後按分析。</b></div>
+      </div>
+      <div class="card four">
+        <h2>RF 工具選擇</h2>
+        <div class="steps">
+          <div class="step"><b>860 DSPi</b><br><span class="muted">先量 DS Power、MER、BER、US Power。</span></div>
+          <div class="step"><b>8591E</b><br><span class="muted">860 判定雜訊後，用頻譜看 Ingress / 單頻干擾 / Noise floor。</span></div>
+          <div class="step"><b>CMTS / 平台</b><br><span class="muted">數值正常但服務不通：查註冊、IP、設定檔、Log。</span></div>
+        </div>
+      </div>
+    </section>
 
-<section id="rf" class="page hide"><div class="grid"><div class="card two"><h2>RF / HFC 自動判斷</h2><div class="row row3"><div><label>DS Power</label><input id="rds" type="number" step="0.1"></div><div><label>DS MER / SNR</label><input id="rmer" type="number" step="0.1"></div><div><label>US Power</label><input id="rus" type="number" step="0.1"></div><div><label>BER</label><select id="rber"><option value="unknown">未知</option><option value="ok">正常 / 接近 0</option><option value="bad">有錯誤 / 持續增加</option></select></div><div><label>8591E 頻譜</label><select id="rspec"><option value="unknown">未看</option><option value="clean">乾淨</option><option value="spike">多尖峰</option><option value="tone">單頻突刺</option><option value="floor">整體抬高</option></select></div></div><div class="btns"><button onclick="runRF()">分析 RF</button><button class="secondary" onclick="copyResult('rfResult')">複製</button></div><div id="rfResult" class="result"></div></div><div class="card four"><h2>RF 工具分工</h2><div class="step"><b>860 DSPi</b><br>Power / MER / BER / DOCSIS Lock，先量嚴重程度。</div><div class="step"><b>8591E</b><br>看 5~65 MHz 上行頻譜，確認 ingress、單頻干擾、底噪抬高。</div></div></div></section>
+    <section class="grid" id="tools" style="margin-top:14px">
+      <div class="card half"><h2>光纖標準SOP</h2><div class="steps"><div class="step"><b>ViewConn Pro 看端面</b><br>接頭插入探頭，確認是否有灰塵、油污、刮傷。髒污先清潔，不要直接量。</div><div class="step"><b>清潔筆清潔</b><br>SC/LC 對應清潔筆，一次到底，不要來回磨。清潔後再用 ViewConn Pro 確認。</div><div class="step"><b>PM-500 測光</b><br>選正確波長：PON 下行 1490、上行 1310、CATV 1550、監測可用 1625/1650。</div><div class="step"><b>FTB-7200D OTDR 定位</b><br>接 Launch Fiber，Range 設比距離大，短距離用小 Pulse，長距離用大 Pulse。</div><div class="step"><b>FTB-5240S OSA</b><br>DWDM/CWDM 才用，檢查通道波長、通道功率、是否缺波或偏移。</div></div></div>
+      <div class="card half"><h2>RF 標準SOP</h2><div class="steps"><div class="step"><b>860 DSPi 先量值</b><br>DS Power / MER / BER / US Power，一次確認是訊號強度、品質還是回傳問題。</div><div class="step"><b>MER / SNR 低</b><br>用 8591E 看頻譜，判斷尖峰 Ingress、單頻干擾、或整體 Noise floor 升高。</div><div class="step"><b>US Power 高</b><br>優先查回傳衰減：接頭、Tap、分歧器、線損、Node 回傳路徑。</div><div class="step"><b>DS Power 異常</b><br>查下行放大、分配、衰減器、EDFA/光收轉換後 RF 輸出。</div><div class="step"><b>數值正常但不通</b><br>查 CMTS、DHCP/IP、設定檔、帳務/綁定、CPE。</div></div></div>
+    </section>
 
-<section id="tools" class="page hide"><div class="grid">
-  <div class="card half"><h2>ViewConn Pro + 清潔筆</h2><ol class="list"><li>接上待測跳線端面。</li><li>看畫面是否有灰塵、油污、刮傷。</li><li>髒污：清潔筆直插到底，按壓/旋轉一次。</li><li>再看一次端面，乾淨才准接到 PM / OTDR / OSA。</li></ol></div>
-  <div class="card half"><h2>PM-500</h2><ol class="list"><li>在 FTB-500 進入 Power Meter。</li><li>選波長：1310 / 1490 / 1550 / 1625 依系統。</li><li>接入光纖，讀 dBm。</li><li>-8~-20 正常；-20~-25 邊緣；&lt;-25 光弱；&lt;-30 近斷。</li></ol></div>
-  <div class="card half"><h2>FTB-7200D OTDR</h2><ol class="list"><li>先清潔端面，接 Launch Fiber。</li><li>短距離：Range 1~5 km，Pulse 10~50 ns，Avg 15~30 秒。</li><li>長距離：Range 10~50 km，Pulse 100 ns~1 µs，Avg 30~60 秒。</li><li>Start / Auto Test。</li><li>掉到底：斷纖；階梯：接頭/熔接損耗；局部凹：彎折。</li></ol></div>
-  <div class="card half"><h2>FTB-5240S OSA</h2><ol class="list"><li>用在 DWDM/CWDM，不是 OTDR。</li><li>接入光輸出，選 Channel / Wavelength 範圍。</li><li>看每個波長功率、波長是否偏移、OSNR 是否差。</li><li>單一 Channel 低：查該波道發射端、MUX/DEMUX、跳線。</li></ol></div>
-  <div class="card half"><h2>860 DSPi</h2><ol class="list"><li>接 Tap / 測試點 RF。</li><li>量 DS Power、MER/SNR、BER。</li><li>量 US Power / 回傳狀態。</li><li>MER 低或 BER 有錯，進一步用 8591E 看頻譜。</li></ol></div>
-  <div class="card half"><h2>8591E</h2><ol class="list"><li>RF IN 前必要時加 10~20 dB Attenuator。</li><li>上行建議看 5~65 MHz。</li><li>多尖峰：Ingress；單頻高：設備干擾；整體抬高：線路污染/放大器問題。</li><li>從 Node / Tap 分段隔離追來源。</li></ol></div>
-</div></section>
+    <section class="grid" id="standards" style="margin-top:14px">
+      <div class="card half"><h2>判斷標準表</h2><table class="table"><tr><th>項目</th><th>正常</th><th>異常判斷</th></tr><tr><td>PM-500 光功率</td><td>-8 ~ -20 dBm</td><td>-20~-25 邊緣；&lt;-25 光弱；&lt;-30 幾乎斷</td></tr><tr><td>DS Power</td><td>-13 ~ +17 dBmV</td><td>&lt;-13 太低；&gt;+17 太高</td></tr><tr><td>DS SNR / MER</td><td>≥35 dB</td><td>30~35 邊緣；&lt;30 嚴重</td></tr><tr><td>US Power</td><td>40 ~ 54 dBmV</td><td>&gt;54 過高；&lt;35 可能過強/路徑異常</td></tr><tr><td>US SNR</td><td>≥30 dB</td><td>&lt;30 回傳品質差 / Ingress</td></tr></table></div>
+      <div class="card half"><h2>快速判讀</h2><div id="quickGuide" class="result info"><span class="pill info">光</span> 先端面 → 清潔 → PM-500 → FTB-7200D / FTB-5240S<br><span class="pill info">RF</span> 先 860 DSPi → 再 8591E 看頻譜<br><span class="pill warn">原則</span> 先證明物理層，再查系統層。</div></div>
+    </section>
 
-<section id="std" class="page hide"><div class="grid"><div class="card"><h2>標準數據表</h2><table><tr><th>項目</th><th>正常</th><th>邊緣</th><th>異常</th></tr><tr><td>PM-500 光功率</td><td>-8 ~ -20 dBm</td><td>-20 ~ -25 dBm</td><td>&lt; -25 dBm；&lt; -30 近斷</td></tr><tr><td>DS Power</td><td>-13 ~ +17 dBmV</td><td>接近上下限</td><td>&lt;-13 或 &gt;+17</td></tr><tr><td>DS SNR / MER</td><td>≥35 dB</td><td>30~35 dB</td><td>&lt;30 dB</td></tr><tr><td>US Power</td><td>40~54 dBmV</td><td>52~54 注意</td><td>&gt;54 過高；&lt;35 偏低需查</td></tr><tr><td>8591E 上行頻譜</td><td>底噪平、無明顯尖峰</td><td>偶發尖峰</td><td>多尖峰 / 單頻突刺 / 底噪整體抬高</td></tr><tr><td>OTDR</td><td>平滑下降、事件合理</td><td>小階梯需留意</td><td>掉到底、反射過大、彎折凹陷</td></tr></table></div></div></section>
+    <section class="grid" id="record" style="margin-top:14px">
+      <div class="card two"><h2>查修紀錄產生器</h2><div class="cols cols3"><div><label>地點 / 節點</label><input id="recLoc" placeholder="例：XX機房 / Node A"></div><div><label>故障現象</label><input id="recSym" placeholder="例：ONU不上線、上行SNR低"></div><div><label>處理人員</label><input id="recName" placeholder="姓名"></div></div><label>現場補充</label><textarea id="recNote" placeholder="輸入現場狀況、設備燈號、平台告警..."></textarea><div class="row" style="margin-top:12px"><button class="btn ok" onclick="makeRecord()">產生紀錄</button><button class="btn secondary" onclick="copyRecord()">複製紀錄</button></div><textarea id="recordText" class="copy" readonly></textarea></div>
+      <div class="card four"><h2>最近判斷</h2><div id="lastDiag" class="result info">尚未執行診斷。</div></div>
+    </section>
+  </main>
 
-<section id="log" class="page hide"><div class="grid"><div class="card half"><h2>查修紀錄產生器</h2><div class="row"><div><label>地點 / 節點</label><input id="lgLoc"></div><div><label>故障現象</label><input id="lgCase"></div><div><label>使用工具</label><input id="lgTool" placeholder="PM-500 / 7200D / 860 / 8591E"></div><div><label>量測數值</label><input id="lgValue" placeholder="例：PM -28 dBm, US 55"></div></div><label>處理內容</label><textarea id="lgAction"></textarea><div class="btns"><button onclick="makeLog()">產生紀錄</button><button class="secondary" onclick="copyResult('logResult')">複製</button></div></div><div class="card half"><h2>輸出</h2><div id="logResult" class="result"></div></div></div></section>
+  <div class="footerbar"><div class="row"><span class="small muted">現場順序：端面 / 清潔 → 量測 → 定位 → 系統層</span><a class="quickbtn" href="#fault">回故障入口</a></div></div>
 
-<div class="footer">本工具供現場查修輔助，實際門檻以公司標準與設備規格為準。</div>
 <script>
-function showTab(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.add('hide'));document.getElementById(id).classList.remove('hide');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active')}
-function val(id){const v=document.getElementById(id).value;return v===''?null:Number(v)}
-function sel(id){return document.getElementById(id).value}
-function line(s=''){return s+'\n'}
-function judgeOpt(dbm){if(dbm===null)return {lvl:'unknown',txt:'未輸入光功率',act:'先用 PM-500 選正確波長量 dBm。'}; if(dbm>=-20&&dbm<=-8)return {lvl:'good',txt:'光功率正常',act:'光層初判正常，往 ONU/OLT/CMTS/設定層查。'}; if(dbm<-20&&dbm>=-25)return {lvl:'warn',txt:'光功率邊緣',act:'先清潔端面並重測；仍偏低就查分光器、跳線、接頭。'}; if(dbm<-25&&dbm>=-30)return {lvl:'bad',txt:'光功率過低',act:'清潔後重測；仍低則使用 FTB-7200D OTDR 找事件。'}; if(dbm<-30)return {lvl:'bad',txt:'幾乎無光 / 近斷',act:'直接走斷纖流程，FTB-7200D 長距離模式找斷點。'}; return {lvl:'warn',txt:'光太強或數值不合理',act:'確認波長、量測點、是否需要衰減器。'} }
-function judgeDS(p){if(p===null)return 'DS Power 未輸入'; if(p>=-13&&p<=17)return 'DS Power 可接受'; return p<-13?'DS Power 過低：查下行衰減、Tap、接頭、放大器。':'DS Power 過高：可能需衰減或查放大器/輸出過高。'}
-function judgeSNR(s){if(s===null)return 'DS SNR/MER 未輸入'; if(s>=35)return 'DS SNR/MER 正常'; if(s>=30)return 'DS SNR/MER 邊緣：查雜訊、接頭、線路品質。'; return 'DS SNR/MER 嚴重偏低：優先用 860 確認，8591E 查 ingress/干擾。'}
-function judgeUS(u){if(u===null)return 'US Power 未輸入'; if(u>=40&&u<=54)return 'US Power 可接受'; if(u>54)return 'US Power 過高：回傳衰減過大，查 Tap、接頭、線路、Node 回傳。'; return 'US Power 偏低：可能回傳過強/設定或測點問題，確認量測點與 CM 狀態。'}
-function spectrumTxt(x){return {unknown:'8591E 未檢查：若 SNR/MER 低，下一步看上行 5~65 MHz。',clean:'頻譜乾淨：RF 物理干擾機率較低，往設備/設定查。',spike:'多尖峰：典型 Ingress，分段隔離追來源。',tone:'單頻突刺：疑似設備/外部單頻干擾，鎖定該頻率來源。',floor:'Noise floor 整體抬高：整段污染、放大器或回傳鏈路問題。'}[x]}
-function osaTxt(x){return {unknown:'5240S 未檢查：若 DWDM/CWDM 波道異常再使用。',ok:'5240S：波道正常。',lowch:'單一 Channel Power 低：查該波道 Tx、跳線、MUX/DEMUX。',shift:'波長偏移：查雷射/發射端溫控或波長設定。',osnr:'OSNR 差 / 光譜髒：查放大器、Mux/Demux、反射、污染。'}[x]}
-function moduleByDist(d){return d==='backbone'?'FTB-7200D：長距離 / 幹線模式，Range 10~50 km，Pulse 100 ns~1 µs，Avg 30~60 秒。':'FTB-7200D：短距離 / 用戶側模式，Range 1~5 km，Pulse 10~50 ns，Avg 15~30 秒。'}
-function runAuto(){let out=''; const c=sel('caseType'), d=sel('distanceType'), face=sel('face'), opt=val('optDbm'), ds=val('dsPower'), snr=val('dsSnr'), us=val('usPower'); const spec=sel('spectrum'), osa=sel('osa');
- out+=line('【故障初判】'); out+=line('現象：'+document.querySelector('#caseType option:checked').textContent); if(face==='dirty')out+=line('❌ 端面髒污：先用清潔筆清潔，再用 ViewConn Pro 複檢，未清潔前不要相信 dBm/OTDR。'); else if(face==='scratch')out+=line('❌ 端面刮傷：換跳線或重新端接，否則會造成反射/損耗。'); else if(face==='unknown')out+=line('⚠️ 尚未檢查端面：第一步用 ViewConn Pro。'); else out+=line('✅ 端面已確認乾淨。');
- const oj=judgeOpt(opt); out+=line('PM-500：'+oj.txt+' → '+oj.act); out+=line('DS：'+judgeDS(ds)); out+=line('SNR/MER：'+judgeSNR(snr)); out+=line('US：'+judgeUS(us)); out+=line('8591E：'+spectrumTxt(spec)); out+=line('5240S：'+osaTxt(osa));
- out+=line('\n【推薦工具與下一步】');
- if(c==='onu_down'||c==='area_light_down'||c==='dwdm_bad'){
-   out+=line('1. ViewConn Pro 看端面 → 髒就清潔。'); out+=line('2. PM-500 選正確波長量 dBm。');
-   if(oj.lvl==='bad'||c==='area_light_down') out+=line('3. 光異常：使用 '+moduleByDist(d)); else if(oj.lvl==='good') out+=line('3. 光正常：不用先上 OTDR，改查 ONU/OLT provisioning、VLAN、設備狀態。'); else out+=line('3. 數值不足：先補 PM-500 讀值。');
-   if(c==='dwdm_bad') out+=line('4. DWDM/CWDM：使用 FTB-5240S 看 Channel Power、波長偏移、OSNR。');
- } else {
-   out+=line('1. 用 860 DSPi 量 DS Power / MER / BER / US Power。'); out+=line('2. MER/SNR 低或 BER 有錯：用 8591E 看 5~65 MHz 上行頻譜。'); out+=line('3. US 過高：查回傳衰減、Tap、接頭、放大器/Node。');
- }
- out+=line('\n【OTDR 判讀】掉到底＝斷纖；階梯＝接頭/熔接損耗；局部凹陷＝彎折；前段看不到＝沒接 Launch Fiber 或脈寬/距離設定錯。');
- document.getElementById('autoResult').textContent=out; fillLogFromAuto(out);
+let lastDiagnosis=[];
+function n(id){const v=document.getElementById(id).value;return v===''?null:Number(v)}
+function setLast(arr){lastDiagnosis=arr.filter(Boolean);document.getElementById('lastDiag').innerHTML=lastDiagnosis.length?lastDiagnosis.map(x=>'• '+x).join('<br>'):'尚未執行診斷。'}
+function cls(level){return 'result '+(level||'info')}
+function block(title, level, lines){return `<div class="${cls(level)}"><h3>${title}</h3>${lines.map(l=>`<div>${l}</div>`).join('')}</div>`}
+function fault(type){
+ const data={
+  onu:['ONU 不上線 / 光弱','bad',['1. ViewConn Pro 先看端面，髒污就用清潔筆清潔後重測。','2. FTB-500 → PM-500，選 1490 nm 量下行光功率。','3. 若 <-25 dBm：光弱，使用 FTB-7200D OTDR 找事件點。','4. 若光正常：查 ONU 註冊、OLT/平台、授權、IP。']],
+  areaOptical:['整區掉光','bad',['1. 先確認是否同 Node / 同 Splitter / 同幹線範圍。','2. PM-500 若無光或約 -40 dBm：判定上游光路中斷。','3. 用 FTB-7200D，Range 設 10~50 km，Pulse 100 ns~1 µs，找斷點距離。','4. 若為 DWDM 幹線，補用 FTB-5240S 看是否缺波或通道功率異常。']],
+  internet:['客戶無法上網','warn',['1. 先分層：光 / RF / IP。','2. 光用 PM-500；RF 用 860 DSPi 看 DS/US/SNR。','3. 數值正常但不通：查 CMTS、DHCP、固定IP、設定檔、帳務綁定。','4. 數值異常：依光纖或 RF 流程定位。']],
+  unstable:['間歇掉線','warn',['1. 先看歷史：是否整區、單戶、尖峰時段。','2. 光：ViewConn Pro 檢查端面，PM-500 觀察是否跳動。','3. RF：860 DSPi 看 MER/BER；若 MER 波動，用 8591E 抓 ingress。','4. 紀錄發生時間，對照平台 Log / CM reboot / SNR 變化。']],
+  noise:['上行雜訊 / SNR低','bad',['1. 860 DSPi 先確認 US SNR 是否 <30 dB、US Power 是否偏高。','2. 用 8591E 看 5~65 MHz，上行頻譜是否有尖峰或 Noise floor 升高。','3. 尖峰：疑似 Ingress；單頻：疑似設備干擾；整體升高：線路污染/放大器問題。','4. 從 Node / Tap 分段隔離，找污染支線。']],
+  dwdm:['DWDM 波長異常','warn',['1. 使用 FTB-5240S OSA，不是 OTDR。','2. 看通道是否缺波、波長偏移、通道 Power 是否低。','3. 若單通道異常：查該波長 Tx / Mux / Demux / Patch。','4. 若多通道整體低：查 EDFA、光纖總損、連接器。']],
+  dtv:['DTV 馬賽克 / 無訊號','warn',['1. 860 DSPi 看 QAM Power、MER、BER。','2. MER <35 或 BER 有錯：RF品質問題，查下行雜訊/失真。','3. Power 過高/過低：查衰減、放大、分配。','4. RF 正常：查 CAS / 授權 / 機上盒 / 頻道設定。']]
+ }[type];
+ document.getElementById('faultResult').className=cls(data[1]);
+ document.getElementById('faultResult').innerHTML=`<h3>${data[0]}</h3><div class="steps">${data[2].map(x=>`<div class="step">${x}</div>`).join('')}</div>`;
+ setLast([data[0],...data[2]]);
+ location.hash='fault';
 }
-function clearAuto(){['optDbm','dsPower','dsSnr','usPower'].forEach(id=>document.getElementById(id).value='');document.getElementById('autoResult').textContent='請選故障現象並輸入數值後按「開始診斷」。'}
-function presetCase(c){document.getElementById('caseType').value=c; runAuto(); window.scrollTo({top:0,behavior:'smooth'});}
-function runOptical(){let dbm=val('opm'), face=sel('oface'), lineType=sel('oline'), oj=judgeOpt(dbm), out='【光纖診斷】\n'; if(face==='dirty')out+='❌ 端面髒污：ViewConn Pro 確認後，用清潔筆清潔並重測。\n'; else if(face==='scratch')out+='❌ 端面刮傷：換跳線/重做端接，再測。\n'; else if(face==='unknown')out+='⚠️ 未檢查端面：先用 ViewConn Pro。\n'; else out+='✅ 端面乾淨。\n'; out+='PM-500：'+oj.txt+' → '+oj.act+'\n'; if(oj.lvl==='bad')out+='推薦：'+(lineType==='backbone'?'FTB-7200D 長距離設定：Range 10~50 km、Pulse 100ns~1µs。':'FTB-7200D 短距離設定：Range 1~5 km、Pulse 10~50ns。')+'\n'; if(lineType==='dwdm')out+='DWDM/CWDM：用 FTB-5240S 查看 Channel Power / 波長 / OSNR。\n'; document.getElementById('opticalResult').textContent=out;}
-function runRF(){let out='【RF/HFC 診斷】\n'; out+='DS Power：'+judgeDS(val('rds'))+'\n'; out+='MER/SNR：'+judgeSNR(val('rmer'))+'\n'; out+='US Power：'+judgeUS(val('rus'))+'\n'; out+='BER：'+(sel('rber')==='bad'?'❌ BER 有錯：線路品質異常，查雜訊/訊號品質。':sel('rber')==='ok'?'✅ BER 正常。':'BER 未輸入。')+'\n'; out+='8591E：'+spectrumTxt(sel('rspec'))+'\n\n建議流程：860 DSPi 確認數值 → 8591E 看頻譜 → 分段隔離 Tap/Node/放大器。'; document.getElementById('rfResult').textContent=out;}
-function makeLog(){const t=new Date().toLocaleString('zh-TW',{hour12:false}); const out=`【查修紀錄】\n時間：${t}\n地點/節點：${document.getElementById('lgLoc').value}\n故障現象：${document.getElementById('lgCase').value}\n使用工具：${document.getElementById('lgTool').value}\n量測數值：${document.getElementById('lgValue').value}\n處理內容：${document.getElementById('lgAction').value}\n結論：`; document.getElementById('logResult').textContent=out;}
-function fillLogFromAuto(txt){document.getElementById('lgCase').value=document.querySelector('#caseType option:checked').textContent; document.getElementById('lgAction').value=txt;}
-function copyResult(id){navigator.clipboard.writeText(document.getElementById(id).textContent||'');}
-document.addEventListener('DOMContentLoaded',()=>{runOptical();runRF();});
+function diagnoseOptical(){
+ const face=document.getElementById('face').value, dbm=n('optdbm'), type=document.getElementById('opttype').value, dist=n('distance'), wave=document.getElementById('wave').value, sym=document.getElementById('optSym').value;
+ let level='ok', out=[], rec=[];
+ if(face==='unknown'){level='warn';out.push('⚠️ 尚未檢查端面：先用 ViewConn Pro 看端面，避免髒污造成假低功率。');rec.push('端面未檢查，需先用 ViewConn Pro。')}
+ if(face==='dirty'){level='bad';out.push('❌ 端面髒污：先用清潔筆清潔，再用 ViewConn Pro 複查，之後才量 PM-500。');rec.push('端面髒污，已建議清潔後重測。')}
+ if(face==='scratch'){level='bad';out.push('❌ 端面刮傷/破損：清潔無法完全解決，優先更換跳線或接頭。');rec.push('端面刮傷/破損，建議更換。')}
+ if(dbm===null){out.push('請輸入 PM-500 光功率 dBm。'); level=level==='bad'?'bad':'warn'}
+ else if(dbm>=-8){level='warn';out.push(`⚠️ ${dbm} dBm：光可能偏強，確認接收端規格，必要時加衰減器。`);rec.push(`PM-500=${dbm} dBm，光偏強。`)}
+ else if(dbm>=-20){out.push(`✅ ${dbm} dBm：光功率正常。若仍不通，下一步查 ONU/OLT/CMTS/IP/授權，不要先上 OTDR。`);rec.push(`PM-500=${dbm} dBm，光功率正常。`)}
+ else if(dbm>=-25){level=level==='bad'?'bad':'warn';out.push(`⚠️ ${dbm} dBm：光功率邊緣，先清潔端面再重測；若仍偏低，使用 FTB-7200D 查接頭/彎折/分光損耗。`);rec.push(`PM-500=${dbm} dBm，光功率邊緣。`)}
+ else if(dbm>=-30){level='bad';out.push(`❌ ${dbm} dBm：光弱。使用 FTB-7200D OTDR 定位事件點，優先查接頭、分光器、彎折。`);rec.push(`PM-500=${dbm} dBm，光弱，需 OTDR。`)}
+ else {level='bad';out.push(`❌ ${dbm} dBm：幾乎無光/斷光。使用 FTB-7200D OTDR 找斷點距離；若整區，往幹線/上游查。`);rec.push(`PM-500=${dbm} dBm，幾乎無光/斷光。`)}
+ if(type==='dwdm'||sym==='dwdmPower'){out.push('📊 DWDM/CWDM：使用 FTB-5240S OSA，看通道 Power、波長偏移、缺波；這不是 OTDR工作。');rec.push('DWDM/CWDM 建議使用 FTB-5240S OSA。')}
+ if(dbm!==null && dbm<-20 && type!=='dwdm'){
+   let range='2~5 km', pulse='10~50 ns', avg='15~30 秒';
+   if((dist||0)>5 || type==='trunk'){range=(dist?Math.ceil(dist*1.5):20)+' km'; pulse=(dist&&dist>20)?'500 ns ~ 1 µs':'100~500 ns'; avg='30~60 秒'}
+   out.push(`🔍 FTB-7200D 設定建議：Range ${range}、Pulse ${pulse}、Average ${avg}，務必接 Launch Fiber。`);
+   out.push('判讀：突然掉到底＝斷纖；階梯下降＝接頭/熔接損耗；局部凹陷＝彎折；前段看不到＝未接前導纖或死區。');
+   rec.push(`FTB-7200D 建議 Range ${range}, Pulse ${pulse}, Avg ${avg}。`)
+ }
+ document.getElementById('optResult').className=cls(level);document.getElementById('optResult').innerHTML=out.map(x=>`<div>${x}</div>`).join('');setLast(rec.length?rec:out);
+}
+function diagnoseRF(){
+ const ds=n('dsPower'), snr=n('dsSnr'), us=n('usPower'), ussnr=n('usSnr'); let level='ok', out=[], rec=[];
+ if(ds!==null){ if(ds<-13){level='bad';out.push(`❌ DS Power ${ds} dBmV：下行過低，查光收/RF輸出、分配、衰減、接頭。`)} else if(ds>17){level='bad';out.push(`❌ DS Power ${ds} dBmV：下行過高，可能過放或衰減不足。`)} else out.push(`✅ DS Power ${ds} dBmV：範圍內。`); rec.push(`DS Power=${ds}`)}
+ if(snr!==null){ if(snr<30){level='bad';out.push(`❌ DS MER/SNR ${snr} dB：嚴重異常，860確認BER，再用8591E看下行雜訊/失真。`)} else if(snr<35){level=level==='bad'?'bad':'warn';out.push(`⚠️ DS MER/SNR ${snr} dB：邊緣，可能雜訊或失真。`)} else out.push(`✅ DS MER/SNR ${snr} dB：正常。`); rec.push(`DS SNR/MER=${snr}`)}
+ if(us!==null){ if(us>54){level='bad';out.push(`❌ US Power ${us} dBmV：回傳過高，路徑衰減過大，查接頭/Tap/分歧器/線損。`)} else if(us>50){level=level==='bad'?'bad':'warn';out.push(`⚠️ US Power ${us} dBmV：偏高，接近臨界，先查回傳路徑。`)} else if(us<35){level=level==='bad'?'bad':'warn';out.push(`⚠️ US Power ${us} dBmV：偏低，可能過強或回傳設定/路徑異常。`)} else out.push(`✅ US Power ${us} dBmV：正常。`); rec.push(`US Power=${us}`)}
+ if(ussnr!==null){ if(ussnr<30){level='bad';out.push(`❌ US SNR ${ussnr} dB：回傳品質差，使用 8591E 看 5~65 MHz，找 ingress / 單頻干擾 / noise floor。`)} else out.push(`✅ US SNR ${ussnr} dB：正常。`); rec.push(`US SNR=${ussnr}`)}
+ if(out.length===0){level='warn';out.push('請至少輸入一個 RF 數值。')}
+ if(level==='bad'||level==='warn') out.push('下一步：860 DSPi 確認數值 → 8591E 看頻譜 → 分段隔離 Node/Tap/支線。');
+ else out.push('數值正常但服務異常：往 CMTS、DHCP/IP、設定檔、CPE、帳務綁定查。')
+ document.getElementById('rfResult').className=cls(level);document.getElementById('rfResult').innerHTML=out.map(x=>`<div>${x}</div>`).join('');setLast(rec.concat(out));
+}
+function clearOptical(){['optdbm','distance'].forEach(id=>document.getElementById(id).value='');document.getElementById('optResult').className=cls('info');document.getElementById('optResult').innerHTML='<b>輸入 PM-500 讀值後按分析。</b>'}
+function clearRF(){['dsPower','dsSnr','usPower','usSnr'].forEach(id=>document.getElementById(id).value='');document.getElementById('rfResult').className=cls('info');document.getElementById('rfResult').innerHTML='<b>輸入 860 DSPi / CMTS 讀值後按分析。</b>'}
+function makeRecord(){
+ const loc=document.getElementById('recLoc').value||'未填'; const sym=document.getElementById('recSym').value||'未填'; const name=document.getElementById('recName').value||'未填'; const note=document.getElementById('recNote').value||'無';
+ const now=new Date().toLocaleString('zh-TW',{hour12:false});
+ document.getElementById('recordText').value=`【機房查修紀錄】\n時間：${now}\n地點/節點：${loc}\n故障現象：${sym}\n處理人員：${name}\n\n【系統判斷】\n${(lastDiagnosis.length?lastDiagnosis:['尚未執行診斷']).map(x=>' - '+x.replace(/<[^>]*>/g,'')).join('\n')}\n\n【現場補充】\n${note}\n\n【建議順序】\n1. 端面檢查 / 清潔\n2. 數值量測\n3. 儀表定位\n4. 系統層確認\n`;
+}
+function copyRecord(){const t=document.getElementById('recordText'); if(!t.value) makeRecord(); t.select(); document.execCommand('copy')}
 </script>
 </body>
 </html>
