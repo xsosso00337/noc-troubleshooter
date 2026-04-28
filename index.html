@@ -1,358 +1,94 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>機房查修工具 Pro v2</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>機房現場查修工具 Max</title>
 <style>
-:root{--bg:#08111f;--card:#101a2b;--card2:#0b1424;--text:#f8fafc;--muted:#94a3b8;--line:#2b3b55;--accent:#38bdf8;--accent2:#a78bfa;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#08111f,#020617);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","Segoe UI",Arial,sans-serif}
-header{position:sticky;top:0;z-index:10;background:rgba(8,17,31,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px}
-h1{font-size:20px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}
-main{max-width:920px;margin:auto;padding:12px 12px 90px}
-.nav{display:flex;gap:8px;overflow:auto;padding:8px 0 12px}
-.nav button{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:#0f172a;color:var(--text);padding:10px 12px;font-weight:800}
-.nav button.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#020617;border:0}
-.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:20px;padding:15px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-h2{font-size:18px;margin:0 0 12px} h3{font-size:16px;margin:14px 0 8px;color:#e0f2fe}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:620px){.grid{grid-template-columns:1fr}}
-label{display:block;margin:10px 0 6px;color:#cbd5e1;font-weight:700;font-size:13px}
-input,select,textarea{width:100%;border:1px solid var(--line);background:#020617;color:var(--text);border-radius:13px;padding:12px;font-size:16px}
-textarea{min-height:90px;resize:vertical}
-button{border:1px solid var(--line);background:#0f172a;color:var(--text);border-radius:13px;padding:12px;font-weight:800}
-.primary{width:100%;margin-top:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:0;color:#020617}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:620px){.quick{grid-template-columns:1fr}}
-.quick button{text-align:left;background:#0b1424}.quick b{display:block;font-size:15px}.quick span{display:block;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.4}
-.panel{display:none}.panel.active{display:block}
-.box{border:1px solid var(--line);border-radius:16px;background:#020617;padding:13px;margin-top:12px}
-.ok{border-color:rgba(34,197,94,.7)}.warn{border-color:rgba(245,158,11,.8)}.bad{border-color:rgba(239,68,68,.8)}
-.badge{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900;margin-bottom:8px}
-.badge.ok{background:rgba(34,197,94,.16);color:#86efac}.badge.warn{background:rgba(245,158,11,.16);color:#fde68a}.badge.bad{background:rgba(239,68,68,.16);color:#fecaca}
-.small{color:var(--muted);font-size:13px;line-height:1.6}
-ul,ol{margin:8px 0 0 20px;padding:0}li{margin:5px 0}
-.item{border:1px solid rgba(148,163,184,.18);border-radius:17px;background:#07111f;padding:13px;margin:10px 0}
-.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:#cbd5e1;font-size:12px;margin:2px}
-.kv{display:grid;grid-template-columns:105px 1fr;gap:8px;border-top:1px solid rgba(148,163,184,.15);padding-top:9px;margin-top:9px;font-size:13px}.kv b{color:#bae6fd}
-table{width:100%;border-collapse:collapse;font-size:13px}td,th{border:1px solid var(--line);padding:9px;text-align:left}th{background:#0b1424;color:#bae6fd}
-pre{white-space:pre-wrap;word-break:break-word;margin:0}
-.footer{position:fixed;bottom:0;left:0;right:0;background:rgba(8,17,31,.94);border-top:1px solid var(--line);padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+:root{--bg:#0b1220;--card:#121c2e;--card2:#18263d;--text:#eef4ff;--muted:#9fb0c7;--line:#293951;--brand:#56d6ff;--ok:#37d67a;--warn:#ffd166;--bad:#ff5c77;--info:#9aa7ff;--shadow:0 18px 50px rgba(0,0,0,.35);--r:18px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#17294a 0,#0b1220 45%,#060912 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;line-height:1.5}header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.wrap{max-width:1180px;margin:auto;padding:14px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between}.logo{font-weight:900;font-size:20px;letter-spacing:.5px}.tag{font-size:12px;color:var(--muted)}nav{display:flex;gap:8px;overflow:auto;padding:10px 0 2px}nav button,.btn{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:999px;padding:9px 13px;white-space:nowrap;font-weight:700;cursor:pointer}nav button.active,.btn.primary{background:linear-gradient(135deg,#26c6ff,#7c7cff);border:0;color:white}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 12;background:linear-gradient(180deg,rgba(24,38,61,.95),rgba(18,28,46,.95));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}.half{grid-column:span 6}.third{grid-column:span 4}.two{grid-column:span 8}h1,h2,h3{margin:0 0 10px}h1{font-size:24px}h2{font-size:19px}h3{font-size:15px;color:#dbe8ff}.muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:#0e1728;color:#cfe2ff;font-size:12px;margin:3px}.status{padding:8px 10px;border-radius:12px;font-weight:900;display:inline-block}.ok{background:rgba(55,214,122,.14);color:var(--ok);border:1px solid rgba(55,214,122,.35)}.warn{background:rgba(255,209,102,.14);color:var(--warn);border:1px solid rgba(255,209,102,.35)}.bad{background:rgba(255,92,119,.14);color:var(--bad);border:1px solid rgba(255,92,119,.35)}.info{background:rgba(154,167,255,.14);color:var(--info);border:1px solid rgba(154,167,255,.35)}input,select,textarea{width:100%;background:#081121;color:var(--text);border:1px solid var(--line);border-radius:13px;padding:11px;font-size:15px}textarea{min-height:96px}.field{margin:8px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:800}.row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.result{white-space:pre-wrap;background:#081121;border:1px solid var(--line);border-radius:14px;padding:13px;min-height:90px}.list{display:grid;gap:10px}.item{padding:12px;border:1px solid var(--line);border-radius:15px;background:rgba(8,17,33,.7)}.item b{display:block;margin-bottom:4px}.steps{counter-reset:s}.steps li{margin:8px 0;padding-left:4px}.tabs{display:none}.tabs.active{display:block}.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi div{background:#081121;border:1px solid var(--line);border-radius:16px;padding:12px}.quickBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.quickBtns button{background:#0e1728;border:1px solid var(--line);color:var(--text);border-radius:16px;padding:14px;text-align:left;font-weight:900;cursor:pointer}.quickBtns button:hover{border-color:var(--brand)}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}th{color:#bfefff;background:#0e1728}.footerSpace{height:60px}.small{font-size:13px}.copybar{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none}@media(max-width:760px){.wrap{padding:10px}.half,.third,.two{grid-column:span 12}.row,.kpi,.quickBtns{grid-template-columns:1fr 1fr}.logo{font-size:17px}h1{font-size:21px}.card{padding:13px;border-radius:15px}nav button{padding:8px 11px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>機房查修工具 Pro v2</h1>
-  <div class="sub">穩定版｜故障導引、工具教學、數值診斷、流程、紀錄</div>
-</header>
-
-<main>
-  <div class="nav" id="nav">
-    <button data-tab="home" class="active">總覽</button>
-    <button data-tab="faults">故障導引</button>
-    <button data-tab="numbers">數值診斷</button>
-    <button data-tab="tools">工具教學</button>
-    <button data-tab="flows">測試流程</button>
-    <button data-tab="refs">標準表</button>
-    <button data-tab="logs">紀錄</button>
-  </div>
-
-  <section id="home" class="panel active">
-    <div class="card">
-      <h2>⚡ 快速故障入口</h2>
-      <div class="quick" id="quickButtons"></div>
-      <div id="quickResult"></div>
-    </div>
-    <div class="card">
-      <h2>🧭 完整系統鏈</h2>
-      <div class="box small">
-        <b>Video/DTV：</b>節目源 → IRD → Encoder → Mux → Router/Video Server → QAM<br>
-        <b>RF/光：</b>調變器 → 光發機 → EDFA → WDM → 光纖/分光 → ONT/CM<br>
-        <b>回傳/網路：</b>CM → 反向RF → 光接收 → SSR/CMTS → BCC/DHCP → Core/Internet
-      </div>
-    </div>
-  </section>
-
-  <section id="faults" class="panel">
-    <div class="card">
-      <h2>🚨 故障導引</h2>
-      <label>搜尋</label>
-      <input id="faultSearch" placeholder="例：Ranging、DHCP、沒電視、MER、EDFA">
-      <label>類型</label>
-      <select id="faultCat">
-        <option value="">全部</option>
-        <option value="network">網路 / CM</option>
-        <option value="tv">電視 / DTV</option>
-        <option value="rf">RF / QAM</option>
-        <option value="optical">光 / PON</option>
-        <option value="infra">機電 / 環境</option>
-      </select>
-      <div id="faultList"></div>
-    </div>
-  </section>
-
-  <section id="numbers" class="panel">
-    <div class="card">
-      <h2>📊 數值診斷</h2>
-      <div class="grid">
-        <div><label>CM 下行 Power dBmV</label><input id="ds" type="number" step="0.1"></div>
-        <div><label>CM 下行 SNR dB</label><input id="snr" type="number" step="0.1"></div>
-        <div><label>CM 上行 Power dBmV</label><input id="us" type="number" step="0.1"></div>
-        <div><label>CM 狀態</label><select id="cmstate"><option value="">未選</option><option>Downstream Lock</option><option>Ranging</option><option>DHCP</option><option>TFTP</option><option>Online但不通</option></select></div>
-        <div><label>MER dB</label><input id="mer" type="number" step="0.1"></div>
-        <div><label>調變</label><select id="qam"><option>256QAM</option><option>64QAM</option></select></div>
-        <div><label>BER</label><input id="ber" placeholder="例：1E-8"></div>
-        <div><label>SSR底噪 dB</label><input id="ssr" type="number" step="0.1"></div>
-        <div><label>1490 RX dBm</label><input id="p1490" type="number" step="0.1"></div>
-        <div><label>1550 RF dBm</label><input id="p1550" type="number" step="0.1"></div>
-        <div><label>EDFA輸出 dBm</label><input id="edfa" type="number" step="0.1"></div>
-        <div><label>反向RF OUT / SST dB</label><input id="sst" type="number" step="0.1"></div>
-      </div>
-      <button class="primary" id="btnJudge">開始診斷</button>
-      <div id="diagResult"></div>
-    </div>
-
-    <div class="card">
-      <h2>🧮 光 Budget</h2>
-      <div class="grid">
-        <div><label>輸出功率 dBm</label><input id="btx" type="number" step="0.1"></div>
-        <div><label>分光比</label><select id="bsplit"><option value="10.5">1:8</option><option value="13.5">1:16</option><option value="17" selected>1:32</option><option value="20">1:64</option></select></div>
-        <div><label>距離 km</label><input id="bkm" type="number" step="0.1"></div>
-        <div><label>波長</label><select id="bwave"><option value="0.3">1550：0.3dB/km</option><option value="0.4">1310：0.4dB/km</option></select></div>
-        <div><label>接頭/熔接預估 dB</label><input id="bconn" type="number" step="0.1" value="1"></div>
-        <div><label>用途</label><select id="btype"><option value="1550">1550 RF</option><option value="1490">1490 PON</option></select></div>
-      </div>
-      <button class="primary" id="btnBudget">計算</button>
-      <div id="budgetResult"></div>
-    </div>
-  </section>
-
-  <section id="tools" class="panel">
-    <div class="card">
-      <h2>🧰 工具教學</h2>
-      <label>搜尋工具</label>
-      <input id="toolSearch" placeholder="例：860、SSR、AT2500、OTDR、BCC">
-      <div id="toolList"></div>
-    </div>
-  </section>
-
-  <section id="flows" class="panel">
-    <div class="card">
-      <h2>🧪 測試流程</h2>
-      <label>選擇流程</label>
-      <select id="flowSelect">
-        <option value="cm">CM不上線</option>
-        <option value="tv">電視黑屏/馬賽克</option>
-        <option value="reverse">上行雜訊</option>
-        <option value="pon">全光轉/光路驗證</option>
-        <option value="dtv">單頻道黑屏/無聲</option>
-        <option value="infra">機電告警</option>
-      </select>
-      <div id="flowBox"></div>
-    </div>
-  </section>
-
-  <section id="refs" class="panel">
-    <div class="card">
-      <h2>📚 標準數據表</h2>
-      <h3>CM / DOCSIS</h3>
-      <table>
-        <tr><th>項目</th><th>正常</th><th>警戒/異常</th></tr>
-        <tr><td>DS Power</td><td>+10 ~ -10 dBmV</td><td>&lt;-15太低 / &gt;+12偏高</td></tr>
-        <tr><td>DS SNR</td><td>≥35 dB</td><td>30~35邊緣 / &lt;30異常</td></tr>
-        <tr><td>US Power</td><td>40~50 dBmV</td><td>50~54偏高 / &gt;54易斷</td></tr>
-      </table>
-      <h3>RF / QAM</h3>
-      <table>
-        <tr><th>項目</th><th>正常</th><th>異常</th></tr>
-        <tr><td>64QAM MER</td><td>≥26~27 dB</td><td>&lt;23 dB</td></tr>
-        <tr><td>256QAM MER</td><td>&gt;31 dB</td><td>&lt;28 dB</td></tr>
-        <tr><td>BER</td><td>&lt;1E-8佳</td><td>&gt;1E-6異常</td></tr>
-        <tr><td>A/V Ratio</td><td>15~16 dB</td><td>音量/爆音問題</td></tr>
-        <tr><td>Video Modulation</td><td>87.5%</td><td>過調變畫面異常</td></tr>
-      </table>
-      <h3>光 / PON</h3>
-      <table>
-        <tr><th>項目</th><th>標準</th><th>備註</th></tr>
-        <tr><td>EDFA 1550</td><td>+19~+21 dBm</td><td>低畫質差，高失真</td></tr>
-        <tr><td>OLT 1490 TX</td><td>+4~+7 dBm</td><td>偏C+等級</td></tr>
-        <tr><td>ONT 1490 RX</td><td>-27~-8 dBm</td><td>低於-27易不上</td></tr>
-        <tr><td>1550 RF端</td><td>-8~+2 dBm</td><td>RF Overlay</td></tr>
-        <tr><td>1550損耗</td><td>0.3 dB/km</td><td>估算</td></tr>
-        <tr><td>1310損耗</td><td>0.4 dB/km</td><td>估算</td></tr>
-      </table>
-      <h3>反向光平衡</h3>
-      <table>
-        <tr><th>項目</th><th>標準</th><th>備註</th></tr>
-        <tr><td>測試點</td><td>9~10 dB</td><td>後端RF OUT約+20dB</td></tr>
-        <tr><td>RF OUT</td><td>29~31 dB</td><td>平衡目標</td></tr>
-        <tr><td>SST入力</td><td>約14 dB</td><td>線損約16dB後</td></tr>
-        <tr><td>施工頻率</td><td>42 MHz</td><td>光平衡常用</td></tr>
-      </table>
-    </div>
-  </section>
-
-  <section id="logs" class="panel">
-    <div class="card">
-      <h2>📝 查修紀錄產生器</h2>
-      <div class="grid">
-        <div><label>時間</label><input id="ltime" placeholder="2026/04/28 14:30"></div>
-        <div><label>光點/Node</label><input id="lnode" placeholder="A0403"></div>
-        <div><label>故障現象</label><input id="lissue" placeholder="CM卡Ranging"></div>
-        <div><label>影響範圍</label><input id="lscope" placeholder="單戶/單區/全區"></div>
-      </div>
-      <label>量測數據</label><textarea id="ldata"></textarea>
-      <label>處理過程</label><textarea id="laction"></textarea>
-      <label>初判結論</label><textarea id="lresult"></textarea>
-      <button class="primary" id="btnLog">產生紀錄</button>
-      <div id="logResult"></div>
-    </div>
-  </section>
+<header><div class="wrap"><div class="top"><div><div class="logo">⚡ 機房現場查修工具 Max</div><div class="tag">PON / HFC / DOCSIS / DTV / DWDM｜現場速判、工具SOP、紀錄產生</div></div><button class="btn" onclick="toggleTheme()">夜間/高亮</button></div><nav id="nav"></nav></div></header>
+<main class="wrap">
+<section id="home" class="tabs active">
+ <div class="grid">
+  <div class="card two"><h1>現場快速入口</h1><p class="muted">先選「故障現象」，再看「要量什麼、正常值、異常原因、下一步」。</p><div class="quickBtns" id="quickBtns"></div></div>
+  <div class="card third"><h2>今日值班模式</h2><div class="kpi"><div><b>CM</b><br><span class="muted">DS/US/SNR</span></div><div><b>PON</b><br><span class="muted">1490/1550</span></div><div><b>DTV</b><br><span class="muted">MER/BER</span></div><div><b>光</b><br><span class="muted">EDFA/DWDM</span></div></div></div>
+  <div class="card"><h2>完整系統鏈</h2><span class="pill">DTV：節目源 → IRD → Encoder → Mux → QAM</span><span class="pill">HFC：CMTS → 光發/收 → Node → Tap → CM</span><span class="pill">PON：OLT → ODF → Splitter → ONU/ONT</span><span class="pill">RF Overlay：1550 → EDFA → WDM → 末端RF</span></div>
+ </div>
+</section>
+<section id="guide" class="tabs"><div class="grid"><div class="card"><h2>故障導引</h2><input id="searchFault" placeholder="搜尋：不上網、CM reboot、馬賽克、光功率、上行雜訊、CCTV..." oninput="renderFaults()"><div class="field"><select id="faultType" onchange="renderFaults()"><option>全部</option><option>網路 / CM</option><option>光 / PON</option><option>DTV / QAM</option><option>RF / HFC</option><option>IP / CCTV</option><option>機電 / 環境</option></select></div><div class="list" id="faultList"></div></div></div></section>
+<section id="diag" class="tabs"><div class="grid"><div class="card two"><h2>數值診斷器</h2><div class="row"><div class="field"><label>DS Power dBmV</label><input id="dsPower" type="number" step="0.1"></div><div class="field"><label>DS SNR dB</label><input id="dsSnr" type="number" step="0.1"></div><div class="field"><label>US Power dBmV</label><input id="usPower" type="number" step="0.1"></div><div class="field"><label>CM狀態</label><select id="cmState"><option></option><option>Downstream Lock</option><option>Ranging</option><option>DHCP</option><option>TFTP</option><option>Online但不通</option><option>一直Reboot</option></select></div><div class="field"><label>MER dB</label><input id="mer" type="number" step="0.1"></div><div class="field"><label>QAM</label><select id="qam"><option>256QAM</option><option>64QAM</option></select></div><div class="field"><label>BER</label><input id="ber" placeholder="例：1e-8"></div><div class="field"><label>SSR底噪 dB</label><input id="noise" type="number" step="0.1"></div><div class="field"><label>1490 RX dBm</label><input id="rx1490" type="number" step="0.1"></div><div class="field"><label>1550 RF dBm</label><input id="rf1550" type="number" step="0.1"></div><div class="field"><label>EDFA輸出 dBm</label><input id="edfa" type="number" step="0.1"></div><div class="field"><label>反向 RF OUT dB</label><input id="rfout" type="number" step="0.1"></div></div><button class="btn primary" onclick="diagnose()">開始診斷</button></div><div class="card third"><h2>診斷結果</h2><div id="diagResult" class="result">輸入數值後按「開始診斷」。</div></div><div class="card"><h2>光 Budget 快算</h2><div class="row"><div class="field"><label>輸出功率 dBm</label><input id="tx" type="number" step="0.1"></div><div class="field"><label>分光比</label><select id="split"><option value="10.5">1:8</option><option value="13.8">1:16</option><option value="17.2">1:32</option><option value="20.5">1:64</option></select></div><div class="field"><label>距離 km</label><input id="km" type="number" step="0.1"></div><div class="field"><label>波長</label><select id="wave"><option value="0.3">1550：0.3dB/km</option><option value="0.4">1310/1490：0.4dB/km</option></select></div><div class="field"><label>接頭/熔接預估 dB</label><input id="joint" type="number" step="0.1" value="1.5"></div></div><button class="btn primary" onclick="budget()">計算</button><div id="budgetResult" class="result"></div></div></div></section>
+<section id="tools" class="tabs"><div class="grid"><div class="card"><h2>工具教學 SOP</h2><input id="searchTool" placeholder="搜尋工具：860、光功率計、頻譜、NAGRA、ACS、BCC、ODF..." oninput="renderTools()"><div class="list" id="toolList"></div></div></div></section>
+<section id="flow" class="tabs"><div class="grid"><div class="card half"><h2>測試流程</h2><select id="flowSel" onchange="renderFlow()"></select><div id="flowBox" class="result"></div></div><div class="card half"><h2>現場判斷原則</h2><ol class="steps"><li>先判斷是單戶、整棟、整Node、整PON、全區。</li><li>先看監控與大量告警，再看單點數據。</li><li>數值異常要往上游量測：用戶端 → Tap/ONT → Node/Splitter → ODF → 機房。</li><li>不要只重開設備；要留下量測數據與處理前後差異。</li></ol></div></div></section>
+<section id="std" class="tabs"><div class="grid"><div class="card"><h2>標準數據表</h2><div id="stdTables"></div></div></div></section>
+<section id="log" class="tabs"><div class="grid"><div class="card two"><h2>查修紀錄產生器</h2><div class="row"><div class="field"><label>時間</label><input id="logTime"></div><div class="field"><label>光點 / Node / PON</label><input id="logNode"></div><div class="field"><label>故障現象</label><input id="logIssue"></div><div class="field"><label>影響範圍</label><input id="logScope"></div></div><div class="field"><label>量測數據</label><textarea id="logData"></textarea></div><div class="field"><label>處理過程</label><textarea id="logAction"></textarea></div><div class="field"><label>初判結論</label><textarea id="logConclusion"></textarea></div><div class="copybar"><button class="btn primary" onclick="makeLog()">產生紀錄</button><button class="btn" onclick="copyLog()">複製</button><button class="btn" onclick="saveLog()">存到本機</button></div></div><div class="card third"><h2>輸出</h2><div id="logOut" class="result"></div></div><div class="card"><h2>本機紀錄</h2><div id="savedLogs" class="list"></div></div></div></section>
+<div class="footerSpace"></div>
 </main>
-
-<div class="footer">
-  <button data-jump="faults">故障導引</button>
-  <button data-jump="numbers">數值診斷</button>
-</div>
-
 <script>
-(function(){
-'use strict';
-
-var faults=[
-{id:'internet_no_tv',cat:'tv',title:'有網路沒電視',tools:['光功率計','860/AT2500','EDFA','光發機'],summary:'優先查1550 RF Overlay。',steps:['量EDFA 1550輸出是否+19~+21dBm','量分光後/用戶端1550是否-8~+2dBm','用860看RF頻譜是否整體低或失真','整區沒電視查EDFA/光發機/WDM；單戶查ONT RF輸出/同軸'],normal:['EDFA +19~+21dBm','1550用戶端 -8~+2dBm'],suspect:['EDFA無輸出','1550過低/過高','WDM/分光器','同軸或ONT RF port']},
-{id:'tv_no_internet',cat:'network',title:'有電視沒網路',tools:['光功率計','OLT/CMTS','BCC','860'],summary:'1550正常，資料路徑異常。',steps:['量1490到ONT/ONU端接收','看CM/ONT註冊卡在哪','卡Ranging查上行與光平衡','卡DHCP查BCC'],normal:['1490 RX -27~-8dBm','OLT 1490 TX +4~+7dBm'],suspect:['1490低','OLT/PON port','CMTS','BCC/DHCP']},
-{id:'cm_ranging',cat:'network',title:'CM卡Ranging / Ranging Abort',tools:['SSR','AT2500/860','CMTS E6000','光功率計'],summary:'上行回傳問題最常見。',steps:['確認單戶/單Node/全區','用SSR看該光點上行底噪與突波','開Max抓間歇','用860/AT2500看上行頻段','檢查反向測試點9~10dB、RF OUT 29~31dB'],normal:['US Power 40~50dBmV，>54不穩','SSR底噪低於-35較佳，>-30明顯雜訊'],suspect:['Ingress','接頭鬆','反向光平衡不對','CMTS upstream受干擾']},
-{id:'cm_dhcp',cat:'network',title:'CM卡DHCP / 拿不到IP',tools:['BCC/JIMC','CMTS','DHCP Service'],summary:'RF已過，IP發放失敗。',steps:['確認已完成Ranging','查BCC DHCP/CFM/CFMP服務','確認IP Pool是否滿','查CMTS helper-address/relay','大量發生優先查BCC服務'],normal:['DHCP/CFM/CFMP運作中','CM狀態通過DHCPdone'],suspect:['DHCP掛','IP Pool滿','Relay錯','Class/Profile錯']},
-{id:'qam_mosaic',cat:'rf',title:'馬賽克 / 卡頓 / MER BER異常',tools:['AT2500','860','SSR','光功率計'],summary:'看MER、BER、星座圖。MER好BER差=間歇干擾。',steps:['用AT2500量MER/BER','看星座圖形狀','BER>1E-6異常','用860看頻譜','MER正常但BER高就用SSR Max抓間歇'],normal:['256QAM MER>31佳，<28異常','64QAM MER≥26~27佳，<23異常','BER <1E-8佳，>1E-6異常'],suspect:['Ingress','Laser clipping','RF過強/過低','光接收飽和']},
-{id:'single_channel_black',cat:'tv',title:'單頻道黑屏 / 無聲音',tools:['Encoder','Mux','Router','860/AT2500'],summary:'單頻道通常查Video鏈。',steps:['確認是否只有單頻道','查節目源/IRD','查Encoder輸入/輸出TS','查Mux PID/PAT/PMT','查Router mapping','用RF儀表確認該CH輸出'],normal:['Encoder無Alarm','Mux service存在','A/V ratio 15~16dB'],suspect:['Encoder input loss','Router切錯','Mux PID錯','音訊設定錯']},
-{id:'pon_low_power',cat:'optical',title:'PON光功率過低 / ONT不上線',tools:['光功率計','OTDR','OLT','ODF'],summary:'用光功率與OTDR確認1490、分光、接頭、距離。',steps:['確認OLT Port與跳纖','量OLT 1490輸出','量分光前後','量ONT端RX','用OTDR查斷點、熔接、反射、彎曲'],normal:['OLT 1490 +4~+7dBm','ONT RX -27~-8dBm'],suspect:['跳錯芯','接頭髒','分光損耗過大','微彎/斷纖']},
-{id:'rf_slope',cat:'rf',title:'RF高低頻不平 / 高頻掉',tools:['860','AT2500','光發機/接收機'],summary:'頻譜斜率問題。',steps:['用860掃全頻段','比對A/B組','A/B都同樣查源頭/分配','單組查光發機或RF線','低頻不線性可重鎖接頭，高頻常見模組問題'],normal:['頻道平坦，左右鄰頻≤1dB'],suspect:['RF接頭鬆','光發機線性不良','分配器/線材損耗']},
-{id:'all_down',cat:'infra',title:'全區 / 大範圍全掛',tools:['配電盤/PDC','NMS','Core','CMTS','OTDR'],summary:'先查電力、Core、CMTS、主幹光。',steps:['確認是否網路+電視全掛','查配電盤三相燈/NFB/異味/過熱','查冷氣溫度','查Core/CMTS管理','量主幹光與ODF'],normal:['三相正常','Core/CMTS可管理','設備溫度正常'],suspect:['市電/PDC/UPS','Core','CMTS chassis','主幹光斷','機房過熱']},
-{id:'env_temp',cat:'infra',title:'機房高溫 / 冷氣告警',tools:['VRV ITM','溫度監控','PDC'],summary:'VRV故障會讓設備過熱重啟。',steps:['確認VRV供電','查ITM故障碼','確認室內機漏水','排除不了先開備援','觀察設備告警'],normal:['ITM無故障碼','無漏水','備援可啟動'],suspect:['VRV異常','PDC分路','冷凝水','過熱保護']}
+const tabs=[['home','總覽'],['guide','故障導引'],['diag','數值診斷'],['tools','工具教學'],['flow','測試流程'],['std','標準表'],['log','紀錄']];
+const faults=[
+{t:'網路 / CM',n:'CM 不上線 / 無法上網',k:'DS、US、DHCP、TFTP、Online但不通',cause:'下行收不到、上行回不來、DHCP/BCC問題、CPE端問題。',check:['查 CM 狀態停在哪一階段','量 DS Power / DS SNR / US Power','看同區是否大量離線','確認 BCC/DHCP 是否有租約與設定','必要時到 Tap/Node 回量'],fix:['DS低：查分配、接頭、放大器、Node輸出','US高：查回傳衰減、Tap值、線路損耗','卡DHCP：查BPI/固定IP/BCC/租約','Online不通：查CPE、VLAN、路由、ARP']},
+{t:'網路 / CM',n:'CGN5-AP2 / CGN5-U 一直 Reboot',k:'Atom alive check failed, CM will reboot',cause:'韌體/硬體不穩、訊號邊緣、電源、設定檔或機種批次問題。',check:['先看 DS/US/SNR 是否邊緣','確認是否同型號大量發生','查 log 是否固定 Atom alive','換電源/換機交叉測試','確認 config file / 韌體版本'],fix:['單台：換機或換電源','大量：回報型號批次與韌體','訊號差：先修 RF/光路再判斷設備']},
+{t:'RF / HFC',n:'上行雜訊 / 大量 CM 掉線',k:'US SNR低、SSR底噪高、回傳爆衝',cause:'Ingress、接頭進水、用戶端反灌、放大器/Node回傳異常。',check:['CMTS/SSR看上行SNR與底噪','頻譜看雜訊頻段與時間','分段關斷或抽Tap縮小範圍','到Node回傳點量測','檢查低頻雜訊與突波'],fix:['定位反灌戶後隔離','更換進水接頭/線纜','調整回傳光平衡','紀錄頻率、時間、影響Port']},
+{t:'DTV / QAM',n:'電視馬賽克 / 黑屏 / 單頻異常',k:'MER、BER、QAM、A/V、HDCP',cause:'QAM MER不足、BER惡化、單頻節目源/IRD/Encoder/Mux問題、HDCP或STB問題。',check:['先確認單戶或大量','量 QAM MER/BER','比對同頻其他節目','查 QAM/Encoder/Mux告警','用已知正常STB交叉測'],fix:['MER低：查RF電平/線路/放大器','單頻：查節目源到QAM鏈路','BER高：查雜訊與調變品質','HDCP：查線材/顯示器/機上盒']},
+{t:'光 / PON',n:'PON ONU/ONT 離線 / 光功率低',k:'1490 RX、1310 TX、分光、ODF',cause:'光纖斷裂、接頭髒污、分光損耗過大、OLT Port異常、ONU故障。',check:['查 OLT Port 是否多人離線','量 ONU 端 1490 RX','回 ODF 量輸出與中繼點','清潔接頭後再量一次','比對同Splitter其他戶'],fix:['低於-27dBm：查斷點/接頭/分光','整PON掉：查OLT Port/主幹/ODF','單戶：查入戶線/ONU/尾纖']},
+{t:'光 / PON',n:'1550 RF Overlay 畫質差',k:'1550 dBm、EDFA、WDM、RF端',cause:'EDFA輸出不足或過高、光損過大、WDM/接頭問題、RF電平失衡。',check:['量 EDFA輸出 +19~+21 dBm','量末端1550 RF端 -8~+2 dBm','計算光Budget','檢查WDM方向與接頭清潔','再量RF QAM MER/BER'],fix:['EDFA低：查輸入與模組','末端低：查分光/距離/接頭','過高：加衰減避免失真','MER差：回查RF鏈路']},
+{t:'IP / CCTV',n:'CCTV 斷線 / IP不通',k:'IP、Gateway、VLAN、Ping、PoE',cause:'IP衝突、Gateway錯、VLAN錯、PoE供電、交換器Port、路由/ACL。',check:['確認IP/Mask/Gateway','Ping Gateway與目的端','查Switch Port Link/PoE','查VLAN是否正確','更換Port/線材交叉測'],fix:['修正IP資料表','重啟或更換PoE Port','修正VLAN/ACL','保留舊IP與新IP變更紀錄']},
+{t:'機電 / 環境',n:'機房告警 / 溫度 / 電源異常',k:'UPS、PDU、溫濕度、空調',cause:'空調異常、UPS負載/電池、PDU斷電、設備過熱。',check:['確認告警來源','看UPS/PDU負載與輸入電壓','確認空調出回風','檢查設備風扇與溫度','確認是否影響服務'],fix:['先保服務：降載/轉供/開備援空調','通知機電窗口','紀錄時間、負載、溫度、處置']}
 ];
-
-var tools=[
-{name:'860 DSP / DSPi',tags:'RF 頻譜 下行 CH',use:'RF Level、頻譜、Channel Scan、下行調整。',how:['接測試點或RF輸出','選Channel Plan','量單頻道或掃全頻譜','比對高低頻、左右鄰頻'],normal:['左右鄰頻誤差≤1dB','SNR建議≥35dB'],when:'畫面雜訊、頻道偏低、高低頻不平'},
-{name:'AT2500RQ',tags:'QAM MER BER 星座圖 ingress',use:'高階頻譜 + QAM分析。',how:['進Spectrum或QAM模式','選頻道或中心頻率','量MER/BER/星座圖','抓突波用Max/Hold'],normal:['256QAM MER>31佳','64QAM MER≥26~27佳','BER>1E-6異常'],when:'馬賽克、數位卡頓、MER/BER'},
-{name:'SSR Viewer',tags:'上行 回傳 ingress Max',use:'看上行頻譜、底噪、突波。',how:['開Viewer選HUB','確認NODE','看上行即時畫面','點Max抓間歇突波'],normal:['底噪<-35佳','>-30明顯雜訊'],when:'CM卡Ranging、上行不穩'},
-{name:'光功率計',tags:'1490 1550 EDFA dBm',use:'量測光功率。',how:['清潔接頭','選正確波長','接上光纖量dBm','記錄測點'],normal:['EDFA +19~+21dBm','1490 RX -27~-8dBm','1550 -8~+2dBm'],when:'ONT不上線、沒電視、光路查修'},
-{name:'OTDR',tags:'斷纖 熔接 反射 衰減',use:'查光纖距離、斷點、接頭反射。',how:['設定波長與距離','接Launch cord','執行Trace','看事件點並存檔'],normal:['1550約0.3dB/km','1310約0.4dB/km'],when:'斷纖、跳纖後驗證、微彎'},
-{name:'OSA 光譜分析儀',tags:'DWDM OSNR 波長 EDFA',use:'看單一波長、OSNR、漂移。',how:['接入測試光路','選WDM/Drift/EDFA模式','看channel power/OSNR/波長','比對平坦度'],normal:['OSNR至少約18dB','中心波長不可明顯漂移'],when:'功率正常但仍異常、DWDM疑難'},
-{name:'CMTS E6000',tags:'CMTS DOCSIS Ranging DHCP OFDM',use:'看CM上線流程、上下行頻道。',how:['查CM detail/summary','確認卡在哪','查upstream SNR與fiber-node','必要時trace/sniff'],normal:['CM Online/Operational','無大量Ranging fail'],when:'大量CM不上線、DOCSIS問題'},
-{name:'BCC / JIMC',tags:'DHCP CFM CFMP IP Pool Config',use:'CM/CPE IP、設定檔、授權。',how:['檢查CFM/CFMP/DHCP','查IP pool/lease','確認class/profile','比對CM MAC'],normal:['服務運作中','Pool未滿','CM取得IP/Config'],when:'卡DHCP、固定IP、速率錯'},
-{name:'PDC / VRV / FM200',tags:'機電 電力 冷氣 消防',use:'機房基礎系統檢查。',how:['配電看三相燈/NFB/異味','VRV看供電/漏水/錯誤碼','FM200看告警/施工煙霧/門窗'],normal:['三相正常','VRV無故障','FM200無告警'],when:'全掛、高溫、環境告警'}
+const tools=[
+{n:'860 / 場強儀',use:'量 RF 電平、MER、BER、頻道品質。',how:['接到測試點或Tap輸出','選對頻道/頻率/QAM','記錄Power、MER、BER','與標準表比對','處理後再量一次'],tip:'不要只看Power，MER/BER更能看出畫質與雜訊。'},
+{n:'頻譜儀 / 上行雜訊',use:'找 ingress、突波、低頻雜訊。',how:['接SSR/Node回傳測試點','設定上行頻段','觀察底噪與突波時間','分段隔離縮小範圍','保存截圖與頻率'],tip:'上行問題常是間歇性，要記時間點。'},
+{n:'光功率計',use:'量 1310/1490/1550 光功率。',how:['選對波長','清潔接頭','先量機房端基準','再量末端','用差值判斷損耗'],tip:'髒接頭會騙你，清潔前後都要記。'},
+{n:'ODF / 跳纖查修',use:'查光路、換纖、定位斷點。',how:['確認Port標籤','拍照留存原接法','清潔端面','換纖交叉測','復原並更新紀錄'],tip:'不要只靠標籤，現場一定要二次確認。'},
+{n:'NAGRA / CAS',use:'查DTV授權、EMM、機上盒權限。',how:['查STB/卡號','確認產品權限','送授權/重刷EMM','確認客戶端是否收到','必要時交叉測STB'],tip:'黑屏不一定是RF，也可能是授權。'},
+{n:'ACS',use:'查CPE/機上盒遠端狀態與參數。',how:['搜尋設備序號/MAC','看Online、最後上線時間','確認設定檔','嘗試遠端重啟','權限不足時改走BCC/MOP流程'],tip:'ACS看到離線，要搭配RF/光數據判斷。'},
+{n:'BCC / DHCP',use:'查租約、固定IP、設定檔、客戶服務狀態。',how:['用MAC/客編查設備','確認服務與設定檔','查DHCP租約','固定IP問題先比對綁定','必要時刪租約/重綁'],tip:'固定IP切換問題要分清楚：CM Online、CPE拿IP、路由是否通。'}
 ];
-
-var flows={
-cm:['確認影響範圍：單戶/單Node/全區','讀CM狀態：DS → Ranging → DHCP → TFTP → Online','卡DS：用860查下行RF與頻率','卡Ranging：SSR Max查上行雜訊，量反向光平衡','卡DHCP：查BCC/DHCP/IP Pool/helper','Online但不通：查VLAN/Policy/Core','整理數據與截圖回報'],
-tv:['確認單頻道/多頻道/全頻道','單頻道：查IRD/Encoder/Mux/Router','多頻道：用860/AT2500看RF/QAM','量MER/BER與星座圖','MER正常BER高：查間歇干擾','全電視異常：量1550與EDFA'],
-reverse:['SSR選對HUB與NODE','看即時頻譜與Max Hold','確認底噪是否>-30或有突波','用AT2500/860看上行頻段','比對A/B組與相鄰光點','必要時移頻或請外線追Ingress'],
-pon:['確認OLT Port與設計芯數','頭端架線後先不送光','OTDR測通並存檔','跳接前清潔接頭','送出1550/1490後量輸出','量分光器輸出','用戶轉接後確認上線'],
-dtv:['確認是否單頻道','查節目源/IRD','查Encoder輸入與TS輸出','查Mux service/PID/PAT/PMT','查Router mapping','有影無聲查A/V設定','RF儀表確認頻道輸出'],
-infra:['判斷是否影響服務','配電：三相燈/電表/NFB/異味/過熱','冷氣：供電/漏水/ITM故障碼/備援','消防：告警/施工煙霧/門窗','記錄錯誤碼與照片','通知廠商/主管']
+const flows={
+'CM不上線':['確認影響範圍：單戶/整棟/Node','查CM卡在哪：DS / Ranging / DHCP / TFTP','量DS Power、DS SNR、US Power','同區大量：先查CMTS/Node/回傳','單戶：查Tap、入戶線、分配器、CPE','處理後重測並紀錄前後值'],
+'電視黑屏/馬賽克':['確認是單台、單戶、整棟、單頻或全頻','查STB授權/NAGRA/EMM','量QAM Power、MER、BER','單頻異常查節目源/IRD/Encoder/Mux/QAM','全頻異常查RF/1550/EDFA','處理後截圖或記錄MER/BER'],
+'上行雜訊':['看CMTS/SSR上行SNR與底噪','頻譜確認雜訊頻段','依Node/支線/Tap分段隔離','找到反灌戶或問題支線','更換接頭/線纜/隔離問題戶','記錄頻率、時間、處理前後SNR'],
+'全光轉/光路驗證':['確認OLT Port、ODF、Splitter、ONU標籤','量OLT/ODF輸出基準','量末端1490 RX與1550 RF','計算分光與距離損耗','清潔接頭後複測','異常則分段查斷點或錯接'],
+'固定IP取不到':['確認CM是否Online','查BCC固定IP綁定與MAC','確認CPE端是DHCP還是手動','刪租約/重綁後重啟CPE','Ping Gateway與外網','紀錄10.x可取但116.x不可取等現象'],
+'CCTV/IP不通':['確認IP/Mask/Gateway與資料表','Ping本機Gateway','查Switch Port Link/PoE/VLAN','換線/換Port交叉測','確認路由/ACL/NVR端','更新IP變更紀錄']
 };
-
-function byId(id){return document.getElementById(id)}
-function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
-function v(id){var x=byId(id).value; return x===''?null:parseFloat(x)}
-function berValue(s){ if(!s)return null; var n=Number(String(s).trim().replace('×10^','e')); return isFinite(n)?n:null }
-function sevMax(a,b){var r={ok:0,warn:1,bad:2}; return r[b]>r[a]?b:a}
-function levelText(l){return l==='bad'?'異常 / 優先處理':(l==='warn'?'警戒 / 需追蹤':'正常 / 可接受')}
-function box(target,level,items){
- byId(target).innerHTML='<div class="box '+level+'"><span class="badge '+level+'">'+levelText(level)+'</span><div class="small"><ul>'+items.map(function(i){return '<li>'+esc(i)+'</li>'}).join('')+'</ul></div></div>';
-}
-function switchTab(id){
- document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
- byId(id).classList.add('active');
- document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===id)});
- window.scrollTo(0,0);
-}
-function renderFaults(){
- var q=(byId('faultSearch').value||'').toLowerCase();
- var cat=byId('faultCat').value||'';
- var rows=faults.filter(function(f){return (!cat||f.cat===cat)&&((f.id+f.title+f.summary+f.tools.join(' ')+f.suspect.join(' ')).toLowerCase().indexOf(q)>=0)});
- byId('faultList').innerHTML=rows.map(function(f){
-  return '<div class="item"><span class="tag">'+catName(f.cat)+'</span><h3>'+esc(f.title)+'</h3><div class="small">'+esc(f.summary)+'</div>'+
-  '<div class="kv"><b>工具</b><span>'+f.tools.map(esc).join('、')+'</span></div>'+
-  '<div class="kv"><b>怎麼查</b><span><ol>'+f.steps.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ol></span></div>'+
-  '<div class="kv"><b>正常數據</b><span><ul>'+f.normal.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ul></span></div>'+
-  '<div class="kv"><b>問題點</b><span><ul>'+f.suspect.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ul></span></div></div>';
- }).join('') || '<div class="box small">找不到符合項目</div>';
-}
-function catName(c){return {network:'網路/CM',tv:'電視/DTV',rf:'RF/QAM',optical:'光/PON',infra:'機電/環境'}[c]||c}
-function renderTools(){
- var q=(byId('toolSearch').value||'').toLowerCase();
- var rows=tools.filter(function(t){return (t.name+t.tags+t.use+t.when).toLowerCase().indexOf(q)>=0});
- byId('toolList').innerHTML=rows.map(function(t){
-  return '<div class="item"><h3>'+esc(t.name)+'</h3><div class="small">'+esc(t.use)+'</div>'+
-  '<div class="kv"><b>何時用</b><span>'+esc(t.when)+'</span></div>'+
-  '<div class="kv"><b>怎麼用</b><span><ol>'+t.how.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ol></span></div>'+
-  '<div class="kv"><b>正常值</b><span><ul>'+t.normal.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ul></span></div></div>';
- }).join('') || '<div class="box small">找不到工具</div>';
-}
-function renderFlow(){
- var key=byId('flowSelect').value;
- byId('flowBox').innerHTML='<div class="box small"><ol>'+flows[key].map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ol></div>';
-}
-function renderQuick(){
- var qs=[
-  ['有網路沒電視','查1550/EDFA/光發機/WDM','internet_no_tv'],
-  ['有電視沒網路','查1490/OLT/CMTS/BCC','tv_no_internet'],
-  ['CM卡Ranging','查SSR/上行/光平衡','cm_ranging'],
-  ['CM卡DHCP','查BCC/DHCP/IP Pool','cm_dhcp'],
-  ['馬賽克/卡頓','查MER/BER/星座圖','qam_mosaic'],
-  ['全區全掛','查電/核心/CMTS/主幹光','all_down']
- ];
- byId('quickButtons').innerHTML=qs.map(function(x){return '<button data-fault="'+x[2]+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></button>'}).join('');
- document.querySelectorAll('[data-fault]').forEach(function(btn){
-  btn.addEventListener('click',function(){
-   var id=btn.getAttribute('data-fault'); var f=faults.find(function(a){return a.id===id});
-   byId('quickResult').innerHTML='<div class="box warn"><span class="badge warn">'+esc(f.title)+'</span><div class="small">'+esc(f.summary)+'<br><b>工具：</b>'+f.tools.map(esc).join('、')+'</div></div>';
-  });
- });
-}
-function judge(){
- var level='ok', out=[];
- var ds=v('ds'), snr=v('snr'), us=v('us'), state=byId('cmstate').value;
- var mer=v('mer'), qam=byId('qam').value, ber=berValue(byId('ber').value);
- var ssr=v('ssr'), p1490=v('p1490'), p1550=v('p1550'), edfa=v('edfa'), sst=v('sst');
- if(ds!==null){if(ds<-15){level='bad';out.push('DS Power '+ds+'：太低，查下行RF/光功率/分光/接頭')}else if(ds<-10||ds>12){level=sevMax(level,'warn');out.push('DS Power '+ds+'：警戒，注意過低/過高')}else out.push('DS Power '+ds+'：正常')}
- if(snr!==null){if(snr<30){level='bad';out.push('DS SNR '+snr+'：異常，查RF雜訊')}else if(snr<35){level=sevMax(level,'warn');out.push('DS SNR '+snr+'：邊緣')}else out.push('DS SNR '+snr+'：良好')}
- if(us!==null){if(us>54||us<35){level='bad';out.push('US Power '+us+'：異常，Ranging可能失敗')}else if(us>=50){level=sevMax(level,'warn');out.push('US Power '+us+'：偏高')}else out.push('US Power '+us+'：正常')}
- if(state){var m={'Downstream Lock':'卡Downstream：用860查下行RF/頻率','Ranging':'卡Ranging：用SSR/AT2500查上行雜訊與反向光平衡','DHCP':'卡DHCP：查BCC/DHCP/IP Pool/helper','TFTP':'卡TFTP：查Config file/BCC','Online但不通':'Online但不通：查VLAN/IP/Policy/Core'}; out.push(m[state]); level=sevMax(level,'warn')}
- if(mer!==null){if(qam==='256QAM'){if(mer<28){level='bad';out.push('256QAM MER '+mer+'：不合格')}else if(mer<31){level=sevMax(level,'warn');out.push('256QAM MER '+mer+'：邊緣，建議>31')}else out.push('256QAM MER '+mer+'：良好')}else{if(mer<23){level='bad';out.push('64QAM MER '+mer+'：不合格')}else if(mer<26){level=sevMax(level,'warn');out.push('64QAM MER '+mer+'：邊緣')}else out.push('64QAM MER '+mer+'：良好')}}
- if(ber!==null){if(ber>1e-6){level='bad';out.push('BER '+ber+'：異常；若MER正常，高機率間歇干擾')}else if(ber>=1e-6){level=sevMax(level,'warn');out.push('BER '+ber+'：邊緣')}else out.push('BER '+ber+'：正常')}
- if(ssr!==null){if(ssr>-30){level='bad';out.push('SSR底噪 '+ssr+'：明顯雜訊')}else if(ssr>-35){level=sevMax(level,'warn');out.push('SSR底噪 '+ssr+'：警戒')}else out.push('SSR底噪 '+ssr+'：正常')}
- if(p1490!==null){if(p1490<-27||p1490>-8){level='bad';out.push('1490 RX '+p1490+'：超出-27~-8')}else if(p1490<-20){level=sevMax(level,'warn');out.push('1490 RX '+p1490+'：偏低但可用')}else out.push('1490 RX '+p1490+'：正常')}
- if(p1550!==null){if(p1550<-8||p1550>2){level='bad';out.push('1550 RF '+p1550+'：超出-8~+2，電視可能異常')}else out.push('1550 RF '+p1550+'：正常')}
- if(edfa!==null){if(edfa<18||edfa>22){level=sevMax(level,'warn');out.push('EDFA '+edfa+'：偏離+19~+21')}else out.push('EDFA '+edfa+'：正常')}
- if(sst!==null){if(sst<29||sst>31){level=sevMax(level,'warn');out.push('反向RF OUT/SST '+sst+'：偏離29~31，需調光平衡')}else out.push('反向RF OUT/SST '+sst+'：正常')}
- if(out.length===0)out.push('請至少輸入一個數值');
- box('diagResult',level,out);
-}
-function budget(){
- var tx=v('btx'), km=v('bkm'), conn=v('bconn'); if(conn===null)conn=1;
- var split=parseFloat(byId('bsplit').value), wave=parseFloat(byId('bwave').value), type=byId('btype').value;
- if(tx===null||km===null){box('budgetResult','warn',['請輸入輸出功率與距離']);return}
- var loss=split+km*wave+conn, rx=tx-loss, level='ok', out=['估算接收 = '+tx+' - 分光'+split+' - 距離'+(km*wave).toFixed(1)+' - 接頭'+conn+' = '+rx.toFixed(1)+' dBm'];
- if(type==='1550'){if(rx<-8||rx>2){level='bad';out.push('1550 RF判斷：超出-8~+2')}else out.push('1550 RF判斷：正常')}
- else{if(rx<-27||rx>-8){level='bad';out.push('1490 PON判斷：超出-27~-8')}else out.push('1490 PON判斷：正常')}
- box('budgetResult',level,out);
-}
-function makeLog(){
- var text='【機房查修紀錄】\\n時間：'+byId('ltime').value+'\\n光點/Node：'+byId('lnode').value+'\\n故障現象：'+byId('lissue').value+'\\n影響範圍：'+byId('lscope').value+'\\n\\n【量測數據】\\n'+byId('ldata').value+'\\n\\n【處理過程】\\n'+byId('laction').value+'\\n\\n【初判結論】\\n'+byId('lresult').value;
- byId('logResult').innerHTML='<div class="box ok"><span class="badge ok">已產生</span><pre class="small">'+esc(text)+'</pre></div>';
-}
-function init(){
- document.querySelectorAll('#nav button').forEach(function(b){b.addEventListener('click',function(){switchTab(b.getAttribute('data-tab'))})});
- document.querySelectorAll('[data-jump]').forEach(function(b){b.addEventListener('click',function(){switchTab(b.getAttribute('data-jump'))})});
- byId('faultSearch').addEventListener('input',renderFaults); byId('faultCat').addEventListener('change',renderFaults);
- byId('toolSearch').addEventListener('input',renderTools); byId('flowSelect').addEventListener('change',renderFlow);
- byId('btnJudge').addEventListener('click',judge); byId('btnBudget').addEventListener('click',budget); byId('btnLog').addEventListener('click',makeLog);
- renderQuick(); renderFaults(); renderTools(); renderFlow();
-}
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
-})();
+const standards={
+'CM / DOCSIS':[['項目','正常','警戒/異常'],['DS Power','-10 ~ +10 dBmV','<-13偏低，<-15異常；>+12偏高'],['DS SNR','≥35 dB','30~35邊緣，<30異常'],['US Power','40~50 dBmV','50~54偏高，>54容易斷線'],['US SNR','≥30 dB','<30 上行品質差']],
+'RF / QAM':[['項目','正常','異常'],['64QAM MER','≥26~27 dB','<23 dB'],['256QAM MER','>31 dB','<28 dB'],['BER','<1E-8佳','>1E-6異常'],['A/V Ratio','15~16 dB','音量/爆音問題'],['Video Modulation','約87.5%','過調變畫面異常']],
+'光 / PON / RF Overlay':[['項目','標準','備註'],['EDFA 1550','+19 ~ +21 dBm','低畫質差，高可能失真'],['OLT 1490 TX','+4 ~ +7 dBm','依模組等級'],['ONT 1490 RX','-27 ~ -8 dBm','低於-27易不上線'],['1550 RF端','-8 ~ +2 dBm','RF Overlay'],['1550損耗','0.3 dB/km','估算'],['1310/1490損耗','0.4 dB/km','估算']],
+'反向光平衡':[['項目','標準','備註'],['測試點','9~10 dB','後端RF OUT約+20dB'],['RF OUT','29~31 dB','平衡目標'],['SST入力','約14 dB','線損約16dB後'],['施工頻率','42 MHz','光平衡常用']]
+};
+function init(){nav.innerHTML=tabs.map(([id,n],i)=>`<button onclick="show('${id}')" class="${i?'':'active'}">${n}</button>`).join(''); quickBtns.innerHTML=faults.map((f,i)=>`<button onclick="showFault(${i})">${icon(f.t)} ${f.n}<br><span class="muted small">${f.k}</span></button>`).join(''); flowSel.innerHTML=Object.keys(flows).map(k=>`<option>${k}</option>`).join(''); logTime.value=new Date().toLocaleString('zh-TW'); renderFaults();renderTools();renderFlow();renderStd();renderSaved()}function icon(t){return t.includes('PON')?'🌐':t.includes('DTV')?'📺':t.includes('RF')?'📡':t.includes('IP')?'🖥️':t.includes('機電')?'⚡':'🔧'}
+function show(id){document.querySelectorAll('.tabs').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');[...nav.children].forEach((b,i)=>b.classList.toggle('active',tabs[i][0]===id))}
+function showFault(i){show('guide');searchFault.value=faults[i].n;faultType.value='全部';renderFaults()}
+function renderFaults(){let q=(searchFault.value||'').toLowerCase(),ty=faultType.value;let arr=faults.filter(f=>(ty==='全部'||f.t===ty)&&(`${f.n} ${f.k} ${f.cause}`).toLowerCase().includes(q));faultList.innerHTML=arr.map(f=>`<div class="item"><b>${icon(f.t)} ${f.n}</b><span class="pill">${f.t}</span><span class="pill">${f.k}</span><p>${f.cause}</p><h3>先查什麼</h3><ol>${f.check.map(x=>`<li>${x}</li>`).join('')}</ol><h3>處理方向</h3><ol>${f.fix.map(x=>`<li>${x}</li>`).join('')}</ol></div>`).join('')||'<div class="muted">找不到，換關鍵字。</div>'}
+function renderTools(){let q=(searchTool.value||'').toLowerCase();let arr=tools.filter(t=>`${t.n} ${t.use}`.toLowerCase().includes(q));toolList.innerHTML=arr.map(t=>`<div class="item"><b>🧰 ${t.n}</b><p>${t.use}</p><ol>${t.how.map(x=>`<li>${x}</li>`).join('')}</ol><div class="status info">重點：${t.tip}</div></div>`).join('')}
+function renderFlow(){flowBox.textContent=flows[flowSel.value].map((x,i)=>`${i+1}. ${x}`).join('\n')}
+function renderStd(){stdTables.innerHTML=Object.entries(standards).map(([k,rows])=>`<h3>${k}</h3><table>${rows.map((r,i)=>`<tr>${r.map(c=>i?`<td>${c}</td>`:`<th>${c}</th>`).join('')}</tr>`).join('')}</table><br>`).join('')}
+function val(id){let x=document.getElementById(id).value;return x===''?null:Number(x)}function add(res,level,msg,next){res.push({level,msg,next})}
+function diagnose(){let r=[];let ds=val('dsPower'),snr=val('dsSnr'),us=val('usPower'),merV=val('mer'),noiseV=val('noise'),rx=val('rx1490'),rf=val('rf1550'),ed=val('edfa'),ro=val('rfout'),berV=parseFloat(ber.value),qamV=qam.value,state=cmState.value;
+if(ds!==null){if(ds<-15)add(r,'bad',`DS Power ${ds} dBmV：下行過低`,`查分配器/Tap/Node輸出/光接收，往上游量。`);else if(ds<-10||ds>12)add(r,'warn',`DS Power ${ds} dBmV：邊緣`,`確認同區是否大量，檢查衰減或過強失真。`);else add(r,'ok',`DS Power ${ds} dBmV：正常`,`再看SNR與US。`)}
+if(snr!==null){if(snr<30)add(r,'bad',`DS SNR ${snr} dB：異常`,`查雜訊、接頭、放大器、光路。`);else if(snr<35)add(r,'warn',`DS SNR ${snr} dB：邊緣`,`現場容易馬賽克/斷線，需查RF品質。`);else add(r,'ok',`DS SNR ${snr} dB：正常`,`下行品質OK。`)}
+if(us!==null){if(us>54)add(r,'bad',`US Power ${us} dBmV：過高`,`回傳衰減過大，查Tap值、線損、接頭、Node回傳。`);else if(us>=50)add(r,'warn',`US Power ${us} dBmV：偏高`,`接近斷線邊緣，需回量上行。`);else if(us<35)add(r,'warn',`US Power ${us} dBmV：偏低`,`可能過強或設定/拓樸異常，搭配US SNR。`);else add(r,'ok',`US Power ${us} dBmV：正常`,`回傳功率OK。`)}
+if(state){let map={Ranging:'上行回不來或US品質差，先查US Power/US SNR/回傳雜訊。',DHCP:'RF大多已通，查BCC/DHCP/固定IP/租約。',TFTP:'查設定檔、服務等級、TFTP可達性。','Online但不通':'查CPE、VLAN、Gateway、ARP、路由。','一直Reboot':'查訊號邊緣、電源、韌體/硬體批次。','Downstream Lock':'下行鎖定問題，查DS Power/SNR與頻道。'};add(r,'info',`CM狀態：${state}`,map[state]||'依狀態往前一階段查。')}
+if(merV!==null){let limit=qamV==='256QAM'?31:26;if(merV<limit-3)add(r,'bad',`${qamV} MER ${merV} dB：異常`,`查RF電平、雜訊、QAM輸出、線路。`);else if(merV<limit)add(r,'warn',`${qamV} MER ${merV} dB：邊緣`,`可能間歇馬賽克，需留意BER。`);else add(r,'ok',`${qamV} MER ${merV} dB：正常`,`DTV調變品質OK。`)}
+if(!isNaN(berV)){if(berV>1e-6)add(r,'bad',`BER ${ber.value}：異常`,`查MER、雜訊、接頭、QAM鏈路。`);else if(berV>1e-8)add(r,'warn',`BER ${ber.value}：可疑`,`持續監看是否惡化。`);else add(r,'ok',`BER ${ber.value}：良好`,`錯誤率佳。`)}
+if(noiseV!==null){if(noiseV>-25)add(r,'bad',`SSR底噪 ${noiseV} dB：偏高`,`用頻譜分段抓Ingress。`);else add(r,'ok',`SSR底噪 ${noiseV} dB：可接受`,`仍需看尖峰突波。`)}
+if(rx!==null){if(rx<-27)add(r,'bad',`1490 RX ${rx} dBm：過低`,`查ODF/Splitter/尾纖/入戶線，清潔後複測。`);else if(rx<-24)add(r,'warn',`1490 RX ${rx} dBm：偏低`,`光路餘裕不足，建議分段量測。`);else if(rx>-8)add(r,'warn',`1490 RX ${rx} dBm：可能過強`,`確認ONU規格與是否需衰減。`);else add(r,'ok',`1490 RX ${rx} dBm：正常`,`PON接收OK。`)}
+if(rf!==null){if(rf<-8)add(r,'bad',`1550 RF ${rf} dBm：過低`,`查EDFA/WDM/分光/距離損耗。`);else if(rf>2)add(r,'warn',`1550 RF ${rf} dBm：過高`,`可能失真，評估加衰減。`);else add(r,'ok',`1550 RF ${rf} dBm：正常`,`RF Overlay光功率OK。`)}
+if(ed!==null){if(ed<19)add(r,'warn',`EDFA ${ed} dBm：偏低`,`查輸入、泵浦、模組狀態。`);else if(ed>21)add(r,'warn',`EDFA ${ed} dBm：偏高`,`注意失真與過載。`);else add(r,'ok',`EDFA ${ed} dBm：正常`,`輸出符合常用範圍。`)}
+if(ro!==null){if(ro<29||ro>31)add(r,'warn',`RF OUT ${ro} dB：未平衡`,`目標29~31 dB，調整反向光平衡。`);else add(r,'ok',`RF OUT ${ro} dB：平衡`,`反向目標OK。`)}
+if(!r.length)r=[{level:'info',msg:'尚未輸入有效數值',next:'請至少輸入一項數值。'}];diagResult.innerHTML=r.map(x=>`<div class="status ${x.level}">${x.msg}</div>\n下一步：${x.next}\n`).join('\n')}
+function budget(){let txv=val('tx'),kmv=val('km'),j=val('joint')||0;if(txv===null||kmv===null){budgetResult.textContent='請輸入輸出功率與距離。';return}let loss=Number(split.value)+kmv*Number(wave.value)+j;let rx=txv-loss;budgetResult.textContent=`預估總損耗：${loss.toFixed(2)} dB\n預估末端功率：${rx.toFixed(2)} dBm\n判斷：${rx<-27?'PON 1490 可能過低':rx<-24?'光餘裕偏少':'光Budget大致可用'}\n建議：實測ODF、Splitter前後、末端，清潔接頭後複測。`}
+function makeLog(){let out=`【機房查修紀錄】\n時間：${logTime.value}\n光點/Node/PON：${logNode.value}\n故障現象：${logIssue.value}\n影響範圍：${logScope.value}\n\n量測數據：\n${logData.value}\n\n處理過程：\n${logAction.value}\n\n初判結論：\n${logConclusion.value}`;logOut.textContent=out;return out}
+function copyLog(){navigator.clipboard.writeText(makeLog())}
+function saveLog(){let arr=JSON.parse(localStorage.nocLogs||'[]');arr.unshift({t:new Date().toLocaleString('zh-TW'),v:makeLog()});localStorage.nocLogs=JSON.stringify(arr.slice(0,30));renderSaved()}
+function renderSaved(){let arr=JSON.parse(localStorage.nocLogs||'[]');savedLogs.innerHTML=arr.map((x,i)=>`<div class="item"><b>${x.t}</b><pre class="small">${x.v}</pre><button class="btn" onclick="navigator.clipboard.writeText(JSON.parse(localStorage.nocLogs)[${i}].v)">複製這筆</button></div>`).join('')||'<div class="muted">尚無本機紀錄。</div>'}
+function toggleTheme(){document.body.classList.toggle('light'); if(document.body.classList.contains('light')){document.documentElement.style.setProperty('--bg','#f6f8fc');document.documentElement.style.setProperty('--card','#fff');document.documentElement.style.setProperty('--card2','#eef4ff');document.documentElement.style.setProperty('--text','#152033');document.documentElement.style.setProperty('--muted','#5b6b82');document.documentElement.style.setProperty('--line','#d8e2f0')}else location.reload()}
+init();
 </script>
 </body>
 </html>
