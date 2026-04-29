@@ -1,0 +1,31 @@
+{
+  "updated": "2026-04-29",
+  "description": "NOC 光點查詢資料檔；錯誤、地名、空白、NO 已清空。",
+  "cmtsFiles": [
+    {
+      "cmts": "E6K09",
+      "file": "data/E6K09.json",
+      "count": 15
+    },
+    {
+      "cmts": "E6K10",
+      "file": "data/E6K10.json",
+      "count": 10
+    },
+    {
+      "cmts": "E6K11",
+      "file": "data/E6K11.json",
+      "count": 117
+    }
+  ],
+  "allNodesFile": "data/nodes-all.json",
+  "nodeIndexFile": "data/node-index.json",
+  "totalMainRows": 142,
+  "totalIndexRows": 548,
+  "cleaningRules": [
+    "#N/A / NO / 空白 / 地名或非光點文字清空",
+    "Connector 內換行清除",
+    "右側索引表不混入主鏈路資料",
+    "依 CMTS 分檔，避免一次載入大量資料"
+  ]
+}
