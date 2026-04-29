@@ -7,8 +7,7 @@
   <style>
     :root{
       --bg:#07111f;--panel:#10243d;--card:#122a49;--text:#eef6ff;--muted:#9fb2c8;
-      --line:rgba(255,255,255,.12);--ok:#2ee59d;--warn:#ffd166;--bad:#ff5d73;--info:#60a5fa;
-      --shadow:0 16px 45px rgba(0,0,0,.35);--r:18px;
+      --line:rgba(255,255,255,.12);--warn:#ffd166;--shadow:0 16px 45px rgba(0,0,0,.35);--r:18px;
     }
     *{box-sizing:border-box}
     body{margin:0;background:radial-gradient(circle at top,#17345a 0%,#07111f 40%,#050913 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;color:var(--text);line-height:1.55}
@@ -21,7 +20,7 @@
     .card{background:linear-gradient(180deg,rgba(18,42,73,.96),rgba(12,26,45,.96));border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);margin-top:14px}
     .muted{color:var(--muted)}
     .toolbar{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:760px){.toolbar{grid-template-columns:220px 1fr auto auto auto}}
+    @media(min-width:880px){.toolbar{grid-template-columns:220px 1fr auto auto auto}}
     select,input,button{border-radius:14px;padding:12px;font-size:16px}
     select,input{width:100%;background:#071426;border:1px solid var(--line);color:var(--text);outline:none}
     button{cursor:pointer;border:0;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:900}
@@ -54,22 +53,28 @@
 
   <main class="wrap">
     <section class="card">
-      <p class="muted">先選 E6K 分類，只載入該 CMTS 的資料，避免一次載入過多。可搜尋光點、Hub、MUX、Port、Mac Domain。</p>
+      <p class="muted">
+        兩種用法：① 直接輸入光點，例如 <b>DL0506</b>，系統會自動告訴你是哪台 E6K；
+        ② 先選 E6K，再按「顯示分類」瀏覽該台資料。
+      </p>
+
       <div class="toolbar">
         <select id="cmtsSelect" onchange="loadCMTS()">
-          <option value="">選擇 E6K</option>
+          <option value="">全部 E6K</option>
         </select>
-        <input id="nodeSearch" placeholder="輸入 DL0502 / Hub 05 / 1/5/3-5 / M05" onkeydown="if(event.key==='Enter') searchNode()">
+        <input id="nodeSearch" placeholder="輸入 DL0506 / Hub 05 / 1/5/3-5 / M05" onkeydown="if(event.key==='Enter') searchNode()">
         <button onclick="searchNode()">查詢</button>
-        <button class="secondary" onclick="showLoaded()">顯示本類全部</button>
+        <button class="secondary" onclick="showLoaded()">顯示分類</button>
         <button class="secondary" onclick="clearSearch()">清空</button>
       </div>
-      <div id="nodeStats" class="stats">尚未載入資料。</div>
-      <div id="nodeResult" class="result"><div class="empty">請先選擇 E6K。</div></div>
+
+      <div id="nodeStats" class="stats">資料載入中...</div>
+      <div id="nodeResult" class="result"><div class="empty">資料載入中...</div></div>
     </section>
   </main>
 
 <script>
+let ALL_DB = [];
 let NODE_DB = [];
 let MANIFEST = null;
 
@@ -84,9 +89,10 @@ function showRow(label, value){
   if(!v) return "";
   return `<tr><th>${label}</th><td>${esc(v)}</td></tr>`;
 }
+
 async function init(){
-  const res = await fetch("data/manifest.json");
-  MANIFEST = await res.json();
+  MANIFEST = await (await fetch("data/manifest.json")).json();
+
   const sel = document.getElementById("cmtsSelect");
   MANIFEST.cmtsFiles.forEach(x => {
     const opt = document.createElement("option");
@@ -94,28 +100,40 @@ async function init(){
     opt.textContent = `${x.cmts}（${x.count} 筆）`;
     sel.appendChild(opt);
   });
+
+  ALL_DB = await (await fetch("data/nodes-all.json")).json();
+  NODE_DB = ALL_DB;
+
   document.getElementById("nodeStats").textContent =
-    `主鏈路 ${MANIFEST.totalMainRows} 筆，索引 ${MANIFEST.totalIndexRows} 筆。`;
+    `已載入全部資料：${ALL_DB.length} 筆。可直接查光點，或選 E6K 分類瀏覽。`;
+  document.getElementById("nodeResult").innerHTML =
+    `<div class="empty">輸入光點，例如 DL0506，或選 E6K 後顯示分類。</div>`;
 }
+
 async function loadCMTS(){
   const cmts = document.getElementById("cmtsSelect").value;
   const box = document.getElementById("nodeResult");
+
   if(!cmts){
-    NODE_DB = [];
-    document.getElementById("nodeStats").textContent = "尚未載入資料。";
-    box.innerHTML = `<div class="empty">請先選擇 E6K。</div>`;
+    NODE_DB = ALL_DB;
+    document.getElementById("nodeStats").textContent =
+      `目前範圍：全部 E6K，共 ${NODE_DB.length} 筆。`;
+    box.innerHTML = `<div class="empty">目前為全域搜尋。輸入 DL0506 可自動找出 E6K。</div>`;
     return;
   }
-  const res = await fetch(`data/${cmts}.json`);
-  NODE_DB = await res.json();
-  document.getElementById("nodeStats").textContent = `已載入 ${cmts}：${NODE_DB.length} 筆。`;
-  box.innerHTML = `<div class="empty">已載入 ${cmts}，請輸入關鍵字查詢，或按「顯示本類全部」。</div>`;
+
+  NODE_DB = await (await fetch(`data/${cmts}.json`)).json();
+  document.getElementById("nodeStats").textContent =
+    `目前範圍：${cmts}，共 ${NODE_DB.length} 筆。`;
+  box.innerHTML = `<div class="empty">已切換到 ${cmts}。可搜尋或按「顯示分類」。</div>`;
 }
+
 function card(x){
   return `<div class="node-card">
     <div class="node-title"><span>📍 ${esc(x.node)}</span><span class="pill">${esc(x.cmts)}</span></div>
     <table>
       ${showRow("編號", x.id)}
+      ${showRow("CMTS", x.cmts)}
       ${showRow("Mac Domain", x.macDomain)}
       ${showRow("上行 Port", x.upstreamPort)}
       ${showRow("上行 Connector", x.upstreamConnector)}
@@ -132,36 +150,60 @@ function card(x){
     ${cleanText(x.warning) ? `<div class="warn">⚠ ${esc(x.warning)}</div>` : ""}
   </div>`;
 }
+
 function searchNode(){
   const q = cleanText(document.getElementById("nodeSearch").value).toUpperCase();
   const box = document.getElementById("nodeResult");
+  const cmts = document.getElementById("cmtsSelect").value || "全部 E6K";
+
   if(!NODE_DB.length){
-    box.innerHTML = `<div class="empty">請先選擇 E6K。</div>`;
+    box.innerHTML = `<div class="empty">資料尚未載入完成。</div>`;
     return;
   }
+
   if(!q){
-    box.innerHTML = `<div class="empty">請輸入搜尋關鍵字。</div>`;
+    box.innerHTML = `<div class="empty">請輸入搜尋關鍵字，例如 DL0506。</div>`;
     return;
   }
+
   const rows = NODE_DB.filter(x => Object.values(x).some(v => cleanText(v).toUpperCase().includes(q)));
-  document.getElementById("nodeStats").textContent = `查詢「${q}」：${rows.length} 筆。`;
+
+  document.getElementById("nodeStats").textContent =
+    `搜尋範圍：${cmts}｜查詢「${q}」：${rows.length} 筆。`;
+
   box.innerHTML = rows.length ? rows.map(card).join("") : `<div class="empty">查無資料：${esc(q)}</div>`;
 }
+
 function showLoaded(){
   const box = document.getElementById("nodeResult");
-  if(!NODE_DB.length){
-    box.innerHTML = `<div class="empty">請先選擇 E6K。</div>`;
+  const cmts = document.getElementById("cmtsSelect").value;
+
+  if(!cmts){
+    box.innerHTML = `<div class="empty">請先選擇 E6K 分類，避免一次顯示全部資料太多。</div>`;
     return;
   }
-  document.getElementById("nodeStats").textContent = `顯示本類全部：${NODE_DB.length} 筆。`;
+
+  document.getElementById("nodeStats").textContent =
+    `顯示 ${cmts} 全部資料：${NODE_DB.length} 筆。`;
   box.innerHTML = NODE_DB.map(card).join("");
 }
+
 function clearSearch(){
   document.getElementById("nodeSearch").value = "";
-  const cmts = document.getElementById("cmtsSelect").value;
-  document.getElementById("nodeResult").innerHTML = cmts ? `<div class="empty">已載入 ${esc(cmts)}，請輸入關鍵字查詢。</div>` : `<div class="empty">請先選擇 E6K。</div>`;
+  document.getElementById("cmtsSelect").value = "";
+  NODE_DB = ALL_DB;
+  document.getElementById("nodeStats").textContent =
+    `目前範圍：全部 E6K，共 ${NODE_DB.length} 筆。`;
+  document.getElementById("nodeResult").innerHTML =
+    `<div class="empty">已清空。可直接查光點，或選 E6K 分類。</div>`;
 }
-init();
+
+init().catch(err => {
+  document.getElementById("nodeStats").textContent = "資料載入失敗。";
+  document.getElementById("nodeResult").innerHTML =
+    `<div class="empty">資料載入失敗，請確認 data/manifest.json 與 data/nodes-all.json 是否已上傳。</div>`;
+  console.error(err);
+});
 </script>
 </body>
 </html>
