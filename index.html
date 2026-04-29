@@ -25,7 +25,7 @@
   <div class="hero"><div class="hero-inner">
     <div class="title"><h1>機房查修工具</h1></div>
     <div class="nav">
-      <a href="#fault">故障入口</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
+      <a href="#fault">故障入口</a><a href="#node-lookup">光點查詢</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
     </div>
   </div></div>
 
@@ -178,8 +178,7 @@ function makeRecord(){
 }
 function copyRecord(){const t=document.getElementById('recordText'); if(!t.value) makeRecord(); t.select(); document.execCommand('copy')}
 </script>
-</body>
-  <!-- NOC 光點 / CMTS / Hub 查詢模組：貼到 </body> 前即可 -->
+<!-- NOC 光點 / CMTS / Hub 查詢模組：貼到 </body> 前即可 -->
 <section class="noc-card" id="node-lookup">
   <h2>光點 / CMTS / Hub 查詢</h2>
   <p class="muted">可查：光點、CMTS、Mac Domain、上行/下行 Port、Hub、MUX、DEMUX。例：DL0502、DL0610、E6K11、Hub 05、1/5/3-5。</p>
@@ -5665,17 +5664,45 @@ const NODE_INDEX = {
 const NODE_DUPLICATES = [];
 
 function cleanText(v) {
-  return String(v ?? '').replace(/
-/g, '').replace(/\s+/g, ' ').trim();
+  return cleanValue(v);
 }
+function isInvalidValue(v) {
+  const val = String(v ?? '').replace(/\r?\n/g, '').replace(/\s+/g, ' ').trim();
+  if (!val) return true;
+  if (['#N/A', '-', '－', '空', 'NO'].includes(val.toUpperCase())) return true;
+  if (/工務所|五權五街|OFFICE|SMALL CELL|ENG-WH|TTC-SPEED/i.test(val)) return true;
+  return false;
+}
+function cleanValue(v) {
+  let val = String(v ?? '').replace(/\r?\n/g, '').replace(/\s+/g, ' ').trim();
+  if (isInvalidValue(val)) return '';
+  return val;
+}
+function normalizeNode(v) {
+  const val = cleanValue(v).replace(/\s+/g, '').toUpperCase();
+  return /^[A-Z]{2}\d{4}$/.test(val) ? val : '';
+}
+function getNodeDB() {
+  return NODE_DB.map(x => {
+    const y = {...x};
+    for (const k of Object.keys(y)) y[k] = cleanValue(y[k]);
+    y.node = normalizeNode(y.node);
+    y.returnReceiver = normalizeNode(y.returnReceiver) || '';
+    y.mux = y.mux.replace(/\s+/g, '');
+    y.txChannel = y.txChannel.replace(/\s+/g, '');
+    y.indexChannel = y.indexChannel.replace(/\s+/g, '');
+    return y;
+  }).filter(x => x.node);
+}
+const CLEAN_NODE_DB = getNodeDB();
 function norm(v) { return cleanText(v).toUpperCase().replace(/\s/g, ''); }
 function escapeHtml(v) {
   return cleanText(v).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
 }
 function setStats() {
-  const nodes = NODE_DB.length;
-  const hubs = new Set(NODE_DB.map(x => cleanText(x.splitter)).filter(Boolean)).size;
-  const cmts = new Set(NODE_DB.map(x => cleanText(x.cmts)).filter(Boolean)).size;
+  const nodes = CLEAN_NODE_DB.length;
+  const hubs = new Set(CLEAN_NODE_DB.map(x => cleanText(x.splitter)).filter(Boolean)).size;
+  const cmts = new Set(CLEAN_NODE_DB.map(x => cleanText(x.cmts)).filter(Boolean)).size;
   document.getElementById('nodeStats').innerHTML = `已載入 <b>${nodes}</b> 筆光點主鏈路；CMTS：<b>${cmts}</b>；Hub：<b>${hubs}</b>`;
 }
 function recordMatches(x, q) {
@@ -5686,14 +5713,14 @@ function searchNode() {
   const q = norm(document.getElementById('nodeSearch').value);
   const box = document.getElementById('nodeResult');
   if (!q) { box.innerHTML = '<div class="node-empty">請輸入光點、CMTS、Hub、MUX 或 Port。</div>'; return; }
-  const rows = NODE_DB.filter(x => recordMatches(x, q));
+  const rows = CLEAN_NODE_DB.filter(x => recordMatches(x, q));
   renderRows(rows, `查詢：${escapeHtml(document.getElementById('nodeSearch').value)}`);
 }
 function showAllNodes() {
-  renderRows(NODE_DB, '全部光點');
+  renderRows(CLEAN_NODE_DB, '全部光點');
 }
 function showConflicts() {
-  const rows = NODE_DB.filter(x => cleanText(x.warning));
+  const rows = CLEAN_NODE_DB.filter(x => cleanText(x.warning));
   const duplicateHtml = NODE_DUPLICATES.length ? `<div class="node-warn"><b>重複光點：</b>${NODE_DUPLICATES.map(d => `${d.node}(row ${d.firstRow} / ${d.dupRow})`).join('、')}</div>` : '';
   renderRows(rows, '資料警告');
   document.getElementById('nodeResult').insertAdjacentHTML('afterbegin', duplicateHtml);
@@ -5708,6 +5735,12 @@ function renderCard(x) {
   const idCheck = index.id && x.id && String(index.id) !== String(x.id)
     ? `<div class="node-warn">⚠ 編號不一致：主表 ${escapeHtml(x.id)} / 索引表 ${escapeHtml(index.id)}</div>` : '';
   const warning = cleanText(x.warning) ? `<div class="node-warn">⚠ ${escapeHtml(x.warning)}</div>` : '';
+  const rows = [
+    ['CMTS', x.cmts], ['Mac Domain', x.macDomain], ['上行 Port', x.upstreamPort],
+    ['上行 Connector', x.upstreamConnector], ['下行 Port', x.downstreamPort],
+    ['發射機 / CH', x.txChannel || x.indexChannel], ['MUX', x.mux], ['分光器 / Hub', x.splitter],
+    ['DCM(B組)', x.dcm], ['反向接收機', x.returnReceiver], ['DEMUX-A', x.demuxA], ['DEMUX-B', x.demuxB]
+  ].filter(([,v]) => cleanText(v));
   return `
     <article class="node-card">
       <div class="node-card-head">
@@ -5715,18 +5748,7 @@ function renderCard(x) {
         <span>#${escapeHtml(x.id || index.id || '-')}</span>
       </div>
       <div class="node-grid">
-        <div><b>CMTS</b><span>${escapeHtml(x.cmts)}</span></div>
-        <div><b>Mac Domain</b><span>${escapeHtml(x.macDomain)}</span></div>
-        <div><b>上行 Port</b><span>${escapeHtml(x.upstreamPort)}</span></div>
-        <div><b>上行 Connector</b><span>${escapeHtml(x.upstreamConnector)}</span></div>
-        <div><b>下行 Port</b><span>${escapeHtml(x.downstreamPort)}</span></div>
-        <div><b>發射機 / CH</b><span>${escapeHtml(x.txChannel || x.indexChannel)}</span></div>
-        <div><b>MUX</b><span>${escapeHtml(x.mux)}</span></div>
-        <div><b>分光器 / Hub</b><span>${escapeHtml(x.splitter)}</span></div>
-        <div><b>DCM(B組)</b><span>${escapeHtml(x.dcm)}</span></div>
-        <div><b>反向接收機</b><span>${escapeHtml(x.returnReceiver)}</span></div>
-        <div><b>DEMUX-A</b><span>${escapeHtml(x.demuxA)}</span></div>
-        <div><b>DEMUX-B</b><span>${escapeHtml(x.demuxB)}</span></div>
+        ${rows.map(([label, value]) => `<div><b>${escapeHtml(label)}</b><span>${escapeHtml(value)}</span></div>`).join('')}
       </div>
       ${idCheck}${warning}
     </article>`;
@@ -5754,4 +5776,5 @@ setStats();
 .node-empty { padding: 14px; border-radius: 12px; background: rgba(148,163,184,.12); }
 @media (max-width: 760px) { .node-toolbar { grid-template-columns: 1fr; } .node-grid { grid-template-columns: 1fr; } }
 </style>
+</body>
 </html>
