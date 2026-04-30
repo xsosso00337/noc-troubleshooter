@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>CMTS整合查詢</title>
+
+<style>
+body{background:#0f172a;color:#e5e7eb;font-family:sans-serif;padding:20px}
+input,select{padding:10px;border-radius:8px;border:1px solid #334155;margin:5px}
+.card{border:1px solid #334155;padding:12px;margin-top:10px;border-radius:10px}
+</style>
+</head>
+
+<body>
+
+<h2>📡 CMTS整合查詢</h2>
+
+<select id="cmts" onchange="filterCMTS()">
+  <option value="">全部</option>
+  <option value="E6K11">E6K11</option>
+  <option value="E6K10">E6K10</option>
+  <option value="E6K09">E6K09</option>
+</select>
+
+<input id="search" placeholder="輸入 DL0506 / Hub / Port">
+<button onclick="search()">查詢</button>
+
+<div id="result"></div>
+
+<script>
+let DB = [];
+
+async function load(){
+  DB = await fetch("data/cmts-all.json").then(r=>r.json());
+}
+load();
+
+function search(){
+  const q = document.getElementById("search").value.toUpperCase();
+  const cmts = document.getElementById("cmts").value;
+
+  let data = DB;
+
+  if(cmts){
+    data = data.filter(x=>x.cmts===cmts);
+  }
+
+  const rows = data.filter(x =>
+    Object.values(x).join("").toUpperCase().includes(q)
+  );
+
+  document.getElementById("result").innerHTML =
+    rows.map(x=>`
+      <div class="card">
+        <b>${x.node}</b> (${x.cmts})<br>
+        上行: ${x.upstreamPort || ""}<br>
+        下行: ${x.downstreamPort || ""}<br>
+        HUB: ${x.hubMax || ""}<br>
+        EDFA: ${x.edfa || ""}
+      </div>
+    `).join("");
+}
+</script>
+
+</body>
+</html>
