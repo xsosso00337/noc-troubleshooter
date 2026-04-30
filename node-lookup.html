@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>光點查詢</title>
+  <title>CMTS 整合查詢</title>
   <style>
-    :root{
-      --bg:#07111f;--panel:#10243d;--card:#122a49;--text:#eef6ff;--muted:#9fb2c8;
-      --line:rgba(255,255,255,.12);--warn:#ffd166;--shadow:0 16px 45px rgba(0,0,0,.35);--r:18px;
-    }
+    :root{--bg:#07111f;--text:#eef6ff;--muted:#9fb2c8;--line:rgba(255,255,255,.12);--shadow:0 16px 45px rgba(0,0,0,.35)}
     *{box-sizing:border-box}
     body{margin:0;background:radial-gradient(circle at top,#17345a 0%,#07111f 40%,#050913 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;color:var(--text);line-height:1.55}
-    .wrap{width:min(1180px,100%);margin:auto;padding:18px 14px 80px}
     .hero{position:sticky;top:0;z-index:20;background:rgba(7,17,31,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px}
-    .hero-inner{width:min(1180px,100%);margin:auto}
+    .hero-inner,.wrap{width:min(1180px,100%);margin:auto}
+    .wrap{padding:18px 14px 80px}
     h1{font-size:26px;margin:0 0 10px}
     .nav{display:flex;gap:8px;overflow:auto}
     .nav a{white-space:nowrap;text-decoration:none;color:var(--text);border:1px solid var(--line);background:rgba(255,255,255,.06);padding:9px 12px;border-radius:999px;font-weight:800;font-size:14px}
-    .card{background:linear-gradient(180deg,rgba(18,42,73,.96),rgba(12,26,45,.96));border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);margin-top:14px}
+    .card{background:linear-gradient(180deg,rgba(18,42,73,.96),rgba(12,26,45,.96));border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-top:14px}
     .muted{color:var(--muted)}
     .toolbar{display:grid;grid-template-columns:1fr;gap:10px}
     @media(min-width:880px){.toolbar{grid-template-columns:220px 1fr auto auto auto}}
@@ -33,177 +30,111 @@
     .pill{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:rgba(96,165,250,.16);border:1px solid rgba(96,165,250,.28);font-size:12px;font-weight:900;color:#bfdbfe}
     table{width:100%;border-collapse:collapse}
     th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
-    th{width:145px;color:#dbeafe;background:rgba(255,255,255,.04)}
-    .warn{margin-top:10px;padding:10px;border-radius:12px;background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.3);color:#ffe29a}
+    th{width:150px;color:#dbeafe;background:rgba(255,255,255,.04)}
     .empty{grid-column:1/-1;border:1px solid var(--line);border-radius:16px;padding:16px;background:rgba(255,255,255,.06)}
   </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="hero-inner">
-      <h1>光點 / CMTS / Hub 查詢</h1>
-      <div class="nav">
-        <a href="index.html#fault">回主頁</a>
-        <a href="index.html#optical">光纖診斷</a>
-        <a href="index.html#rf">RF / DOCSIS</a>
-        <a href="index.html#tools">工具SOP</a>
-      </div>
-    </div>
+<div class="hero"><div class="hero-inner">
+  <h1>CMTS 整合查詢</h1>
+  <div class="nav">
+    <a href="index.html#fault">回主頁</a>
+    <a href="index.html#tools">工具SOP</a>
+    <a href="node-lookup.html">光點查詢</a>
   </div>
+</div></div>
 
-  <main class="wrap">
-    <section class="card">
-      <p class="muted">
-        兩種用法：① 直接輸入光點，例如 <b>DL0506</b>，系統會自動告訴你是哪台 E6K；
-        ② 先選 E6K，再按「顯示分類」瀏覽該台資料。
-      </p>
-
-      <div class="toolbar">
-        <select id="cmtsSelect" onchange="loadCMTS()">
-          <option value="">全部 E6K</option>
-        </select>
-        <input id="nodeSearch" placeholder="輸入 DL0506 / Hub 05 / 1/5/3-5 / M05" onkeydown="if(event.key==='Enter') searchNode()">
-        <button onclick="searchNode()">查詢</button>
-        <button class="secondary" onclick="showLoaded()">顯示分類</button>
-        <button class="secondary" onclick="clearSearch()">清空</button>
-      </div>
-
-      <div id="nodeStats" class="stats">資料載入中...</div>
-      <div id="nodeResult" class="result"><div class="empty">資料載入中...</div></div>
-    </section>
-  </main>
+<main class="wrap">
+<section class="card">
+  <p class="muted">可直接查光點、接收機、SST、Hub/MAX、機櫃、DWDM、EDFA、WDM、A/B組發射機與芯數。也可先選 E6K 分類後瀏覽。</p>
+  <div class="toolbar">
+    <select id="cmtsSelect" onchange="loadCMTS()"><option value="">全部 E6K</option></select>
+    <input id="searchBox" placeholder="輸入 DL0506 / R09 / EDFA52 / 分光器101 / 1/5/3-5" onkeydown="if(event.key==='Enter') searchData()">
+    <button onclick="searchData()">查詢</button>
+    <button class="secondary" onclick="showLoaded()">顯示分類</button>
+    <button class="secondary" onclick="clearSearch()">清空</button>
+  </div>
+  <div id="stats" class="stats">資料載入中...</div>
+  <div id="result" class="result"><div class="empty">資料載入中...</div></div>
+</section>
+</main>
 
 <script>
-let ALL_DB = [];
-let NODE_DB = [];
-let MANIFEST = null;
-
-function cleanText(v){
-  return String(v || "").replace(/\n/g,"").replace(/\s+/g," ").trim();
-}
-function esc(v){
-  return cleanText(v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-}
-function showRow(label, value){
-  const v = cleanText(value);
-  if(!v) return "";
-  return `<tr><th>${label}</th><td>${esc(v)}</td></tr>`;
-}
-
+let ALL_DB=[], DB=[], MANIFEST=null;
+function cleanText(v){return String(v||"").replace(/\n/g,"").replace(/\s+/g," ").trim();}
+function esc(v){return cleanText(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function row(label,val){const v=cleanText(val);return v?`<tr><th>${label}</th><td>${esc(v)}</td></tr>`:"";}
 async function init(){
-  MANIFEST = await (await fetch("data/manifest.json")).json();
-
-  const sel = document.getElementById("cmtsSelect");
-  MANIFEST.cmtsFiles.forEach(x => {
-    const opt = document.createElement("option");
-    opt.value = x.cmts;
-    opt.textContent = `${x.cmts}（${x.count} 筆）`;
-    sel.appendChild(opt);
-  });
-
-  ALL_DB = await (await fetch("data/nodes-all.json")).json();
-  NODE_DB = ALL_DB;
-
-  document.getElementById("nodeStats").textContent =
-    `已載入全部資料：${ALL_DB.length} 筆。可直接查光點，或選 E6K 分類瀏覽。`;
-  document.getElementById("nodeResult").innerHTML =
-    `<div class="empty">輸入光點，例如 DL0506，或選 E6K 後顯示分類。</div>`;
+  MANIFEST=await (await fetch("data/manifest-cmts.json")).json();
+  const sel=document.getElementById("cmtsSelect");
+  MANIFEST.cmtsFiles.forEach(x=>{const o=document.createElement("option");o.value=x.cmts;o.textContent=`${x.cmts}（${x.count}筆）`;sel.appendChild(o);});
+  ALL_DB=await (await fetch("data/cmts-all.json")).json();
+  DB=ALL_DB;
+  document.getElementById("stats").textContent=`已載入全部資料：${ALL_DB.length}筆。`;
+  document.getElementById("result").innerHTML='<div class="empty">可直接輸入光點或設備關鍵字查詢，或先選 E6K 分類。</div>';
 }
-
 async function loadCMTS(){
-  const cmts = document.getElementById("cmtsSelect").value;
-  const box = document.getElementById("nodeResult");
-
-  if(!cmts){
-    NODE_DB = ALL_DB;
-    document.getElementById("nodeStats").textContent =
-      `目前範圍：全部 E6K，共 ${NODE_DB.length} 筆。`;
-    box.innerHTML = `<div class="empty">目前為全域搜尋。輸入 DL0506 可自動找出 E6K。</div>`;
-    return;
-  }
-
-  NODE_DB = await (await fetch(`data/${cmts}.json`)).json();
-  document.getElementById("nodeStats").textContent =
-    `目前範圍：${cmts}，共 ${NODE_DB.length} 筆。`;
-  box.innerHTML = `<div class="empty">已切換到 ${cmts}。可搜尋或按「顯示分類」。</div>`;
+  const cmts=document.getElementById("cmtsSelect").value;
+  if(!cmts){DB=ALL_DB;document.getElementById("stats").textContent=`目前範圍：全部E6K，共${DB.length}筆。`;document.getElementById("result").innerHTML='<div class="empty">全域搜尋模式。</div>';return;}
+  DB=await (await fetch(`data/${cmts}.json`)).json();
+  document.getElementById("stats").textContent=`目前範圍：${cmts}，共${DB.length}筆。`;
+  document.getElementById("result").innerHTML=`<div class="empty">已切換到 ${cmts}。</div>`;
 }
-
 function card(x){
   return `<div class="node-card">
     <div class="node-title"><span>📍 ${esc(x.node)}</span><span class="pill">${esc(x.cmts)}</span></div>
     <table>
-      ${showRow("編號", x.id)}
-      ${showRow("CMTS", x.cmts)}
-      ${showRow("Mac Domain", x.macDomain)}
-      ${showRow("上行 Port", x.upstreamPort)}
-      ${showRow("上行 Connector", x.upstreamConnector)}
-      ${showRow("下行 Port", x.downstreamPort)}
-      ${showRow("發射機 / CH", x.txChannel || x.indexChannel)}
-      ${showRow("MUX", x.mux)}
-      ${showRow("Hub / 分光器", x.hub)}
-      ${showRow("DCM", x.dcm)}
-      ${showRow("反向接收機", x.returnReceiver)}
-      ${showRow("DEMUX-A", x.demuxA)}
-      ${showRow("DEMUX-B", x.demuxB)}
-      ${showRow("來源列", x.sourceRow)}
+      ${row("Mac Domain",x.macDomain)}
+      ${row("上行 Slot",x.upstreamPort)}
+      ${row("Connector",x.upstreamConnector)}
+      ${row("下行 Slot",x.downstreamPort)}
+      ${row("接收機",x.receiver)}
+      ${row("反向 Source",x.returnSource)}
+      ${row("接收機廠牌",x.receiverBrand)}
+      ${row("接收機機櫃",x.receiverRack)}
+      ${row("SST",x.sst)}
+      ${row("HUB/MAX",x.hubMax)}
+      ${row("MAX機櫃",x.maxRack)}
+      ${row("DEMAX機櫃",x.demaxRack)}
+      ${row("Demux波長",x.demuxWavelength)}
+      ${row("DWDM分光器",x.dwdmSplitter)}
+      ${row("EDFA",x.edfa)}
+      ${row("WDM",x.wdm)}
+      ${row("A組發射機",x.txA)}
+      ${row("TX/CH",x.txChannel)}
+      ${row("A組發射機機櫃",x.txARack)}
+      ${row("前置放大器",x.preAmp)}
+      ${row("A組下行芯數",x.fiberDownA)}
+      ${row("A組上行芯數",x.fiberUpA)}
+      ${row("B組發射機",x.txB)}
+      ${row("B組發射機機櫃",x.txBRack)}
+      ${row("來源列",x.sourceRow)}
     </table>
-    ${cleanText(x.warning) ? `<div class="warn">⚠ ${esc(x.warning)}</div>` : ""}
   </div>`;
 }
-
-function searchNode(){
-  const q = cleanText(document.getElementById("nodeSearch").value).toUpperCase();
-  const box = document.getElementById("nodeResult");
-  const cmts = document.getElementById("cmtsSelect").value || "全部 E6K";
-
-  if(!NODE_DB.length){
-    box.innerHTML = `<div class="empty">資料尚未載入完成。</div>`;
-    return;
-  }
-
-  if(!q){
-    box.innerHTML = `<div class="empty">請輸入搜尋關鍵字，例如 DL0506。</div>`;
-    return;
-  }
-
-  const rows = NODE_DB.filter(x => Object.values(x).some(v => cleanText(v).toUpperCase().includes(q)));
-
-  document.getElementById("nodeStats").textContent =
-    `搜尋範圍：${cmts}｜查詢「${q}」：${rows.length} 筆。`;
-
-  box.innerHTML = rows.length ? rows.map(card).join("") : `<div class="empty">查無資料：${esc(q)}</div>`;
+function searchData(){
+  const q=cleanText(document.getElementById("searchBox").value).toUpperCase();
+  const box=document.getElementById("result");
+  const cmts=document.getElementById("cmtsSelect").value||"全部E6K";
+  if(!q){box.innerHTML='<div class="empty">請輸入關鍵字。</div>';return;}
+  const rows=DB.filter(x=>Object.values(x).some(v=>cleanText(v).toUpperCase().includes(q)));
+  document.getElementById("stats").textContent=`搜尋範圍：${cmts}｜查詢「${esc(q)}」：${rows.length}筆。`;
+  box.innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">查無資料：${esc(q)}</div>`;
 }
-
 function showLoaded(){
-  const box = document.getElementById("nodeResult");
-  const cmts = document.getElementById("cmtsSelect").value;
-
-  if(!cmts){
-    box.innerHTML = `<div class="empty">請先選擇 E6K 分類，避免一次顯示全部資料太多。</div>`;
-    return;
-  }
-
-  document.getElementById("nodeStats").textContent =
-    `顯示 ${cmts} 全部資料：${NODE_DB.length} 筆。`;
-  box.innerHTML = NODE_DB.map(card).join("");
+  const cmts=document.getElementById("cmtsSelect").value;
+  if(!cmts){document.getElementById("result").innerHTML='<div class="empty">請先選 E6K，避免一次顯示太多資料。</div>';return;}
+  document.getElementById("stats").textContent=`顯示${cmts}全部資料：${DB.length}筆。`;
+  document.getElementById("result").innerHTML=DB.map(card).join("");
 }
-
 function clearSearch(){
-  document.getElementById("nodeSearch").value = "";
-  document.getElementById("cmtsSelect").value = "";
-  NODE_DB = ALL_DB;
-  document.getElementById("nodeStats").textContent =
-    `目前範圍：全部 E6K，共 ${NODE_DB.length} 筆。`;
-  document.getElementById("nodeResult").innerHTML =
-    `<div class="empty">已清空。可直接查光點，或選 E6K 分類。</div>`;
+  document.getElementById("searchBox").value="";
+  document.getElementById("cmtsSelect").value="";
+  DB=ALL_DB;
+  document.getElementById("stats").textContent=`目前範圍：全部E6K，共${DB.length}筆。`;
+  document.getElementById("result").innerHTML='<div class="empty">已清空，可直接搜尋。</div>';
 }
-
-init().catch(err => {
-  document.getElementById("nodeStats").textContent = "資料載入失敗。";
-  document.getElementById("nodeResult").innerHTML =
-    `<div class="empty">資料載入失敗，請確認 data/manifest.json 與 data/nodes-all.json 是否已上傳。</div>`;
-  console.error(err);
-});
+init().catch(e=>{document.getElementById("stats").textContent="資料載入失敗";document.getElementById("result").innerHTML='<div class="empty">請確認 data/manifest-cmts.json 與 data/cmts-all.json 是否已上傳。</div>';console.error(e);});
 </script>
 </body>
 </html>

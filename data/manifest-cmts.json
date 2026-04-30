@@ -1,0 +1,97 @@
+{
+  "updated": "2026-04-29",
+  "source": "CMTS整合對照表_20260429(1).xlsx",
+  "totalRows": 1237,
+  "cmtsFiles": [
+    {
+      "cmts": "E6K05",
+      "file": "data/E6K05.json",
+      "count": 94
+    },
+    {
+      "cmts": "E6K01",
+      "file": "data/E6K01.json",
+      "count": 91
+    },
+    {
+      "cmts": "E6K07",
+      "file": "data/E6K07.json",
+      "count": 69
+    },
+    {
+      "cmts": "E6K03",
+      "file": "data/E6K03.json",
+      "count": 93
+    },
+    {
+      "cmts": "E6K06",
+      "file": "data/E6K06.json",
+      "count": 87
+    },
+    {
+      "cmts": "E6K04",
+      "file": "data/E6K04.json",
+      "count": 95
+    },
+    {
+      "cmts": "E6K08",
+      "file": "data/E6K08.json",
+      "count": 168
+    },
+    {
+      "cmts": "E6K02",
+      "file": "data/E6K02.json",
+      "count": 89
+    },
+    {
+      "cmts": "E6K10",
+      "file": "data/E6K10.json",
+      "count": 156
+    },
+    {
+      "cmts": "E6K09",
+      "file": "data/E6K09.json",
+      "count": 178
+    },
+    {
+      "cmts": "E6K11",
+      "file": "data/E6K11.json",
+      "count": 117
+    }
+  ],
+  "allFile": "data/cmts-all.json",
+  "fields": {
+    "CMTS": "cmts",
+    "Mac Domain": "macDomain",
+    "上行 Slot": "upstreamPort",
+    "Connector": "upstreamConnector",
+    "下行 Slot": "downstreamPort",
+    "光點": "node",
+    "接收機": "receiver",
+    "反向 Sourse": "returnSource",
+    "接收機廠牌": "receiverBrand",
+    "接收機 機櫃": "receiverRack",
+    "SST": "sst",
+    "HUB (MAX編號)": "hubMax",
+    "MAX 機櫃編號": "maxRack",
+    "DEMAX 機櫃編號": "demaxRack",
+    "Demux 波長": "demuxWavelength",
+    "DWDM 分光器": "dwdmSplitter",
+    "EDFA": "edfa",
+    "WDM": "wdm",
+    "A組 發射機": "txA",
+    "TX/CH": "txChannel",
+    "A組發射機 機櫃編號": "txARack",
+    "前置 放大器": "preAmp",
+    "A組 下行芯數": "fiberDownA",
+    "A組 上行芯數": "fiberUpA",
+    "B組 發射機": "txB",
+    "B組發射機 機櫃編號": "txBRack"
+  },
+  "cleaningRules": [
+    "#N/A / NO / 空白 / 空 / 地名或非光點文字留空",
+    "Connector 換行清除",
+    "只保留 CMTS 格式為 E6Kxx 的資料列",
+    "保留 41：新版表內 41 可能是有效欄位值，但不作為 CMTS 分類"
+  ]
+}
