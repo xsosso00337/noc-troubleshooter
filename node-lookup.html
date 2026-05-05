@@ -80,13 +80,21 @@ async function loadCMTS(){
   document.getElementById("result").innerHTML=`<div class="empty">已切換到 ${cmts}。</div>`;
 }
 function card(x){
+  const lineCode = cleanText(x.lineCode || x["線編"] || "");
   return `<div class="node-card">
-    <div class="node-title"><span>📍 ${esc(x.node)}</span><span class="pill">${esc(x.cmts)}</span></div>
+    <div class="node-title">
+      <span>📍 ${esc(x.node)}</span>
+      <span>
+        ${lineCode ? `<span class="pill">線編 ${esc(lineCode)}</span>` : ""}
+        <span class="pill">${esc(x.cmts)}</span>
+      </span>
+    </div>
     <table>
       ${row("Mac Domain",x.macDomain)}
       ${row("上行 Slot",x.upstreamPort)}
       ${row("Connector",x.upstreamConnector)}
       ${row("下行 Slot",x.downstreamPort)}
+      ${row("線編",lineCode)}
       ${row("接收機",x.receiver)}
       ${row("反向 Source",x.returnSource)}
       ${row("接收機廠牌",x.receiverBrand)}
