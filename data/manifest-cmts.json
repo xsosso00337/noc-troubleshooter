@@ -1,6 +1,6 @@
 {
-  "updated": "2026-04-29",
-  "source": "CMTS整合對照表_20260429(1).xlsx",
+  "updated": "2026-05-07",
+  "source": "CMTS整合表（原檔名：班表.xlsx）",
   "totalRows": 1237,
   "cmtsFiles": [
     {
@@ -92,6 +92,14 @@
     "#N/A / NO / 空白 / 空 / 地名或非光點文字留空",
     "Connector 換行清除",
     "只保留 CMTS 格式為 E6Kxx 的資料列",
-    "保留 41：新版表內 41 可能是有效欄位值，但不作為 CMTS 分類"
-  ]
+    "修正跨區右側線編/對照表被誤匯入設備欄位造成的整排數字污染",
+    "線編依光點對照補入 lineCode；設備欄位不再用線編值回填"
+  ],
+  "lastCorrection": {
+    "date": "2026-05-07",
+    "rowsFixed": 308,
+    "fieldsCleared": 5236,
+    "lineCodesAdded": 292,
+    "hubLabelsNormalized": 282
+  }
 }
