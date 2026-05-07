@@ -25,7 +25,7 @@
   <div class="hero"><div class="hero-inner">
     <div class="title"><h1>機房查修工具</h1></div>
     <div class="nav">
-      <a href="#fault">故障入口</a><a href="node-lookup.html">光點查詢</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
+      <a href="#fault">故障入口</a><a href="node-lookup.html">光點查詢</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="optical-balance-sop.html">光平衡 SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
     </div>
   </div></div>
 
@@ -98,6 +98,7 @@
     </section>
 
     <section class="grid" id="tools" style="margin-top:14px">
+      <div class="card half"><h2>光平衡 SOP</h2><p class="muted">GX2 光平衡與查光功率流程，已整理成去格線圖片版。</p><div class="row"><a class="quickbtn" href="optical-balance-sop.html">開啟光平衡 SOP 圖</a></div></div>
       <div class="card half"><h2>光纖標準SOP</h2><div class="steps"><div class="step"><b>ViewConn Pro 看端面</b><br>接頭插入探頭，確認是否有灰塵、油污、刮傷。髒污先清潔，不要直接量。</div><div class="step"><b>清潔筆清潔</b><br>SC/LC 對應清潔筆，一次到底，不要來回磨。清潔後再用 ViewConn Pro 確認。</div><div class="step"><b>PM-500 測光</b><br>選正確波長：PON 下行 1490、上行 1310、CATV 1550、監測可用 1625/1650。</div><div class="step"><b>FTB-7200D OTDR 定位</b><br>接 Launch Fiber，Range 設比距離大，短距離用小 Pulse，長距離用大 Pulse。</div><div class="step"><b>FTB-5240S OSA</b><br>DWDM/CWDM 才用，檢查通道波長、通道功率、是否缺波或偏移。</div></div></div>
       <div class="card half"><h2>RF 標準SOP</h2><div class="steps"><div class="step"><b>860 DSPi 先量值</b><br>DS Power / MER / BER / US Power，一次確認是訊號強度、品質還是回傳問題。</div><div class="step"><b>MER / SNR 低</b><br>用 8591E 看頻譜，判斷尖峰 Ingress、單頻干擾、或整體 Noise floor 升高。</div><div class="step"><b>US Power 高</b><br>優先查回傳衰減：接頭、Tap、分歧器、線損、Node 回傳路徑。</div><div class="step"><b>DS Power 異常</b><br>查下行放大、分配、衰減器、EDFA/光收轉換後 RF 輸出。</div><div class="step"><b>數值正常但不通</b><br>查 CMTS、DHCP/IP、設定檔、帳務/綁定、CPE。</div></div></div>
     </section>
