@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="980" viewBox="0 0 1800 980" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1120" viewBox="0 0 1900 1120" role="img" aria-labelledby="title desc">
   <title id="title">光平衡與查光功率 SOP</title>
-  <desc id="desc">去除 Excel 格線後的光平衡與查光功率流程圖，重新排版避免文字重疊</desc>
+  <desc id="desc">去除 Excel 格線後的光平衡與查光功率流程圖，右側查光功率區重新分欄避免文字重疊</desc>
   <defs>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.16"/>
@@ -8,110 +8,108 @@
     <style>
       .bg{fill:#f5f9ff}.panel{fill:#fff;stroke:#d9e4f2;stroke-width:2;filter:url(#shadow)}
       .bar{fill:#0f2742}.label{fill:#edf6ff}.step{fill:#f8fbff;stroke:#dce8f5;stroke-width:2}.focus{fill:#fff8d8;stroke:#f1d36b;stroke-width:2}.divider{fill:#fff200}
-      .title{font:800 34px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f172a}.subtitle{font:500 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#475569}
-      .panelTitle{font:800 30px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#fff}.head{font:800 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#24415f}
-      .no{font:900 24px Arial,sans-serif;fill:#0f2742}.mono{font:800 21px Consolas,'Courier New',monospace;fill:#111827;letter-spacing:.4px}
-      .text{font:500 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#1f2937}.note{font:500 17px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}.small{font:700 15px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}
-      .blue{fill:#0070c0}.red{fill:#ff0000}.foot{font:800 20px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f172a}
+      .title{font:800 36px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f172a}.subtitle{font:500 19px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#475569}
+      .panelTitle{font:800 31px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#fff}.head{font:800 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#24415f}
+      .no{font:900 24px Arial,sans-serif;fill:#0f2742}.mono{font:800 21px Consolas,'Courier New',monospace;fill:#111827;letter-spacing:.3px}
+      .text{font:500 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#1f2937}.note{font:500 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}.small{font:700 15px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}
+      .blue{fill:#0070c0}.red{fill:#ff0000}.foot{font:800 21px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f172a}
       .keyCircle{fill:#d9ecff;stroke:#76aee0;stroke-width:2}.key{font:900 28px Arial,sans-serif;fill:#3f83bf}
     </style>
   </defs>
 
-  <rect class="bg" width="1800" height="980"/>
-  <text x="900" y="52" text-anchor="middle" class="title">光平衡 SOP 流程圖</text>
-  <text x="900" y="84" text-anchor="middle" class="subtitle">去除表格格線，保留按鍵順序、面板顯示與注意事項</text>
+  <rect class="bg" width="1900" height="1120"/>
+  <text x="950" y="54" text-anchor="middle" class="title">光平衡 SOP 流程圖</text>
+  <text x="950" y="88" text-anchor="middle" class="subtitle">去除表格格線，保留按鍵順序、面板顯示與注意事項</text>
 
-  <rect x="50" y="118" width="800" height="790" rx="26" class="panel"/>
-  <rect x="50" y="118" width="800" height="64" rx="26" class="bar"/>
-  <text x="450" y="160" text-anchor="middle" class="panelTitle">光平衡</text>
-  <rect x="92" y="204" width="116" height="36" rx="10" class="label"/><text x="150" y="228" text-anchor="middle" class="head">步驟 / 按鍵</text>
-  <rect x="240" y="204" width="300" height="36" rx="10" class="label"/><text x="390" y="228" text-anchor="middle" class="head">面板顯示</text>
-  <rect x="570" y="204" width="230" height="36" rx="10" class="label"/><text x="685" y="228" text-anchor="middle" class="head">備註</text>
+  <rect x="50" y="122" width="860" height="900" rx="26" class="panel"/>
+  <rect x="50" y="122" width="860" height="64" rx="26" class="bar"/>
+  <text x="480" y="164" text-anchor="middle" class="panelTitle">光平衡</text>
+  <rect x="92" y="208" width="124" height="38" rx="10" class="label"/><text x="154" y="233" text-anchor="middle" class="head">步驟 / 按鍵</text>
+  <rect x="252" y="208" width="330" height="38" rx="10" class="label"/><text x="417" y="233" text-anchor="middle" class="head">面板顯示</text>
+  <rect x="620" y="208" width="230" height="38" rx="10" class="label"/><text x="735" y="233" text-anchor="middle" class="head">備註</text>
 
-  <rect x="82" y="260" width="738" height="86" rx="16" class="step"/>
-  <text x="116" y="312" text-anchor="middle" class="no">1</text>
-  <circle cx="166" cy="303" r="22" class="keyCircle"/><text x="166" y="313" text-anchor="middle" class="key">↑</text>
-  <text x="390" y="306" text-anchor="middle" class="mono">GX2 - CM100B - R</text>
-  <text x="590" y="292" class="note">起始畫面</text>
+  <rect x="82" y="270" width="788" height="90" rx="16" class="step"/>
+  <text x="116" y="325" text-anchor="middle" class="no">1</text>
+  <circle cx="166" cy="315" r="22" class="keyCircle"/><text x="166" y="325" text-anchor="middle" class="key">↑</text>
+  <text x="420" y="320" text-anchor="middle" class="mono">GX2 - CM100B - R</text>
+  <text x="635" y="304" class="note">起始畫面</text>
 
-  <rect x="82" y="366" width="738" height="104" rx="16" class="step"/>
-  <text x="116" y="426" text-anchor="middle" class="no">2</text>
-  <circle cx="166" cy="417" r="22" class="keyCircle"/><text x="166" y="427" text-anchor="middle" class="key">→</text>
-  <text x="360" y="405" text-anchor="middle" class="mono">SLOT 1 MENU</text>
-  <text x="404" y="432" text-anchor="middle" class="mono blue">(SLOT 1 ~ SLOT 16)</text>
-  <text x="590" y="402" class="note">選到該光點 SLOT</text>
-  <text x="590" y="429" class="note">燈號會閃爍</text>
+  <rect x="82" y="382" width="788" height="112" rx="16" class="step"/>
+  <text x="116" y="448" text-anchor="middle" class="no">2</text>
+  <circle cx="166" cy="438" r="22" class="keyCircle"/><text x="166" y="448" text-anchor="middle" class="key">→</text>
+  <text x="390" y="426" text-anchor="middle" class="mono">SLOT 1 MENU</text>
+  <text x="434" y="455" text-anchor="middle" class="mono blue">(SLOT 1 ~ SLOT 16)</text>
+  <text x="635" y="418" class="note">選到該光點 SLOT</text>
+  <text x="635" y="446" class="note">燈號會閃爍</text>
 
-  <rect x="82" y="490" width="738" height="208" rx="16" class="step"/>
-  <text x="116" y="603" text-anchor="middle" class="no">3</text>
-  <circle cx="166" cy="526" r="22" class="keyCircle"/><text x="166" y="536" text-anchor="middle" class="key">→</text>
-  <circle cx="166" cy="594" r="22" class="keyCircle"/><text x="166" y="604" text-anchor="middle" class="key">↑</text>
-  <circle cx="166" cy="662" r="22" class="keyCircle"/><text x="166" y="672" text-anchor="middle" class="key">↑</text>
-  <text x="390" y="528" text-anchor="middle" class="mono">SETUP MENU</text>
-  <text x="390" y="574" text-anchor="middle" class="mono">1 - MODE &gt; MANUAL</text>
-  <text x="390" y="622" text-anchor="middle" class="mono">RESET TO FACTORY DEFAULTS&gt;OFF</text>
-  <text x="390" y="668" text-anchor="middle" class="mono">TEST POINT SELECT &gt; ONE</text>
-  <text x="590" y="536" class="note">按右鍵反白選</text>
-  <text x="590" y="562" class="note">One / Two / Three / Four</text>
-  <text x="590" y="600" class="note">選好後按</text>
-  <text x="672" y="600" class="note blue">ENT</text>
-  <text x="708" y="600" class="note">鍵</text>
+  <rect x="82" y="516" width="788" height="238" rx="16" class="step"/>
+  <text x="116" y="644" text-anchor="middle" class="no">3</text>
+  <circle cx="166" cy="554" r="22" class="keyCircle"/><text x="166" y="564" text-anchor="middle" class="key">→</text>
+  <circle cx="166" cy="628" r="22" class="keyCircle"/><text x="166" y="638" text-anchor="middle" class="key">↑</text>
+  <circle cx="166" cy="704" r="22" class="keyCircle"/><text x="166" y="714" text-anchor="middle" class="key">↑</text>
+  <text x="420" y="558" text-anchor="middle" class="mono">SETUP MENU</text>
+  <text x="420" y="608" text-anchor="middle" class="mono">1 - MODE &gt; MANUAL</text>
+  <text x="420" y="660" text-anchor="middle" class="mono">RESET TO FACTORY DEFAULTS&gt;OFF</text>
+  <text x="420" y="712" text-anchor="middle" class="mono">TEST POINT SELECT &gt; ONE</text>
+  <text x="635" y="548" class="note">按右鍵反白選</text>
+  <text x="635" y="576" class="note">One / Two / Three / Four</text>
+  <text x="635" y="620" class="note">選好後按 <tspan class="blue">ENT</tspan> 鍵</text>
 
-  <rect x="82" y="718" width="738" height="144" rx="16" class="focus"/>
-  <text x="116" y="800" text-anchor="middle" class="no">4</text>
-  <text x="104" y="760" class="small">往下按 10 下</text>
-  <circle cx="166" cy="800" r="22" class="keyCircle"/><text x="166" y="810" text-anchor="middle" class="key">↓</text>
-  <text x="390" y="786" text-anchor="middle" class="mono">1 - ATTENUATION &gt; 10.0dB</text>
-  <text x="590" y="765" class="note">選到該光點</text>
-  <text x="590" y="791" class="note">(1 2 3 4) SLOT</text>
-  <text x="590" y="817" class="note">按上下鍵調整 RF 訊號</text>
-  <text x="590" y="843" class="note">完成後按 <tspan class="blue">ENT</tspan> 鍵</text>
+  <rect x="82" y="778" width="788" height="176" rx="16" class="focus"/>
+  <text x="116" y="875" text-anchor="middle" class="no">4</text>
+  <text x="103" y="824" class="small">往下按 10 下</text>
+  <circle cx="166" cy="875" r="22" class="keyCircle"/><text x="166" y="885" text-anchor="middle" class="key">↓</text>
+  <text x="420" y="858" text-anchor="middle" class="mono">1 - ATTENUATION &gt; 10.0dB</text>
+  <text x="635" y="824" class="note">選到該光點</text>
+  <text x="635" y="852" class="note">(1 2 3 4) SLOT</text>
+  <text x="635" y="880" class="note">按上下鍵調整 RF 訊號</text>
+  <text x="635" y="908" class="note">完成後按 <tspan class="blue">ENT</tspan> 鍵</text>
 
-  <text x="450" y="894" text-anchor="middle" class="foot">做 B 組光平衡時需斷 A 組光訊號</text>
-  <text x="450" y="924" text-anchor="middle" class="note">如輸入錯誤按 ← 返回</text>
+  <text x="480" y="988" text-anchor="middle" class="foot">做 B 組光平衡時需斷 A 組光訊號</text>
+  <text x="480" y="1018" text-anchor="middle" class="note">如輸入錯誤按 ← 返回</text>
 
-  <rect x="890" y="118" width="24" height="790" rx="10" class="divider"/>
+  <rect x="944" y="122" width="24" height="900" rx="10" class="divider"/>
 
-  <rect x="950" y="118" width="800" height="790" rx="26" class="panel"/>
-  <rect x="950" y="118" width="800" height="64" rx="26" class="bar"/>
-  <text x="1350" y="160" text-anchor="middle" class="panelTitle">查光功率</text>
-  <rect x="992" y="204" width="116" height="36" rx="10" class="label"/><text x="1050" y="228" text-anchor="middle" class="head">步驟 / 按鍵</text>
-  <rect x="1140" y="204" width="340" height="36" rx="10" class="label"/><text x="1310" y="228" text-anchor="middle" class="head">面板顯示</text>
-  <rect x="1510" y="204" width="190" height="36" rx="10" class="label"/><text x="1605" y="228" text-anchor="middle" class="head">備註</text>
+  <rect x="990" y="122" width="860" height="900" rx="26" class="panel"/>
+  <rect x="990" y="122" width="860" height="64" rx="26" class="bar"/>
+  <text x="1420" y="164" text-anchor="middle" class="panelTitle">查光功率</text>
+  <rect x="1032" y="208" width="124" height="38" rx="10" class="label"/><text x="1094" y="233" text-anchor="middle" class="head">步驟 / 按鍵</text>
+  <rect x="1192" y="208" width="382" height="38" rx="10" class="label"/><text x="1383" y="233" text-anchor="middle" class="head">面板顯示</text>
+  <rect x="1610" y="208" width="190" height="38" rx="10" class="label"/><text x="1705" y="233" text-anchor="middle" class="head">備註</text>
 
-  <rect x="982" y="260" width="738" height="86" rx="16" class="step"/>
-  <text x="1016" y="312" text-anchor="middle" class="no">1</text>
-  <circle cx="1066" cy="303" r="22" class="keyCircle"/><text x="1066" y="313" text-anchor="middle" class="key">↑</text>
-  <text x="1305" y="306" text-anchor="middle" class="mono">GX2 - CM100B - R</text>
-  <text x="1526" y="292" class="note">起始畫面</text>
+  <rect x="1022" y="270" width="788" height="90" rx="16" class="step"/>
+  <text x="1056" y="325" text-anchor="middle" class="no">1</text>
+  <circle cx="1106" cy="315" r="22" class="keyCircle"/><text x="1106" y="325" text-anchor="middle" class="key">↑</text>
+  <text x="1370" y="320" text-anchor="middle" class="mono">GX2 - CM100B - R</text>
+  <text x="1625" y="304" class="note">起始畫面</text>
 
-  <rect x="982" y="366" width="738" height="104" rx="16" class="step"/>
-  <text x="1016" y="426" text-anchor="middle" class="no">2</text>
-  <circle cx="1066" cy="417" r="22" class="keyCircle"/><text x="1066" y="427" text-anchor="middle" class="key">→</text>
-  <text x="1282" y="405" text-anchor="middle" class="mono">SLOT 1 MENU</text>
-  <text x="1346" y="432" text-anchor="middle" class="mono blue">(Slot1 ~ Slot16)</text>
-  <text x="1526" y="402" class="note">選到該光點 Slot</text>
-  <text x="1526" y="429" class="note">燈號會閃爍</text>
+  <rect x="1022" y="382" width="788" height="112" rx="16" class="step"/>
+  <text x="1056" y="448" text-anchor="middle" class="no">2</text>
+  <circle cx="1106" cy="438" r="22" class="keyCircle"/><text x="1106" y="448" text-anchor="middle" class="key">→</text>
+  <text x="1348" y="426" text-anchor="middle" class="mono">SLOT 1 MENU</text>
+  <text x="1412" y="455" text-anchor="middle" class="mono blue">(Slot1 ~ Slot16)</text>
+  <text x="1625" y="418" class="note">選到該光點 Slot</text>
+  <text x="1625" y="446" class="note">燈號會閃爍</text>
 
-  <rect x="982" y="490" width="738" height="94" rx="16" class="step"/>
-  <text x="1016" y="548" text-anchor="middle" class="no">3</text>
-  <circle cx="1066" cy="537" r="22" class="keyCircle"/><text x="1066" y="547" text-anchor="middle" class="key">↓</text>
-  <text x="1306" y="543" text-anchor="middle" class="mono">STATUS MENU</text>
+  <rect x="1022" y="516" width="788" height="98" rx="16" class="step"/>
+  <text x="1056" y="575" text-anchor="middle" class="no">3</text>
+  <circle cx="1106" cy="565" r="22" class="keyCircle"/><text x="1106" y="575" text-anchor="middle" class="key">↓</text>
+  <text x="1370" y="572" text-anchor="middle" class="mono">STATUS MENU</text>
 
-  <rect x="982" y="604" width="738" height="258" rx="16" class="focus"/>
-  <text x="1016" y="728" text-anchor="middle" class="no">4</text>
-  <circle cx="1066" cy="646" r="22" class="keyCircle"/><text x="1066" y="656" text-anchor="middle" class="key">→</text>
-  <circle cx="1066" cy="715" r="22" class="keyCircle"/><text x="1066" y="725" text-anchor="middle" class="key">↓</text>
-  <circle cx="1066" cy="784" r="22" class="keyCircle"/><text x="1066" y="794" text-anchor="middle" class="key">↓</text>
-  <text x="1288" y="646" text-anchor="middle" class="mono">1 - OPTICAL POWER：</text><text x="1458" y="646" class="mono red">-26.00dBm</text>
-  <text x="1288" y="696" text-anchor="middle" class="mono">2 - OPTICAL POWER：</text><text x="1458" y="696" class="mono red">-26.00dBm</text>
-  <text x="1288" y="746" text-anchor="middle" class="mono">3 - OPTICAL POWER：</text><text x="1458" y="746" class="mono red">-26.00dBm</text>
-  <text x="1288" y="796" text-anchor="middle" class="mono">4 - OPTICAL POWER：</text><text x="1458" y="796" class="mono red">-26.00dBm</text>
-  <text x="1526" y="646" class="note">確認各 SLOT</text>
-  <text x="1526" y="672" class="note">光功率數值</text>
-  <text x="1526" y="710" class="note">依現場標準值</text>
-  <text x="1526" y="736" class="note">判斷是否異常</text>
+  <rect x="1022" y="636" width="788" height="318" rx="16" class="focus"/>
+  <text x="1056" y="800" text-anchor="middle" class="no">4</text>
+  <circle cx="1106" cy="682" r="22" class="keyCircle"/><text x="1106" y="692" text-anchor="middle" class="key">→</text>
+  <circle cx="1106" cy="770" r="22" class="keyCircle"/><text x="1106" y="780" text-anchor="middle" class="key">↓</text>
+  <circle cx="1106" cy="858" r="22" class="keyCircle"/><text x="1106" y="868" text-anchor="middle" class="key">↓</text>
+  <text x="1205" y="686" class="mono">1 - OPTICAL POWER：</text><text x="1438" y="686" class="mono red">-26.00dBm</text>
+  <text x="1205" y="744" class="mono">2 - OPTICAL POWER：</text><text x="1438" y="744" class="mono red">-26.00dBm</text>
+  <text x="1205" y="802" class="mono">3 - OPTICAL POWER：</text><text x="1438" y="802" class="mono red">-26.00dBm</text>
+  <text x="1205" y="860" class="mono">4 - OPTICAL POWER：</text><text x="1438" y="860" class="mono red">-26.00dBm</text>
+  <text x="1625" y="686" class="note">確認各 SLOT</text>
+  <text x="1625" y="714" class="note">光功率數值</text>
+  <text x="1625" y="778" class="note">依現場標準值</text>
+  <text x="1625" y="806" class="note">判斷是否異常</text>
 
-  <text x="1350" y="894" text-anchor="middle" class="foot">查詢光功率時只讀取，不調整 RF 衰減</text>
-  <text x="1350" y="924" text-anchor="middle" class="note">完成後按 ← 返回上一層</text>
+  <text x="1420" y="988" text-anchor="middle" class="foot">查詢光功率時只讀取，不調整 RF 衰減</text>
+  <text x="1420" y="1018" text-anchor="middle" class="note">完成後按 ← 返回上一層</text>
 </svg>
