@@ -27,6 +27,7 @@
     @media(min-width:880px){.result{grid-template-columns:repeat(2,1fr)}}
     .node-card{border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:16px;padding:14px}
     .node-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:18px;font-weight:900;margin-bottom:10px}
+    .node-title span:last-child{display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
     .pill{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:rgba(96,165,250,.16);border:1px solid rgba(96,165,250,.28);font-size:12px;font-weight:900;color:#bfdbfe}
     table{width:100%;border-collapse:collapse}
     th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
@@ -45,10 +46,10 @@
 
 <main class="wrap">
 <section class="card">
-  <p class="muted">可直接查光點、線編、接收機、SST、Hub/MAX、機櫃、DWDM、EDFA、WDM、A/B組發射機與芯數。也可先選 E6K 分類後瀏覽。</p>
+  <p class="muted">可直接查光點、線編、Hub、接收機、SST、機櫃、DWDM、EDFA、WDM、A/B組發射機與芯數。也可先選 E6K 分類後瀏覽。</p>
   <div class="toolbar">
     <select id="cmtsSelect" onchange="loadCMTS()"><option value="">全部 E6K</option></select>
-    <input id="searchBox" placeholder="輸入 TP0107 / 線編7 / DL0506 / EDFA52 / 1/5/3-5" onkeydown="if(event.key==='Enter') searchData()">
+    <input id="searchBox" placeholder="輸入 TP0107 / 線編7 / Hub01 / Hub 01 / DL0506 / EDFA52 / 1/5/3-5" onkeydown="if(event.key==='Enter') searchData()">
     <button onclick="searchData()">查詢</button>
     <button class="secondary" onclick="showLoaded()">顯示分類</button>
     <button class="secondary" onclick="clearSearch()">清空</button>
@@ -60,54 +61,75 @@
 
 <script>
 let ALL_DB=[], DB=[], MANIFEST=null;
-const LINE_CODES = {
-  "TP0101":"1","TP0102":"2","TP0103":"3","TP0104":"4","TP0105":"5","TP0106":"6","TP0107":"7","TP0108":"8","TP0109":"9","TP0110":"10","TP0111":"11","TP0112":"12",
-  "TP0201":"13","TP0202":"14","TP0203":"15","TP0204":"16","TP0205":"17","TP0206":"18","TP0207":"19","TP0208":"20","TP0209":"21","TP0210":"22","TP0211":"23","TP0212":"24","TP0213":"25","TP0214":"26",
-  "TP0301":"27","TP0302":"28","TP0303":"29","TP0304":"30","TP0305":"31","TP0306":"32","TP0307":"33","TP0308":"34","TP0309":"35","TP0310":"36","TP0311":"37",
-  "TP0401":"38","TP0402":"39","TP0403":"40","TP0404":"41","TP0405":"42","TP0406":"43","TP0407":"44","TP0408":"45","TP0409":"46","TP0410":"47","TP0411":"48","TP0412":"49",
-  "DL0501":"50","DL0502":"51","DL0503":"52","DL0504":"53","DL0505":"54","DL0506":"55","DL0507":"56","DL0508":"57","DL0509":"58","DL0510":"59","DL0511":"60","DL0512":"61",
-  "DL0601":"62","DL0602":"63","DL0603":"64","DL0604":"65","DL0605":"66","DL0606":"67","DL0607":"68","DL0608":"69","DL0609":"70","DL0610":"71","DL0611":"72","DL0612":"73",
-  "DL0701":"74","DL0702":"75","DL0703":"76","DL0704":"77","DL0705":"78","DL0706":"79","DL0707":"80","DL0708":"81","DL0709":"82","DL0710":"83","DL0711":"84",
-  "DL0801":"85","DL0802":"86","DL0803":"87","DL0804":"88","DL0805":"89","DL0806":"90","DL0807":"91","DL0808":"92","DL0809":"93","DL0810":"94",
-  "DL0901":"95","DL0902":"96","DL0903":"97","DL0904":"98","DL0905":"99","DL0906":"100","DL0907":"101","DL0908":"102","DL0909":"103",
-  "WR1001":"104","WR1002":"105","WR1003":"106","WR1004":"107","WR1005":"108","WR1006":"109","WR1101":"110","WR1102":"111","WR1103":"112","WR1104":"113","WR1105":"114","WR1106":"115","WR1107":"116","WR1108":"117","WR1109":"118","WR1110":"119","WR1111":"120",
-  "WF1201":"121","WF1202":"122","WF1203":"123","WF1204":"124","WF1205":"125","WF1206":"126","WF1207":"127","WF1208":"128","WF1209":"129","WF1210":"130","WF1211":"131",
-  "WF1301":"132","WF1302":"133","WF1303":"134","WF1304":"135","WF1310":"141",
-  "SG2203":"240","SL2906":"339","SL2910":"343","LJ3410":"416","LJ3411":"417","LJ3412":"418"
-};
+const EQUIPMENT_FIELDS=["hubMax","maxRack","demaxRack","demuxWavelength","dwdmSplitter","edfa","wdm","txA","txARack","preAmp","fiberDownA","fiberUpA","txB","txBRack"];
 function cleanText(v){return String(v||"").replace(/\n/g,"").replace(/\s+/g," ").trim();}
 function esc(v){return cleanText(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
 function row(label,val){const v=cleanText(val);return v?`<tr><th>${label}</th><td>${esc(v)}</td></tr>`:"";}
-function applyLineCodes(rows){
+function first(...vals){return vals.find(v=>cleanText(v))||"";}
+function cmtsNum(v){const m=cleanText(v).match(/E6K(\d+)/i);return m?Number(m[1]):999;}
+function sortCMTSFiles(files){return [...files].sort((a,b)=>cmtsNum(a.cmts)-cmtsNum(b.cmts)||cleanText(a.cmts).localeCompare(cleanText(b.cmts)));}
+function searchKey(v){return cleanText(v).toUpperCase().replace(/\s+/g,"").replace(/HUB0+(\d+)/g,"HUB$1");}
+function hubAliases(v){
+  const raw=cleanText(v);
+  const m=raw.match(/^Hub\s*0*(\d+)$/i);
+  if(!m)return [];
+  const n=String(Number(m[1]));
+  const p=n.padStart(2,"0");
+  return [`Hub${n}`,`Hub ${n}`,`Hub${p}`,`Hub ${p}`,`HUB${n}`,`HUB${p}`];
+}
+function searchableValues(x){
+  const vals=Object.values(x);
+  const hub=first(x.hubMax,x.hub);
+  const lineCode=first(x.lineCode,x["線編"]);
+  if(hub) vals.push(...hubAliases(hub),`Hub ${hub}`,`HUB ${hub}`);
+  if(lineCode) vals.push(`線編${lineCode}`,`線編 ${lineCode}`,`LINE${lineCode}`);
+  return vals;
+}
+function matchesQuery(x,q){
+  const raw=cleanText(q).toUpperCase();
+  const key=searchKey(q);
+  return searchableValues(x).some(v=>{
+    const text=cleanText(v).toUpperCase();
+    return text.includes(raw)||searchKey(text).includes(key);
+  });
+}
+function normalizeRows(rows){
   rows.forEach(x=>{
-    const node = cleanText(x.node).toUpperCase();
-    if(LINE_CODES[node] && !cleanText(x.lineCode)) x.lineCode = LINE_CODES[node];
+    if(!cleanText(x.hubMax)&&cleanText(x.hub)) x.hubMax=x.hub;
+    if(!cleanText(x.receiver)&&cleanText(x.returnReceiver)) x.receiver=x.returnReceiver;
+    if(!cleanText(x.receiverRack)&&cleanText(x.receiverCabinet)) x.receiverRack=x.receiverCabinet;
+    if(!cleanText(x.txA)&&cleanText(x.transmitterA)) x.txA=x.transmitterA;
+    if(!cleanText(x.txARack)&&cleanText(x.transmitterACabinet)) x.txARack=x.transmitterACabinet;
+    if(!cleanText(x.txB)&&cleanText(x.transmitterB)) x.txB=x.transmitterB;
+    if(!cleanText(x.txBRack)&&cleanText(x.transmitterBCabinet)) x.txBRack=x.transmitterBCabinet;
+    if(!cleanText(x.fiberDownA)&&cleanText(x.downstreamFiberA)) x.fiberDownA=x.downstreamFiberA;
+    if(!cleanText(x.fiberUpA)&&cleanText(x.upstreamFiberA)) x.fiberUpA=x.upstreamFiberA;
   });
   return rows;
 }
 async function init(){
-  MANIFEST=await (await fetch("data/manifest-cmts.json")).json();
+  MANIFEST=await (await fetch("data/manifest-cmts.json?v=20260508-1")).json();
   const sel=document.getElementById("cmtsSelect");
-  MANIFEST.cmtsFiles.forEach(x=>{const o=document.createElement("option");o.value=x.cmts;o.textContent=`${x.cmts}（${x.count}筆）`;sel.appendChild(o);});
-  ALL_DB=applyLineCodes(await (await fetch("data/cmts-all.json")).json());
+  sortCMTSFiles(MANIFEST.cmtsFiles).forEach(x=>{const o=document.createElement("option");o.value=x.cmts;o.textContent=`${x.cmts}（${x.count}筆）`;sel.appendChild(o);});
+  ALL_DB=normalizeRows(await (await fetch("data/cmts-all.json?v=20260508-1")).json());
   DB=ALL_DB;
   document.getElementById("stats").textContent=`已載入全部資料：${ALL_DB.length}筆。`;
-  document.getElementById("result").innerHTML='<div class="empty">可直接輸入光點、線編或設備關鍵字查詢，或先選 E6K 分類。</div>';
+  document.getElementById("result").innerHTML='<div class="empty">可直接輸入光點、線編、Hub 或設備關鍵字查詢，或先選 E6K 分類。</div>';
 }
 async function loadCMTS(){
   const cmts=document.getElementById("cmtsSelect").value;
   if(!cmts){DB=ALL_DB;document.getElementById("stats").textContent=`目前範圍：全部E6K，共${DB.length}筆。`;document.getElementById("result").innerHTML='<div class="empty">全域搜尋模式。</div>';return;}
-  DB=applyLineCodes(await (await fetch(`data/${cmts}.json`)).json());
+  DB=normalizeRows(await (await fetch(`data/${cmts}.json?v=20260508-1`)).json());
   document.getElementById("stats").textContent=`目前範圍：${cmts}，共${DB.length}筆。`;
   document.getElementById("result").innerHTML=`<div class="empty">已切換到 ${cmts}。</div>`;
 }
 function card(x){
-  const lineCode = cleanText(x.lineCode || x["線編"] || "");
+  const lineCode=first(x.lineCode,x["線編"]);
   return `<div class="node-card">
     <div class="node-title">
-      <span>📍 ${esc(x.node)}</span>
+      <span>${esc(x.node)}</span>
       <span>
-        ${lineCode ? `<span class="pill">線編 ${esc(lineCode)}</span>` : ""}
+        ${lineCode?`<span class="pill">線編 ${esc(lineCode)}</span>`:""}
         <span class="pill">${esc(x.cmts)}</span>
       </span>
     </div>
@@ -142,11 +164,11 @@ function card(x){
   </div>`;
 }
 function searchData(){
-  const q=cleanText(document.getElementById("searchBox").value).toUpperCase();
+  const q=cleanText(document.getElementById("searchBox").value);
   const box=document.getElementById("result");
   const cmts=document.getElementById("cmtsSelect").value||"全部E6K";
   if(!q){box.innerHTML='<div class="empty">請輸入關鍵字。</div>';return;}
-  const rows=DB.filter(x=>Object.values(x).some(v=>cleanText(v).toUpperCase().includes(q)) || (cleanText(x.lineCode) && `線編${cleanText(x.lineCode)}`.toUpperCase().includes(q)));
+  const rows=DB.filter(x=>matchesQuery(x,q));
   document.getElementById("stats").textContent=`搜尋範圍：${cmts}｜查詢「${esc(q)}」：${rows.length}筆。`;
   box.innerHTML=rows.length?rows.map(card).join(""):`<div class="empty">查無資料：${esc(q)}</div>`;
 }
