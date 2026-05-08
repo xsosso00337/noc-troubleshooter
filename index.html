@@ -25,7 +25,7 @@
   <div class="hero"><div class="hero-inner">
     <div class="title"><h1>機房查修工具</h1></div>
     <div class="nav">
-      <a href="#fault">故障入口</a><a href="node-lookup.html">光點查詢</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="optical-balance-sop.html">光平衡 SOP</a><a href="#standards">標準表</a><a href="#record">查修紀錄</a>
+      <a href="#fault">故障入口</a><a href="node-lookup.html">光點查詢</a><a href="#optical">光纖診斷</a><a href="#rf">RF / DOCSIS</a><a href="#tools">工具SOP</a><a href="optical-balance-sop.html">光平衡 SOP</a><a href="#standards">標準表</a>
     </div>
   </div></div>
 
@@ -178,11 +178,7 @@
       </div>
     </section>
 
-    <section class="grid" id="record" style="margin-top:14px">
-      <div class="card two"><h2>查修紀錄產生器</h2><div class="cols cols3"><div><label>地點 / 節點</label><input id="recLoc" placeholder="例：XX機房 / Node A"></div><div><label>故障現象</label><input id="recSym" placeholder="例：ONU不上線、上行SNR低"></div><div><label>處理人員</label><input id="recName" placeholder="姓名"></div></div><label>現場補充</label><textarea id="recNote" placeholder="輸入現場狀況、設備燈號、平台告警..."></textarea><div class="row" style="margin-top:12px"><button class="btn ok" onclick="makeRecord()">產生紀錄</button><button class="btn secondary" onclick="copyRecord()">複製紀錄</button></div><textarea id="recordText" class="copy" readonly></textarea></div>
-      <div class="card four"><h2>最近判斷</h2><div id="lastDiag" class="result info">尚未執行診斷。</div></div>
-    </section>
-  </main>
+</main>
 
   <div class="footerbar"><div class="row"><span class="small muted">現場順序：端面 / 清潔 → 量測 → 定位 → 系統層</span><a class="quickbtn" href="#fault">回故障入口</a></div></div>
 
