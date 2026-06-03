@@ -3,6 +3,7 @@ import { AppLayout } from "./components/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminPage } from "./pages/AdminPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ImportPage } from "./pages/ImportPage";
 import { LoginPage } from "./pages/LoginPage";
 import { NodeLookupPage } from "./pages/NodeLookupPage";
 import { PonLookupPage } from "./pages/PonLookupPage";
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/nodes" element={<NodeLookupPage />} />
           <Route path="/pon" element={<PonLookupPage />} />
           <Route path="/sop/:kind" element={<SopPage />} />
+          <Route path="/import" element={<ImportPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Route>
       </Route>

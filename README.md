@@ -15,6 +15,7 @@ Lovable-compatible React app for the NOC troubleshooting tools, protected by Sup
 - Admin-only Edge Functions can invite users and import Excel/CSV without exposing the service role key.
 - Query audit logs can only be inserted by the signed-in user.
 - Solid IP / CM SOP screenshots are stored in Supabase behind RLS instead of public frontend assets.
+- Admin/editor users can import Excel/CSV from the protected `/import` page.
 
 ## Local setup
 
@@ -93,7 +94,7 @@ Admin access has two parts:
 1. The person must exist in Supabase Auth as an email/password user.
 2. Their Auth user id must have `admin` in `public.user_roles`.
 
-After the first admin exists, the deployed `admin-users` Edge Function can invite or create future users. It requires a logged-in admin JWT and uses the service role key only inside Supabase Edge Functions.
+After the first admin exists, the deployed `admin-users` Edge Function can invite or create future users. It requires a logged-in admin JWT and uses the service role key only inside Supabase Edge Functions. User deletion is not exposed in the website UI.
 
 Example Lovable call after login:
 
@@ -123,6 +124,12 @@ assets/optical-balance-sop.svg
 ## Excel import from Lovable
 
 The deployed `noc-import-excel` Edge Function accepts a base64 Excel/CSV file from a logged-in `admin` or `editor`, parses the first sheet, writes to the target NOC table, and records the result in `noc_import_jobs`.
+
+The protected `/import` page provides the website upload flow for:
+
+- CMTS / optical node data: `noc_assets`
+- PON data: `noc_pon_assets`
+- legacy node data: `noc_legacy_nodes`
 
 ```ts
 await supabase.functions.invoke("noc-import-excel", {

@@ -603,6 +603,111 @@ textarea:focus {
   padding: 12px;
 }
 
+.import-form {
+  display: grid;
+  gap: 16px;
+}
+
+.import-target-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.import-target {
+  background: var(--surface-soft);
+  border: 1px solid #d6e0e8;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  gap: 7px;
+  min-height: 128px;
+  padding: 14px;
+}
+
+.import-target.active {
+  background: #eef8f7;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(12, 125, 117, 0.12);
+}
+
+.import-target input {
+  accent-color: var(--teal);
+  height: 18px;
+  width: 18px;
+}
+
+.import-target span,
+.file-drop small,
+.toggle-row small {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.file-drop {
+  align-items: center;
+  background: #f9fbfc;
+  border: 1px dashed #aebdcc;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+}
+
+.file-drop svg {
+  color: var(--teal);
+  flex: 0 0 auto;
+}
+
+.file-drop span,
+.toggle-row span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.file-drop input {
+  margin-left: auto;
+  max-width: 260px;
+}
+
+.toggle-row {
+  align-items: flex-start;
+  background: var(--surface-soft);
+  border: 1px solid #dde6ee;
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+}
+
+.toggle-row input {
+  accent-color: var(--teal);
+  height: 18px;
+  margin-top: 3px;
+  width: 18px;
+}
+
+.success-notice {
+  background: #edf8f1;
+  border-color: #b9e3c7;
+  color: var(--green);
+  margin-top: 12px;
+}
+
+.import-result-head {
+  align-items: center;
+  color: var(--green);
+  display: flex;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+
+.import-result-head h2 {
+  margin: 0;
+}
+
 .image-grid {
   display: grid;
   gap: 18px;
@@ -732,6 +837,7 @@ textarea:focus {
   .two-column,
   .tool-grid,
   .result-grid,
+  .import-target-grid,
   .sop-guide-grid {
     grid-template-columns: 1fr;
   }
@@ -767,6 +873,17 @@ textarea:focus {
 
   .card-heading {
     display: grid;
+  }
+
+  .file-drop {
+    align-items: flex-start;
+    display: grid;
+  }
+
+  .file-drop input {
+    margin-left: 0;
+    max-width: 100%;
+    width: 100%;
   }
 
   .pill-row {

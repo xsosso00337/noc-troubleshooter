@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { RefreshCw, Trash2, UserPlus } from "lucide-react";
+import { RefreshCw, UserPlus } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useIsAdmin } from "../lib/useIsAdmin";
@@ -75,27 +75,12 @@ export function AdminPage() {
     void loadUsers();
   }
 
-  async function removeUser(target: AdminUser) {
-    if (!confirm(`確定刪除 ${target.email}？此操作會同時刪除 Auth 帳號與角色。`)) return;
-    setError("");
-    setMessage("");
-    const { data, error: err } = await supabase.functions.invoke("admin-users", {
-      body: { action: "delete", userId: target.id },
-    });
-    if (err || data?.error) {
-      setError(err?.message || data?.error || "刪除失敗");
-      return;
-    }
-    setMessage(`已刪除 ${target.email}`);
-    void loadUsers();
-  }
-
   return (
     <main className="page-stack">
       <section className="page-title">
         <span>Admin</span>
         <h1>使用者管理</h1>
-        <p>建立、查看與刪除帳號；顯示每位使用者的最後登入時間。</p>
+        <p>建立與查看帳號；顯示每位使用者的最後登入時間。</p>
       </section>
 
       <section className="panel">
@@ -142,7 +127,6 @@ export function AdminPage() {
                 <th>角色</th>
                 <th>最後登入</th>
                 <th>建立時間</th>
-                <th>動作</th>
               </tr>
             </thead>
             <tbody>
@@ -155,16 +139,10 @@ export function AdminPage() {
                   <td>{u.roles.length ? u.roles.join(", ") : "—"}</td>
                   <td>{fmt(u.last_sign_in_at)}</td>
                   <td>{fmt(u.created_at)}</td>
-                  <td>
-                    <button className="ghost-button" onClick={() => void removeUser(u)} aria-label="刪除">
-                      <Trash2 size={15} />
-                      <span>刪除</span>
-                    </button>
-                  </td>
                 </tr>
               ))}
               {!users.length && !loading && (
-                <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--muted)" }}>尚無資料</td></tr>
+                <tr><td colSpan={4} style={{ textAlign: "center", color: "var(--muted)" }}>尚無資料</td></tr>
               )}
             </tbody>
           </table>

@@ -4,12 +4,11 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 type Role = "admin" | "editor" | "viewer";
 
 type AdminUserRequest = {
-  action?: "invite" | "create" | "list" | "delete";
+  action?: "invite" | "create" | "list";
   email?: string;
   password?: string;
   role?: Role;
   redirectTo?: string;
-  userId?: string;
 };
 
 const corsHeaders = {
@@ -97,15 +96,6 @@ Deno.serve(async (req) => {
       }));
 
       return jsonResponse({ ok: true, users });
-    }
-
-    // ---- DELETE ----
-    if (action === "delete") {
-      if (!body.userId) return jsonResponse({ error: "userId required" }, 400);
-      if (body.userId === user.id) return jsonResponse({ error: "Cannot delete yourself" }, 400);
-      const { error: delErr } = await adminClient.auth.admin.deleteUser(body.userId);
-      if (delErr) return jsonResponse({ error: delErr.message }, 400);
-      return jsonResponse({ ok: true });
     }
 
     // ---- CREATE / INVITE ----

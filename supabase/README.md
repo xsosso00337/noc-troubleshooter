@@ -69,7 +69,7 @@ Create the first Supabase Auth user in Dashboard or by invite, then assign the r
 select private.grant_noc_role_by_email('admin@example.com', 'admin');
 ```
 
-After that, use the `admin-users` Edge Function to invite/create future accounts from a logged-in admin session. Do not use `user_metadata` for authorization; role checks read `public.user_roles`.
+After that, use the `admin-users` Edge Function to invite/create future accounts from a logged-in admin session. Account deletion is not exposed in the website UI. Do not use `user_metadata` for authorization; role checks read `public.user_roles`.
 
 ## 6. Import data
 
@@ -91,6 +91,8 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_for_local_import_only
 Do not add the service role key to Lovable.
 
 For a Lovable admin upload flow, call the deployed `noc-import-excel` Edge Function with a base64 Excel/CSV file. The function requires a logged-in `admin` or `editor`, parses the first sheet, writes to the selected NOC table, and records the job in `noc_import_jobs`.
+
+The React app exposes the same flow at `/import` for signed-in `admin` and `editor` users.
 
 Allowed target tables:
 
