@@ -14,6 +14,7 @@ Lovable-compatible React app for the NOC troubleshooting tools, protected by Sup
 - Admin/editor roles are stored in `user_roles`; role checks are not based on editable user metadata.
 - Admin-only Edge Functions can invite users and import Excel/CSV without exposing the service role key.
 - Query audit logs can only be inserted by the signed-in user.
+- Solid IP / CM SOP screenshots are stored in Supabase behind RLS instead of public frontend assets.
 
 ## Local setup
 
@@ -53,6 +54,7 @@ It creates:
 - `audit_logs`
 - `user_roles`
 - `noc_import_jobs`
+- `noc_sop_assets`
 - private Storage bucket `noc-imports`
 
 Apply it only after confirming the target Supabase project is not production, or after you are ready to migrate production:
@@ -106,6 +108,17 @@ await supabase.functions.invoke("admin-users", {
 ```
 
 The first admin should be bootstrapped once by Codex or the Supabase Dashboard after the Auth user exists.
+
+## SOP images
+
+The Solid IP / CM SOP page loads unmasked screenshots from `public.noc_sop_assets` after login. Do not put those screenshots in `assets/`, `public/`, JSON, CSV, or Excel files committed to Git.
+
+The optical balance SOP currently uses the local files below. If an optical SOP image disappears, check these first:
+
+```text
+assets/optical-balance-receiver-sop.svg
+assets/optical-balance-sop.svg
+```
 
 ## Excel import from Lovable
 

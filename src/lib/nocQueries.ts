@@ -1,4 +1,4 @@
-import type { LegacyNode, NocAsset, PonAsset } from "../types";
+import type { LegacyNode, NocAsset, PonAsset, SopAsset } from "../types";
 import { writeAuditLog } from "./audit";
 import { supabase } from "./supabase";
 
@@ -107,4 +107,19 @@ export async function loadPonGroups() {
   return Array.from(counts.entries())
     .map(([group, count]) => ({ group, count }))
     .sort((a, b) => a.group.localeCompare(b.group, "zh-Hant-u-nu-latn"));
+}
+
+export async function loadSopAssets(category: "static_ip" | "cm_upgrade" | "optical") {
+  await requireSession();
+
+  const { data, error } = await supabase
+    .from("noc_sop_assets")
+    .select("id,category,slug,title,caption,sort_order,content_type,width,height,image_base64")
+    .eq("category", category)
+    .order("sort_order", { ascending: true });
+
+  if (error) throw error;
+
+  await writeAuditLog("load_sop_assets", { category }, { result_count: data?.length ?? 0 });
+  return (data ?? []) as SopAsset[];
 }

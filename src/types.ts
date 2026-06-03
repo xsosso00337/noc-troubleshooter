@@ -95,3 +95,16 @@ export type LegacyNode = {
   source_row: number | null;
   warning: string | null;
 };
+
+export type SopAsset = {
+  id: string;
+  category: "static_ip" | "cm_upgrade" | "optical";
+  slug: string;
+  title: string;
+  caption: string | null;
+  sort_order: number;
+  content_type: string;
+  width: number | null;
+  height: number | null;
+  image_base64: string;
+};

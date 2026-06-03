@@ -20,6 +20,7 @@ Current migration set:
 - `supabase/migrations/20260601083000_harden_noc_supabase.sql`
 - `supabase/migrations/20260601090000_admin_roles_imports.sql`
 - `supabase/migrations/20260601091500_optimize_user_roles_policy.sql`
+- `supabase/migrations/20260603100856_create_noc_sop_assets.sql`
 
 If you use Supabase CLI later:
 
@@ -46,6 +47,7 @@ Expected highlights:
 - `authenticated can delete noc_assets` is `false`
 - `authenticated can insert audit_logs` is `true`
 - `authenticated can select audit_logs` is `false`
+- `noc_sop_assets` has RLS enabled and only `authenticated` can select SOP screenshots
 
 ## 4. Configure Auth
 
@@ -105,3 +107,9 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_or_anon_public_key
 ```
 
 The browser key is allowed to exist client-side because RLS and grants protect the tables.
+
+## 8. SOP screenshots
+
+The unmasked Solid IP / CM SOP screenshots live in `public.noc_sop_assets` as authenticated-only rows. They should not be committed to Git or uploaded to public frontend assets.
+
+The optical balance SOP remains as local SVG files in `assets/`, because those diagrams do not contain the same internal request screenshots.

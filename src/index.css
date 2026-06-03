@@ -608,6 +608,31 @@ textarea:focus {
   gap: 18px;
 }
 
+.sop-guide-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sop-flow-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.sop-step {
+  background: var(--surface-soft);
+  border: 1px solid #dde6ee;
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.sop-step span {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .sop-image {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -617,10 +642,50 @@ textarea:focus {
   padding: 10px;
 }
 
+.sop-image-head {
+  align-items: center;
+  border-bottom: 1px solid #e4e9ef;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: -10px -10px 10px;
+  padding: 12px;
+}
+
+.sop-image-head span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sop-image-head small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.sop-open-link {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 8px 11px;
+}
+
 .sop-image img {
   display: block;
   height: auto;
   width: 100%;
+}
+
+.sop-loader,
+.sop-error {
+  width: 100%;
+}
+
+.sop-error {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
 }
 
 .drawer-backdrop {
@@ -666,7 +731,8 @@ textarea:focus {
 
   .two-column,
   .tool-grid,
-  .result-grid {
+  .result-grid,
+  .sop-guide-grid {
     grid-template-columns: 1fr;
   }
 
@@ -705,6 +771,11 @@ textarea:focus {
 
   .pill-row {
     justify-content: flex-start;
+  }
+
+  .sop-image-head {
+    align-items: flex-start;
+    display: grid;
   }
 
   .field-table th,

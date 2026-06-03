@@ -1,65 +1,216 @@
+import { ExternalLink, RefreshCw } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
+import { loadSopAssets } from "../lib/nocQueries";
+import type { SopAsset } from "../types";
 
-const opticalImages = [
-  new URL("../../assets/optical-balance-receiver-sop.svg", import.meta.url).href,
-  new URL("../../assets/optical-balance-sop.svg", import.meta.url).href,
+type DisplayImage = {
+  id: string;
+  title: string;
+  caption?: string | null;
+  src: string;
+  width?: number | null;
+  height?: number | null;
+};
+
+const opticalImages: DisplayImage[] = [
+  {
+    id: "optical-receiver",
+    title: "第一套：寬宇接收機光平衡",
+    caption: "測試站 / 光盒選擇、光站 A/B 組選擇與光站設定調整。",
+    src: new URL("../../assets/optical-balance-receiver-sop.svg", import.meta.url).href,
+  },
+  {
+    id: "optical-gx2",
+    title: "第二套：GX2 光平衡 / 查光功率",
+    caption: "保留光平衡與查光功率兩個流程，方便現場對照按鍵順序。",
+    src: new URL("../../assets/optical-balance-sop.svg", import.meta.url).href,
+  },
 ];
 
-const staticIpImages = [
-  new URL("../../assets/sop-static-ip-redacted-01.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-02.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-03.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-04.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-05.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-06.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-07.png", import.meta.url).href,
-  new URL("../../assets/sop-static-ip-redacted-08.png", import.meta.url).href,
+const cmUpgradeSteps = [
+  ["記錄資料", "先記錄 MAC、原本 Description、Client Class、CMTS 與操作時間。"],
+  ["確認狀態", "用 WEB OQC 與 CMTS 查詢確認 CM 是否在線，必要時先通知客服與用戶。"],
+  ["放入升級群組", "在 BCC Client Classes 移除原群組資料，放入 HitronCGN5U-4B3。"],
+  ["重開與確認", "重開 CM 後等待升版完成，再回 WEB OQC / CM 頁面確認版本。"],
+  ["回復與回報", "確認完成後回到正確群組，截圖並回覆處理結果。"],
 ];
+
+const staticIpSteps = [
+  ["整理申裝資料", "從客服信件確認客編、CM MAC、CPE MAC、固定 IP 與 Node。"],
+  ["查 Rule", "依 Node 到 BCC 確認對應 DHCPv4 Subnet Rule / Static Addresses。"],
+  ["設定 BCC", "Static Address 的 MAC Address 使用 CPE MAC，Description 建議保留客編與 CPE MAC。"],
+  ["設定 ISC_CPE", "Block CPE 的 custid 填客編，hd_addr 填 CPE MAC，cmmac 填 CM MAC。"],
+  ["回查複核", "完成後用客編、CPE MAC、CM MAC 交叉確認，避免填反或重複設定。"],
+];
+
+const fieldRows = [
+  ["CPE MAC", "BCC Static Address 的 MAC Address / Description", "ISC_CPE 的 hd_addr", "固 I 綁定用，勿填成 CM MAC。"],
+  ["CM MAC", "BCC Static Address 不填在 MAC 欄", "ISC_CPE 的 cmmac", "用於排除名單，需與 CPE MAC 分開確認。"],
+  ["固定 IP", "確認對應規則與可用保留列", "作為複查資訊", "設定後回查 IP / MAC 對應。"],
+];
+
+function toDataUrl(asset: SopAsset) {
+  return `data:${asset.content_type};base64,${asset.image_base64}`;
+}
+
+function StepPanel({ title, steps }: { title: string; steps: string[][] }) {
+  return (
+    <section className="panel">
+      <h2>{title}</h2>
+      <div className="sop-flow-grid">
+        {steps.map(([heading, text], index) => (
+          <div className="sop-step" key={heading}>
+            <strong>{index + 1}. {heading}</strong>
+            <span>{text}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SopImageGrid({ images, loading, error, onRetry }: {
+  images: DisplayImage[];
+  loading?: boolean;
+  error?: string;
+  onRetry?: () => void;
+}) {
+  const [failed, setFailed] = useState<Record<string, boolean>>({});
+
+  return (
+    <section className="image-grid">
+      {loading && <div className="loader-panel sop-loader">讀取 SOP 圖片中...</div>}
+      {error && (
+        <div className="notice danger sop-error">
+          <span>{error}</span>
+          {onRetry && (
+            <button className="ghost-button" type="button" onClick={onRetry}>
+              <RefreshCw size={16} />
+              <span>重新讀取</span>
+            </button>
+          )}
+        </div>
+      )}
+      {images.map((image) => (
+        <figure className="sop-image" key={image.id}>
+          <figcaption className="sop-image-head">
+            <span>
+              <strong>{image.title}</strong>
+              {image.caption && <small>{image.caption}</small>}
+            </span>
+            <a className="ghost-button sop-open-link" href={image.src} target="_blank" rel="noopener noreferrer">
+              <ExternalLink size={16} />
+              <span>開圖</span>
+            </a>
+          </figcaption>
+          {failed[image.id] ? (
+            <div className="empty-state danger">圖片載入失敗，請按「開圖」或重新整理頁面。</div>
+          ) : (
+            <img
+              src={image.src}
+              alt={image.title}
+              loading="lazy"
+              width={image.width ?? undefined}
+              height={image.height ?? undefined}
+              onError={() => setFailed((current) => ({ ...current, [image.id]: true }))}
+            />
+          )}
+        </figure>
+      ))}
+    </section>
+  );
+}
 
 export function SopPage() {
   const { kind } = useParams();
-  if (kind !== "optical" && kind !== "static-ip") return <Navigate to="/" replace />;
+  const [staticAssets, setStaticAssets] = useState<SopAsset[]>([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
+  const [assetError, setAssetError] = useState("");
 
   const isOptical = kind === "optical";
-  const images = isOptical ? opticalImages : staticIpImages;
+  const isStaticIp = kind === "static-ip";
+
+  const loadStaticAssets = async () => {
+    setLoadingAssets(true);
+    setAssetError("");
+    try {
+      const assets = await loadSopAssets("static_ip");
+      setStaticAssets(assets);
+    } catch (error) {
+      setAssetError(error instanceof Error ? error.message : "SOP 圖片讀取失敗");
+    } finally {
+      setLoadingAssets(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isStaticIp) void loadStaticAssets();
+  }, [isStaticIp]);
+
+  const staticImages = useMemo<DisplayImage[]>(
+    () => staticAssets.map((asset) => ({
+      id: asset.slug,
+      title: asset.title,
+      caption: asset.caption,
+      src: toDataUrl(asset),
+      width: asset.width,
+      height: asset.height,
+    })),
+    [staticAssets],
+  );
+
+  if (!isOptical && !isStaticIp) return <Navigate to="/" replace />;
 
   return (
     <main className="page-stack">
       <section className="page-title">
         <span>SOP</span>
         <h1>{isOptical ? "光平衡 SOP" : "CM 升版 / 固 I 設定 SOP"}</h1>
-        <p>{isOptical ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。" : "CM 3B8 升版、BCC 固 I 與 ISC_CPE 排除名單流程。"}</p>
+        <p>{isOptical ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。" : "CM 3B8 升版、BCC 固 I 與 ISC_CPE 排除名單流程；圖片由 Supabase RLS 保護，登入後才會載入。"}</p>
       </section>
 
-      {!isOptical && (
-        <section className="panel">
-          <h2>固 I 欄位對照</h2>
-          <table className="field-table wide">
-            <tbody>
-              <tr>
-                <th>來源資料</th>
-                <td>BCC Static Addresses、ISC_CPE 排除名單與客戶固定 IP 申裝資料。</td>
-              </tr>
-              <tr>
-                <th>安全原則</th>
-                <td>圖片保留 redacted 版本；原始客戶資料不可 commit，僅能放在安全環境匯入或查閱。</td>
-              </tr>
-              <tr>
-                <th>操作順序</th>
-                <td>先確認 CM 狀態與申裝資料，再進 BCC 設定，最後同步 ISC_CPE 排除名單。</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+      {isOptical ? (
+        <SopImageGrid images={opticalImages} />
+      ) : (
+        <>
+          <div className="sop-guide-grid">
+            <StepPanel title="CM 3B8 升版流程" steps={cmUpgradeSteps} />
+            <StepPanel title="固 I 設定流程" steps={staticIpSteps} />
+          </div>
+
+          <section className="panel">
+            <h2>固 I 欄位對照</h2>
+            <table className="field-table wide">
+              <thead>
+                <tr>
+                  <th>來源資料</th>
+                  <th>BCC Static Addresses</th>
+                  <th>ISC_CPE 排除名單</th>
+                  <th>注意</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fieldRows.map(([source, bcc, isc, note]) => (
+                  <tr key={source}>
+                    <td>{source}</td>
+                    <td>{bcc}</td>
+                    <td>{isc}</td>
+                    <td>{note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+
+          <SopImageGrid
+            images={staticImages}
+            loading={loadingAssets}
+            error={assetError}
+            onRetry={loadStaticAssets}
+          />
+        </>
       )}
-
-      <section className="image-grid">
-        {images.map((src, index) => (
-          <figure className="sop-image" key={src}>
-            <img src={src} alt={`${isOptical ? "光平衡" : "固 I"} SOP ${index + 1}`} />
-          </figure>
-        ))}
-      </section>
     </main>
   );
 }
