@@ -21,6 +21,7 @@ Current migration set:
 - `supabase/migrations/20260601090000_admin_roles_imports.sql`
 - `supabase/migrations/20260601091500_optimize_user_roles_policy.sql`
 - `supabase/migrations/20260603100856_create_noc_sop_assets.sql`
+- `supabase/migrations/20260603112600_harden_noc_sop_asset_grants.sql`
 
 If you use Supabase CLI later:
 
