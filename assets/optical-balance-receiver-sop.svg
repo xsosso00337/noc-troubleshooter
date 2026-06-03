@@ -1,0 +1,249 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1280" viewBox="0 0 2400 1280" role="img" aria-labelledby="title desc">
+  <title id="title">寬宇接收機光平衡 SOP</title>
+  <desc id="desc">依現場照片排版整理的第二套光平衡 SOP，三欄分別為測試站光盒選擇、選擇光站 A/B 組、光站設定調整</desc>
+  <defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <style>
+      .bg{fill:#f5f9ff}
+      .title{font:900 42px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f172a}
+      .sub{font:600 20px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#475569}
+      .panel{fill:#fff;stroke:#0f172a;stroke-width:3;filter:url(#shadow)}
+      .panelHead{fill:#eef6ff;stroke:#0f172a;stroke-width:2}
+      .headText{font:900 25px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#0f2742}
+      .note{font:650 17px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#475569}
+      .small{font:650 15px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#64748b}
+      .label{font:800 18px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}
+      .cmd{font:900 17px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#1d4ed8}
+      .caption{font:800 16px 'Noto Sans TC','Microsoft JhengHei',Arial,sans-serif;fill:#334155}
+      .display{fill:#fff;stroke:#0f172a;stroke-width:3}
+      .displayFill{fill:#f8fbff;stroke:#0f172a;stroke-width:3}
+      .mono{font:900 27px Consolas,'Courier New',monospace;fill:#111827;letter-spacing:0}
+      .monoLg{font:900 31px Consolas,'Courier New',monospace;fill:#111827;letter-spacing:0}
+      .line{stroke:#2563eb;stroke-width:4;fill:none;marker-end:url(#arrow)}
+      .hintBox{fill:#fff8df;stroke:#f1d36b;stroke-width:2}
+      .divider{stroke:#dbe8f6;stroke-width:2;stroke-dasharray:7 8}
+    </style>
+  </defs>
+
+  <rect class="bg" width="2400" height="1280"/>
+  <text x="1200" y="58" text-anchor="middle" class="title">寬宇接收機光平衡 SOP</text>
+  <text x="1200" y="94" text-anchor="middle" class="sub">依原照片排版重畫：三個獨立功能並排，左到右分別操作</text>
+
+  <g transform="translate(50 140)">
+    <rect class="panel" width="720" height="1040" rx="10"/>
+    <rect class="panelHead" x="42" y="28" width="636" height="58" rx="4"/>
+    <text x="360" y="65" text-anchor="middle" class="headText">測試站 / 光盒選擇</text>
+
+    <text x="78" y="124" class="note">功能：選 A01~A03、站別與組別碼，最後指定 I-222 / I-223。</text>
+
+    <g transform="translate(260 150)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="99" y="45" text-anchor="middle" class="monoLg">---</text>
+    </g>
+    <text x="480" y="188" class="cmd">按 SET</text>
+    <path class="line" d="M359 225 V276"/>
+
+    <g transform="translate(260 292)">
+      <rect class="displayFill" x="0" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="66" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">A</text>
+      <text x="99" y="45" text-anchor="middle" class="mono">0</text>
+      <text x="165" y="45" text-anchor="middle" class="mono">2</text>
+    </g>
+    <text x="480" y="314" class="cmd">按 ▼</text>
+    <text x="480" y="340" class="small">A01~A03</text>
+    <path class="line" d="M359 368 V420"/>
+
+    <g transform="translate(260 436)">
+      <rect class="displayFill" x="0" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="66" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">3</text>
+    </g>
+    <text x="480" y="452" class="cmd">按 SET</text>
+    <text x="480" y="478" class="small">再按 ▼ 選 1~3</text>
+    <path class="line" d="M359 512 V564"/>
+
+    <g transform="translate(260 580)">
+      <rect class="displayFill" x="0" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="66" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="132" y="0" width="66" height="66"/>
+      <text x="165" y="45" text-anchor="middle" class="mono">0</text>
+    </g>
+    <text x="480" y="596" class="cmd">按 SET</text>
+    <text x="480" y="622" class="small">再按 ▼ 選 0~2</text>
+    <path class="line" d="M359 656 V712"/>
+
+    <rect class="hintBox" x="78" y="740" width="564" height="206" rx="12"/>
+    <text x="104" y="778" class="label">目的光盒</text>
+    <text x="104" y="810" class="note">完成條件後，選擇要調整的光盒。</text>
+    <g transform="translate(154 846)">
+      <rect class="display" x="0" y="0" width="66" height="60"/>
+      <rect class="display" x="66" y="0" width="66" height="60"/>
+      <rect class="display" x="132" y="0" width="66" height="60"/>
+      <text x="165" y="42" text-anchor="middle" class="mono">1</text>
+      <text x="99" y="96" text-anchor="middle" class="caption">I-222</text>
+    </g>
+    <g transform="translate(384 846)">
+      <rect class="display" x="0" y="0" width="66" height="60"/>
+      <rect class="display" x="66" y="0" width="66" height="60"/>
+      <rect class="display" x="132" y="0" width="66" height="60"/>
+      <text x="165" y="42" text-anchor="middle" class="mono">2</text>
+      <text x="99" y="96" text-anchor="middle" class="caption">I-223</text>
+    </g>
+  </g>
+
+  <g transform="translate(840 140)">
+    <rect class="panel" width="720" height="1040" rx="10"/>
+    <rect class="panelHead" x="42" y="28" width="636" height="58" rx="4"/>
+    <text x="360" y="65" text-anchor="middle" class="headText">選擇光站 A 組 / B 組</text>
+
+    <text x="78" y="124" class="note">功能：選定 I-222 / I-223，再指定 A 組或 B 組。</text>
+
+    <g transform="translate(260 150)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="99" y="45" text-anchor="middle" class="monoLg">---</text>
+    </g>
+    <text x="480" y="188" class="cmd">按 SET</text>
+    <path class="line" d="M359 225 V276"/>
+
+    <g transform="translate(260 292)">
+      <rect class="displayFill" x="0" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="66" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">A</text>
+      <text x="99" y="45" text-anchor="middle" class="mono">0</text>
+      <text x="165" y="45" text-anchor="middle" class="mono">2</text>
+    </g>
+    <text x="480" y="314" class="cmd">按 ▼</text>
+    <text x="480" y="340" class="small">A01~A03</text>
+    <path class="line" d="M359 368 V416"/>
+
+    <g transform="translate(130 444)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">1</text>
+      <text x="99" y="102" text-anchor="middle" class="caption">I-222</text>
+    </g>
+    <g transform="translate(394 444)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">2</text>
+      <text x="99" y="102" text-anchor="middle" class="caption">I-223</text>
+    </g>
+    <text x="360" y="594" text-anchor="middle" class="small">用 ▼ 切換光站，按 SET 確認。</text>
+    <path class="line" d="M359 610 V666"/>
+
+    <rect class="hintBox" x="58" y="696" width="604" height="264" rx="12"/>
+    <text x="90" y="734" class="label">選 A / B 組</text>
+    <text x="90" y="766" class="note">a 代表 A 組，b 代表 B 組。</text>
+    <line class="divider" x1="360" y1="794" x2="360" y2="930"/>
+    <g transform="translate(94 804)">
+      <rect class="display" x="0" y="0" width="58" height="56"/>
+      <rect class="display" x="58" y="0" width="58" height="56"/>
+      <rect class="display" x="116" y="0" width="58" height="56"/>
+      <text x="145" y="39" text-anchor="middle" class="mono">a</text>
+      <text x="87" y="76" text-anchor="middle" class="caption">I-222 A組</text>
+    </g>
+    <g transform="translate(94 896)">
+      <rect class="display" x="0" y="0" width="58" height="56"/>
+      <rect class="display" x="58" y="0" width="58" height="56"/>
+      <rect class="display" x="116" y="0" width="58" height="56"/>
+      <text x="145" y="39" text-anchor="middle" class="mono">b</text>
+      <text x="87" y="91" text-anchor="middle" class="caption">I-222 B組</text>
+    </g>
+    <g transform="translate(426 804)">
+      <rect class="display" x="0" y="0" width="58" height="56"/>
+      <rect class="display" x="58" y="0" width="58" height="56"/>
+      <rect class="display" x="116" y="0" width="58" height="56"/>
+      <text x="145" y="39" text-anchor="middle" class="mono">a</text>
+      <text x="87" y="76" text-anchor="middle" class="caption">I-223 A組</text>
+    </g>
+    <g transform="translate(426 896)">
+      <rect class="display" x="0" y="0" width="58" height="56"/>
+      <rect class="display" x="58" y="0" width="58" height="56"/>
+      <rect class="display" x="116" y="0" width="58" height="56"/>
+      <text x="145" y="39" text-anchor="middle" class="mono">b</text>
+      <text x="87" y="91" text-anchor="middle" class="caption">I-223 B組</text>
+    </g>
+  </g>
+
+  <g transform="translate(1630 140)">
+    <rect class="panel" width="720" height="1040" rx="10"/>
+    <rect class="panelHead" x="42" y="28" width="636" height="58" rx="4"/>
+    <text x="360" y="65" text-anchor="middle" class="headText">光站設定調整</text>
+
+    <text x="78" y="124" class="note">功能：依光站與 A/B 組進入設定，再調整十位與個位。</text>
+
+    <g transform="translate(260 150)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="99" y="45" text-anchor="middle" class="monoLg">---</text>
+    </g>
+    <text x="480" y="188" class="cmd">按 SET</text>
+    <path class="line" d="M359 225 V276"/>
+
+    <g transform="translate(260 292)">
+      <rect class="displayFill" x="0" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="66" y="0" width="66" height="66"/>
+      <rect class="displayFill" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">A</text>
+      <text x="99" y="45" text-anchor="middle" class="mono">0</text>
+      <text x="165" y="45" text-anchor="middle" class="mono">1</text>
+    </g>
+    <text x="480" y="314" class="cmd">按 ▼</text>
+    <text x="480" y="340" class="small">A01~A03</text>
+    <path class="line" d="M359 368 V420"/>
+
+    <g transform="translate(260 436)">
+      <rect class="display" x="0" y="0" width="66" height="66"/>
+      <rect class="display" x="66" y="0" width="66" height="66"/>
+      <rect class="display" x="132" y="0" width="66" height="66"/>
+      <text x="33" y="45" text-anchor="middle" class="mono">1</text>
+    </g>
+    <g transform="translate(488 414)">
+      <text x="0" y="25" class="small">1：I-222 A組</text>
+      <text x="0" y="55" class="small">2：I-222 B組</text>
+      <text x="0" y="85" class="small">3：I-223 A組</text>
+      <text x="0" y="115" class="small">4：I-223 B組</text>
+    </g>
+    <text x="480" y="570" class="cmd">按 SET</text>
+    <text x="480" y="596" class="small">再按 ▲▼ 選 1~4</text>
+    <path class="line" d="M359 512 V650"/>
+
+    <rect class="hintBox" x="78" y="684" width="564" height="276" rx="12"/>
+    <text x="104" y="724" class="label">調整數值</text>
+    <g transform="translate(250 756)">
+      <rect class="display" x="0" y="0" width="70" height="66"/>
+      <rect class="display" x="70" y="0" width="70" height="66"/>
+      <rect class="display" x="140" y="0" width="70" height="66"/>
+      <text x="35" y="46" text-anchor="middle" class="monoLg">-</text>
+      <text x="105" y="46" text-anchor="middle" class="monoLg">0</text>
+      <text x="175" y="46" text-anchor="middle" class="monoLg">0</text>
+    </g>
+    <g transform="translate(104 856)">
+      <text x="0" y="24" class="cmd">按 SET 進入位數</text>
+      <text x="0" y="56" class="note">十位數：按 ▲▼ 微調</text>
+      <text x="0" y="88" class="note">個位數：按 ▲▼ 微調</text>
+      <text x="0" y="120" class="note">完成後再按 SET 儲存</text>
+    </g>
+  </g>
+
+  <g transform="translate(50 1210)">
+    <rect width="2300" height="48" rx="12" fill="#eaf4ff" stroke="#bfdbfe"/>
+    <text x="26" y="31" class="small">現場提醒：這張是依照片辨識整理的第二套流程；若實機面板字樣或按鍵順序不同，請以現場顯示為準再修正。</text>
+  </g>
+</svg>

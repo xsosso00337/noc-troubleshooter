@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>機房查修工具</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        const remove = () => {
+          const el = document.getElementById('lovable-badge');
+          if (el) el.remove();
+        };
+        remove();
+        if (window.MutationObserver) {
+          const mo = new MutationObserver(remove);
+          mo.observe(document.body, { childList: true, subtree: true });
+        }
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
