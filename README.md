@@ -94,7 +94,7 @@ Admin access has two parts:
 1. The person must exist in Supabase Auth as an email/password user.
 2. Their Auth user id must have `admin` in `public.user_roles`.
 
-After the first admin exists, the deployed `admin-users` Edge Function can invite or create future users. It requires a logged-in admin JWT and uses the service role key only inside Supabase Edge Functions. User deletion is not exposed in the website UI.
+After the first admin exists, the deployed `admin-users` Edge Function can invite or create future users. It requires a logged-in admin JWT and uses the service role key only inside Supabase Edge Functions. Admin accounts are protected from deletion; non-admin accounts can be deleted from the website.
 
 Example Lovable call after login:
 

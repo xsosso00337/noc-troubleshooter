@@ -69,7 +69,7 @@ Create the first Supabase Auth user in Dashboard or by invite, then assign the r
 select private.grant_noc_role_by_email('admin@example.com', 'admin');
 ```
 
-After that, use the `admin-users` Edge Function to invite/create future accounts from a logged-in admin session. Account deletion is not exposed in the website UI. Do not use `user_metadata` for authorization; role checks read `public.user_roles`.
+After that, use the `admin-users` Edge Function to invite/create future accounts from a logged-in admin session. Admin accounts are protected from deletion; non-admin accounts can be deleted from the website. Do not use `user_metadata` for authorization; role checks read `public.user_roles`.
 
 ## 6. Import data
 

@@ -4,11 +4,12 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 type Role = "admin" | "editor" | "viewer";
 
 type AdminUserRequest = {
-  action?: "invite" | "create" | "list";
+  action?: "invite" | "create" | "list" | "delete";
   email?: string;
   password?: string;
   role?: Role;
   redirectTo?: string;
+  userId?: string;
 };
 
 const corsHeaders = {
@@ -96,6 +97,26 @@ Deno.serve(async (req) => {
       }));
 
       return jsonResponse({ ok: true, users });
+    }
+
+    // ---- DELETE NON-ADMIN USERS ----
+    if (action === "delete") {
+      if (!body.userId) return jsonResponse({ error: "userId required" }, 400);
+      if (body.userId === user.id) return jsonResponse({ error: "Cannot delete yourself" }, 400);
+
+      const { data: targetRoles, error: targetRoleError } = await adminClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", body.userId);
+
+      if (targetRoleError) return jsonResponse({ error: "Could not verify target user role" }, 500);
+      if ((targetRoles ?? []).some((row) => row.role === "admin")) {
+        return jsonResponse({ error: "Admin users cannot be deleted" }, 403);
+      }
+
+      const { error: delErr } = await adminClient.auth.admin.deleteUser(body.userId);
+      if (delErr) return jsonResponse({ error: delErr.message }, 400);
+      return jsonResponse({ ok: true });
     }
 
     // ---- CREATE / INVITE ----
