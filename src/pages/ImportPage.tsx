@@ -4,23 +4,24 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useUserRoles } from "../lib/useUserRoles";
 
-type TargetTable = "noc_assets" | "noc_pon_assets" | "noc_legacy_nodes";
+type ImportTarget = "noc_assets" | "noc_pon_assets" | "noc_legacy_nodes" | "noc_sop_assets";
 
 type ImportResult = {
   ok: boolean;
   job_id: string;
   source_file_id: string;
-  table: TargetTable;
+  table: ImportTarget;
   rows: number;
   sheet_name: string;
 };
 
 const maxUploadBytes = 10 * 1024 * 1024;
 
-const targetOptions: Array<{ value: TargetTable; label: string; hint: string }> = [
+const targetOptions: Array<{ value: ImportTarget; label: string; hint: string }> = [
   { value: "noc_assets", label: "CMTS / 光點主資料", hint: "更新 CMTS、Node、機櫃、接收機與光路欄位。" },
   { value: "noc_pon_assets", label: "PON 全光資料", hint: "更新 OLT、PON、建物、配線與完工欄位。" },
   { value: "noc_legacy_nodes", label: "舊光點資料", hint: "更新舊版 Node、CMTS、TX/CH 與回傳接收機欄位。" },
+  { value: "noc_sop_assets", label: "CM 升版 SOP", hint: "將 Excel 工作表轉成登入後才可讀取的 SOP 內容。" },
 ];
 
 function readFileAsDataUrl(file: File) {
@@ -39,7 +40,7 @@ function formatBytes(bytes: number) {
 
 export function ImportPage() {
   const { canImport, loading: roleLoading } = useUserRoles();
-  const [targetTable, setTargetTable] = useState<TargetTable>("noc_assets");
+  const [targetTable, setTargetTable] = useState<ImportTarget>("noc_assets");
   const [file, setFile] = useState<File | null>(null);
   const [replaceSource, setReplaceSource] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -55,6 +56,7 @@ export function ImportPage() {
   const resultOption = result
     ? targetOptions.find((option) => option.value === result.table) ?? selectedOption
     : selectedOption;
+  const isSopImport = targetTable === "noc_sop_assets";
 
   async function importFile(event: FormEvent) {
     event.preventDefault();
@@ -78,6 +80,7 @@ export function ImportPage() {
       const { data, error: invokeError } = await supabase.functions.invoke("noc-import-excel", {
         body: {
           table: targetTable,
+          sopCategory: isSopImport ? "cm_upgrade" : undefined,
           filename: file.name,
           base64,
           replaceSource,
@@ -143,8 +146,8 @@ export function ImportPage() {
           <label className="toggle-row">
             <input checked={replaceSource} onChange={(event) => setReplaceSource(event.target.checked)} type="checkbox" />
             <span>
-              <strong>取代同檔名舊資料</strong>
-              <small>開啟後會先刪除同一個檔名匯入過的資料，再寫入新資料。</small>
+              <strong>{isSopImport ? "取代既有 CM 升版 SOP" : "取代同檔名舊資料"}</strong>
+              <small>{isSopImport ? "開啟後會先刪除舊的 CM 升版 SOP，再寫入新內容。" : "開啟後會先刪除同一個檔名匯入過的資料，再寫入新資料。"}</small>
             </span>
           </label>
 

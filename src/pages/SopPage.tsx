@@ -28,14 +28,6 @@ const opticalImages: DisplayImage[] = [
   },
 ];
 
-const cmUpgradeSteps = [
-  ["記錄資料", "先記錄 MAC、原本 Description、Client Class、CMTS 與操作時間。"],
-  ["確認狀態", "用 WEB OQC 與 CMTS 查詢確認 CM 是否在線，必要時先通知客服與用戶。"],
-  ["放入升級群組", "在 BCC Client Classes 移除原群組資料，放入 HitronCGN5U-4B3。"],
-  ["重開與確認", "重開 CM 後等待升版完成，再回 WEB OQC / CM 頁面確認版本。"],
-  ["回復與回報", "確認完成後回到正確群組，截圖並回覆處理結果。"],
-];
-
 const staticIpSteps = [
   ["整理申裝資料", "從客服信件確認客編、CM MAC、CPE MAC、固定 IP 與 Node。"],
   ["查 Rule", "依 Node 到 BCC 確認對應 DHCPv4 Subnet Rule / Static Addresses。"],
@@ -70,10 +62,11 @@ function StepPanel({ title, steps }: { title: string; steps: string[][] }) {
   );
 }
 
-function SopImageGrid({ images, loading, error, onRetry }: {
+function SopImageGrid({ images, loading, error, emptyText, onRetry }: {
   images: DisplayImage[];
   loading?: boolean;
   error?: string;
+  emptyText?: string;
   onRetry?: () => void;
 }) {
   const [failed, setFailed] = useState<Record<string, boolean>>({});
@@ -118,12 +111,16 @@ function SopImageGrid({ images, loading, error, onRetry }: {
           )}
         </figure>
       ))}
+      {!loading && !error && !images.length && (
+        <div className="empty-state">{emptyText ?? "尚未匯入 SOP 圖片。"}</div>
+      )}
     </section>
   );
 }
 
 export function SopPage() {
   const { kind } = useParams();
+  const [cmAssets, setCmAssets] = useState<SopAsset[]>([]);
   const [staticAssets, setStaticAssets] = useState<SopAsset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
   const [assetError, setAssetError] = useState("");
@@ -135,8 +132,12 @@ export function SopPage() {
     setLoadingAssets(true);
     setAssetError("");
     try {
-      const assets = await loadSopAssets("static_ip");
-      setStaticAssets(assets);
+      const [cmUpgradeAssets, staticIpAssets] = await Promise.all([
+        loadSopAssets("cm_upgrade"),
+        loadSopAssets("static_ip"),
+      ]);
+      setCmAssets(cmUpgradeAssets);
+      setStaticAssets(staticIpAssets);
     } catch (error) {
       setAssetError(error instanceof Error ? error.message : "SOP 圖片讀取失敗");
     } finally {
@@ -147,6 +148,18 @@ export function SopPage() {
   useEffect(() => {
     if (isStaticIp) void loadStaticAssets();
   }, [isStaticIp]);
+
+  const cmImages = useMemo<DisplayImage[]>(
+    () => cmAssets.map((asset) => ({
+      id: asset.slug,
+      title: asset.title,
+      caption: asset.caption,
+      src: toDataUrl(asset),
+      width: asset.width,
+      height: asset.height,
+    })),
+    [cmAssets],
+  );
 
   const staticImages = useMemo<DisplayImage[]>(
     () => staticAssets.map((asset) => ({
@@ -167,7 +180,7 @@ export function SopPage() {
       <section className="page-title">
         <span>SOP</span>
         <h1>{isOptical ? "光平衡 SOP" : "CM 升版 / 固 I 設定 SOP"}</h1>
-        <p>{isOptical ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。" : "CM 3B8 升版、BCC 固 I 與 ISC_CPE 排除名單流程；圖片由 Supabase RLS 保護，登入後才會載入。"}</p>
+        <p>{isOptical ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。" : "CM 升版、BCC 固 I 與 ISC_CPE 排除名單流程；SOP 內容由 Supabase RLS 保護，登入後才會載入。"}</p>
       </section>
 
       {isOptical ? (
@@ -175,9 +188,19 @@ export function SopPage() {
       ) : (
         <>
           <div className="sop-guide-grid">
-            <StepPanel title="CM 3B8 升版流程" steps={cmUpgradeSteps} />
             <StepPanel title="固 I 設定流程" steps={staticIpSteps} />
           </div>
+
+          <section className="panel">
+            <h2>CM 升版 SOP</h2>
+            <SopImageGrid
+              images={cmImages}
+              loading={loadingAssets}
+              error={assetError}
+              emptyText="尚未匯入 CM 升版 SOP，請由匯入頁上傳最新 Excel。"
+              onRetry={loadStaticAssets}
+            />
+          </section>
 
           <section className="panel">
             <h2>固 I 欄位對照</h2>
@@ -207,6 +230,7 @@ export function SopPage() {
             images={staticImages}
             loading={loadingAssets}
             error={assetError}
+            emptyText="尚未匯入固 I SOP 圖片。"
             onRetry={loadStaticAssets}
           />
         </>

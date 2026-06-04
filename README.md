@@ -14,7 +14,7 @@ Lovable-compatible React app for the NOC troubleshooting tools, protected by Sup
 - Admin/editor roles are stored in `user_roles`; role checks are not based on editable user metadata.
 - Admin-only Edge Functions can invite users and import Excel/CSV without exposing the service role key.
 - Query audit logs can only be inserted by the signed-in user.
-- Solid IP / CM SOP screenshots are stored in Supabase behind RLS instead of public frontend assets.
+- Solid IP / CM SOP content is stored in Supabase behind RLS instead of public frontend assets.
 - Admin/editor users can import Excel/CSV from the protected `/import` page.
 
 ## Local setup
@@ -112,7 +112,9 @@ The first admin should be bootstrapped once by Codex or the Supabase Dashboard a
 
 ## SOP images
 
-The Solid IP / CM SOP page loads unmasked screenshots from `public.noc_sop_assets` after login. Do not put those screenshots in `assets/`, `public/`, JSON, CSV, or Excel files committed to Git.
+The Solid IP / CM SOP page loads protected SOP content from `public.noc_sop_assets` after login. Do not put those screenshots, Excel files, or SOP text in `assets/`, `public/`, JSON, CSV, or Excel files committed to Git.
+
+CM upgrade SOP Excel files can be uploaded from the protected `/import` page by choosing `CM 升版 SOP`. Each worksheet is converted into a protected SVG row under `category = cm_upgrade`; the old CM upgrade SOP is replaced when the replace option is enabled.
 
 The optical balance SOP currently uses the local files below. If an optical SOP image disappears, check these first:
 
@@ -130,6 +132,7 @@ The protected `/import` page provides the website upload flow for:
 - CMTS / optical node data: `noc_assets`
 - PON data: `noc_pon_assets`
 - legacy node data: `noc_legacy_nodes`
+- CM upgrade SOP: `noc_sop_assets` with `sopCategory = cm_upgrade`
 
 ```ts
 await supabase.functions.invoke("noc-import-excel", {

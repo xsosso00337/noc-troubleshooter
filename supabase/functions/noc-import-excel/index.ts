@@ -3,11 +3,14 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import * as XLSX from "npm:xlsx@0.18.5";
 
 type TargetTable = "noc_assets" | "noc_pon_assets" | "noc_legacy_nodes";
+type ImportTarget = TargetTable | "noc_sop_assets";
 type SourceType = "cmts" | "pon" | "legacy_node";
+type SopCategory = "static_ip" | "cm_upgrade" | "optical";
 type SpreadsheetRow = Record<string, unknown>;
 
 type ImportRequest = {
-  table?: TargetTable;
+  table?: ImportTarget;
+  sopCategory?: SopCategory;
   filename?: string;
   base64?: string;
   replaceSource?: boolean;
@@ -20,6 +23,8 @@ const tableSourceType: Record<TargetTable, SourceType> = {
 };
 
 const validTables = Object.keys(tableSourceType) as TargetTable[];
+const validTargets = [...validTables, "noc_sop_assets"] as ImportTarget[];
+const validSopCategories: SopCategory[] = ["static_ip", "cm_upgrade", "optical"];
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,6 +53,79 @@ function getEnv(name: string) {
 
 function clean(value: unknown) {
   return String(value ?? "").replace(/\u3000/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function isTargetTable(table: ImportTarget): table is TargetTable {
+  return table !== "noc_sop_assets";
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function slugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function wrapLine(line: string, maxLength = 72) {
+  if (line.length <= maxLength) return [line];
+
+  const chunks: string[] = [];
+  let remaining = line;
+  while (remaining.length > maxLength) {
+    let breakAt = remaining.lastIndexOf(" ", maxLength);
+    if (breakAt < Math.floor(maxLength * 0.55)) breakAt = maxLength;
+    chunks.push(remaining.slice(0, breakAt).trimEnd());
+    remaining = remaining.slice(breakAt).trimStart();
+  }
+
+  if (remaining) chunks.push(remaining);
+  return chunks;
+}
+
+function base64EncodeUtf8(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) {
+    binary += String.fromCharCode(...bytes.slice(index, index + 0x8000));
+  }
+  return btoa(binary);
+}
+
+function svgFromLines(title: string, lines: string[]) {
+  const width = 1200;
+  const padding = 38;
+  const lineHeight = 28;
+  const bodyLines = lines.flatMap((line) => wrapLine(line));
+  const renderedLines = [title, ...bodyLines];
+  const height = Math.max(220, padding * 2 + renderedLines.length * lineHeight + 18);
+  const tspans = renderedLines
+    .map((line, index) => {
+      const weight = index === 0 ? "700" : "400";
+      const size = index === 0 ? 25 : 19;
+      return `<tspan x="${padding}" y="${padding + index * lineHeight}" font-size="${size}" font-weight="${weight}">${escapeXml(line)}</tspan>`;
+    })
+    .join("");
+
+  return {
+    width,
+    height,
+    svg: [
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
+      '<rect width="100%" height="100%" fill="#f8fbfb"/>',
+      '<rect x="18" y="18" width="1164" height="' + (height - 36) + '" rx="10" fill="#ffffff" stroke="#b9dcd7"/>',
+      `<text font-family="Microsoft JhengHei, Noto Sans TC, Arial, sans-serif" fill="#193d3a">${tspans}</text>`,
+      "</svg>",
+    ].join(""),
+  };
 }
 
 function normalizeRow(row: SpreadsheetRow) {
@@ -114,6 +192,66 @@ function readFirstSheet(bytes: Uint8Array) {
     .filter((row) => Object.values(row).some(Boolean));
 
   return { rows, sheetName };
+}
+
+function readSopSheets(bytes: Uint8Array, fileName: string, category: SopCategory) {
+  const workbook = XLSX.read(bytes, {
+    type: "array",
+    raw: false,
+  });
+
+  const assets = workbook.SheetNames.map((sheetName, index) => {
+    const sheet = workbook.Sheets[sheetName];
+    const ref = sheet?.["!ref"];
+    if (!sheet || !ref) return null;
+
+    const range = XLSX.utils.decode_range(ref);
+    const lines: string[] = [];
+    for (let rowIndex = range.s.r; rowIndex <= range.e.r; rowIndex += 1) {
+      const values: string[] = [];
+      for (let colIndex = range.s.c; colIndex <= range.e.c; colIndex += 1) {
+        const address = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
+        const cell = sheet[address];
+        const value = clean(cell?.w ?? cell?.v ?? "");
+        if (value) values.push(value);
+      }
+      if (values.length) lines.push(values.join("    "));
+    }
+
+    if (!lines.length) return null;
+
+    const slugSuffix = slugPart(sheetName) || String(index + 1).padStart(2, "0");
+    const title = sheetName;
+    const { svg, width, height } = svgFromLines(title, lines);
+
+    return {
+      category,
+      slug: `${category}-${slugSuffix}`,
+      title,
+      caption: `來源：${fileName} / 工作表：${sheetName}`,
+      sort_order: index + 1,
+      content_type: "image/svg+xml",
+      width,
+      height,
+      image_base64: base64EncodeUtf8(svg),
+      raw_data: {
+        imported_with: "edge-function:noc-import-excel",
+        original_filename: fileName,
+        sheet_name: sheetName,
+        lines,
+      },
+      updated_at: new Date().toISOString(),
+    };
+  }).filter((asset): asset is NonNullable<typeof asset> => asset !== null);
+
+  if (!assets.length) {
+    throw new Error("Spreadsheet has no SOP text");
+  }
+
+  return {
+    assets,
+    sheetName: workbook.SheetNames.join(", "),
+  };
 }
 
 function cmtsPayload(row: Record<string, string>, sourceFileId: string, fileName: string, sheetName: string, rowNumber: number) {
@@ -292,8 +430,14 @@ Deno.serve(async (req) => {
     const table = body.table;
     const fileName = clean(body.filename || "noc-import.xlsx");
 
-    if (!table || !validTables.includes(table)) {
+    if (!table || !validTargets.includes(table)) {
       return jsonResponse({ error: "Invalid target table" }, 400);
+    }
+
+    const isSopImport = table === "noc_sop_assets";
+    const sopCategory = body.sopCategory ?? "cm_upgrade";
+    if (isSopImport && !validSopCategories.includes(sopCategory)) {
+      return jsonResponse({ error: "Invalid SOP category" }, 400);
     }
 
     if (!body.base64) {
@@ -302,9 +446,11 @@ Deno.serve(async (req) => {
 
     const bytes = decodeBase64File(body.base64);
     const sha256 = await sha256Hex(bytes);
-    const { rows, sheetName } = readFirstSheet(bytes);
+    const spreadsheet = isSopImport
+      ? { kind: "sop" as const, ...readSopSheets(bytes, fileName, sopCategory) }
+      : { kind: "noc" as const, ...readFirstSheet(bytes) };
 
-    if (!rows.length) {
+    if (spreadsheet.kind === "noc" && !spreadsheet.rows.length) {
       return jsonResponse({ error: "Spreadsheet has no data rows" }, 400);
     }
 
@@ -316,8 +462,9 @@ Deno.serve(async (req) => {
         status: "processing",
         created_by: user.id,
         metadata: {
-          sheet_name: sheetName,
+          sheet_name: spreadsheet.sheetName,
           replace_source: body.replaceSource === true,
+          sop_category: isSopImport ? sopCategory : undefined,
         },
       })
       .select("id")
@@ -332,14 +479,15 @@ Deno.serve(async (req) => {
     const { data: fileRecord, error: fileError } = await adminClient
       .from("noc_files")
       .insert({
-        source_type: tableSourceType[table],
+        source_type: isTargetTable(table) ? tableSourceType[table] : "other",
         original_filename: fileName,
         sha256,
-        row_count: rows.length,
+        row_count: spreadsheet.kind === "sop" ? spreadsheet.assets.length : spreadsheet.rows.length,
         imported_by: user.id,
         metadata: {
           imported_with: "edge-function:noc-import-excel",
-          sheet_name: sheetName,
+          sheet_name: spreadsheet.sheetName,
+          sop_category: isSopImport ? sopCategory : undefined,
         },
       })
       .select("id")
@@ -356,28 +504,77 @@ Deno.serve(async (req) => {
       .update({ source_file_id: sourceFileId })
       .eq("id", jobId);
 
-    if (body.replaceSource === true) {
-      const { error: deleteError } = await adminClient.from(table).delete().eq("source_file", fileName);
+    let importedRows = 0;
+
+    if (spreadsheet.kind === "sop") {
+      const payloads = spreadsheet.assets.map((asset) => ({
+        ...asset,
+        raw_data: {
+          ...asset.raw_data,
+          source_file_id: sourceFileId,
+        },
+      }));
+
+      if (body.replaceSource === true) {
+        const { error: deleteError } = await adminClient.from("noc_sop_assets").delete().eq("category", sopCategory);
+        if (deleteError) {
+          throw deleteError;
+        }
+      }
+
+      for (let index = 0; index < payloads.length; index += 100) {
+        const chunk = payloads.slice(index, index + 100);
+        const { error: upsertError } = await adminClient
+          .from("noc_sop_assets")
+          .upsert(chunk, { onConflict: "slug" });
+        if (upsertError) {
+          throw upsertError;
+        }
+      }
+
+      importedRows = payloads.length;
+    } else if (body.replaceSource === true) {
+      const targetTable = table as TargetTable;
+      const { error: deleteError } = await adminClient.from(targetTable).delete().eq("source_file", fileName);
       if (deleteError) {
         throw deleteError;
       }
-    }
 
-    const payloads = rows.map((row, index) => payloadFor(table, row, sourceFileId, fileName, sheetName, index + 2));
+      const payloads = spreadsheet.rows.map((row, index) =>
+        payloadFor(targetTable, row, sourceFileId, fileName, spreadsheet.sheetName, index + 2)
+      );
 
-    for (let index = 0; index < payloads.length; index += 500) {
-      const chunk = payloads.slice(index, index + 500);
-      const { error: insertError } = await adminClient.from(table).insert(chunk);
-      if (insertError) {
-        throw insertError;
+      for (let index = 0; index < payloads.length; index += 500) {
+        const chunk = payloads.slice(index, index + 500);
+        const { error: insertError } = await adminClient.from(targetTable).insert(chunk);
+        if (insertError) {
+          throw insertError;
+        }
       }
+
+      importedRows = payloads.length;
+    } else {
+      const targetTable = table as TargetTable;
+      const payloads = spreadsheet.rows.map((row, index) =>
+        payloadFor(targetTable, row, sourceFileId, fileName, spreadsheet.sheetName, index + 2)
+      );
+
+      for (let index = 0; index < payloads.length; index += 500) {
+        const chunk = payloads.slice(index, index + 500);
+        const { error: insertError } = await adminClient.from(targetTable).insert(chunk);
+        if (insertError) {
+          throw insertError;
+        }
+      }
+
+      importedRows = payloads.length;
     }
 
     await adminClient
       .from("noc_import_jobs")
       .update({
         status: "succeeded",
-        row_count: payloads.length,
+        row_count: importedRows,
         completed_at: new Date().toISOString(),
       })
       .eq("id", jobId);
@@ -387,8 +584,8 @@ Deno.serve(async (req) => {
       job_id: jobId,
       source_file_id: sourceFileId,
       table,
-      rows: payloads.length,
-      sheet_name: sheetName,
+      rows: importedRows,
+      sheet_name: spreadsheet.sheetName,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unexpected error";

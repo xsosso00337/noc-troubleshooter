@@ -22,6 +22,7 @@ Current migration set:
 - `supabase/migrations/20260601091500_optimize_user_roles_policy.sql`
 - `supabase/migrations/20260603100856_create_noc_sop_assets.sql`
 - `supabase/migrations/20260603112600_harden_noc_sop_asset_grants.sql`
+- `supabase/migrations/20260604090000_allow_sop_import_jobs.sql`
 
 If you use Supabase CLI later:
 
@@ -99,6 +100,7 @@ Allowed target tables:
 - `noc_assets`
 - `noc_pon_assets`
 - `noc_legacy_nodes`
+- `noc_sop_assets` for CM upgrade SOP uploads
 
 ## 7. Frontend environment values
 
@@ -111,8 +113,10 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_or_anon_public_key
 
 The browser key is allowed to exist client-side because RLS and grants protect the tables.
 
-## 8. SOP screenshots
+## 8. SOP content
 
-The unmasked Solid IP / CM SOP screenshots live in `public.noc_sop_assets` as authenticated-only rows. They should not be committed to Git or uploaded to public frontend assets.
+The unmasked Solid IP / CM SOP content lives in `public.noc_sop_assets` as authenticated-only rows. They should not be committed to Git or uploaded to public frontend assets.
+
+Use the protected `/import` page to update the CM upgrade SOP from Excel. Choose `CM 升版 SOP`; each workbook sheet is converted to a protected SVG row with `category = cm_upgrade`.
 
 The optical balance SOP remains as local SVG files in `assets/`, because those diagrams do not contain the same internal request screenshots.
