@@ -1,4 +1,13 @@
 export type QueryStatus = "idle" | "loading" | "success" | "error";
+export type DataSourceType = "cmts" | "pon" | "legacy_node";
+
+export type DataFreshness = {
+  source_type: DataSourceType;
+  original_filename: string;
+  row_count: number;
+  imported_at: string;
+  metadata: Record<string, unknown> | null;
+};
 
 export type NocAsset = {
   id: string;

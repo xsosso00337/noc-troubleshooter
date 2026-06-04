@@ -1,9 +1,10 @@
 import { Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DataFreshnessLine } from "../components/DataFreshnessLine";
 import { FieldTable } from "../components/FieldTable";
 import { StatusMessage } from "../components/StatusMessage";
-import { loadPonGroups, searchPonAssets } from "../lib/nocQueries";
-import type { PonAsset, QueryStatus } from "../types";
+import { loadLatestDataFreshness, loadPonGroups, searchPonAssets } from "../lib/nocQueries";
+import type { DataFreshness, PonAsset, QueryStatus } from "../types";
 
 function PonCard({ item }: { item: PonAsset }) {
   const note = [item.note, item.extra_note].filter(Boolean).join(" / ");
@@ -58,11 +59,19 @@ export function PonLookupPage() {
   const [rows, setRows] = useState<PonAsset[]>([]);
   const [status, setStatus] = useState<QueryStatus>("idle");
   const [message, setMessage] = useState("請輸入 OLT port、大樓名稱、光點、跳接盤、EDFA 或網編。");
+  const [freshness, setFreshness] = useState<DataFreshness | null>(null);
+  const [freshnessError, setFreshnessError] = useState("");
 
   useEffect(() => {
     loadPonGroups()
       .then(setGroups)
       .catch(() => setGroups([]));
+    loadLatestDataFreshness("pon")
+      .then(setFreshness)
+      .catch(() => {
+        setFreshness(null);
+        setFreshnessError("讀取失敗");
+      });
   }, []);
 
   async function runSearch(limit = 300) {
@@ -101,6 +110,7 @@ export function PonLookupPage() {
         <span>資料查詢</span>
         <h1>全光 PON 查詢</h1>
         <p>保留 OLT 群組、完工狀態與關鍵字搜尋；資料由 RLS 保護的 Supabase table 提供。</p>
+        <DataFreshnessLine freshness={freshness} error={freshnessError} />
       </section>
 
       <section className="query-bar">

@@ -1,4 +1,4 @@
-import type { LegacyNode, NocAsset, PonAsset, SopAsset } from "../types";
+import type { DataFreshness, DataSourceType, LegacyNode, NocAsset, PonAsset, SopAsset } from "../types";
 import { writeAuditLog } from "./audit";
 import { supabase } from "./supabase";
 
@@ -42,6 +42,21 @@ export async function searchNocAssets(params: {
 
   await writeAuditLog("search_noc_assets", params, { result_count: data?.length ?? 0 });
   return (data ?? []) as NocAsset[];
+}
+
+export async function loadLatestDataFreshness(sourceType: DataSourceType) {
+  await requireSession();
+
+  const { data, error } = await supabase
+    .from("noc_files")
+    .select("source_type,original_filename,row_count,imported_at,metadata")
+    .eq("source_type", sourceType)
+    .order("imported_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as DataFreshness | null;
 }
 
 export async function searchLegacyNodes(params: { query: string; limit?: number }) {

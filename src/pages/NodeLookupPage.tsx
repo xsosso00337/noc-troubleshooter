@@ -1,9 +1,10 @@
 import { Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DataFreshnessLine } from "../components/DataFreshnessLine";
 import { FieldTable } from "../components/FieldTable";
 import { StatusMessage } from "../components/StatusMessage";
-import { searchLegacyNodes, searchNocAssets } from "../lib/nocQueries";
-import type { LegacyNode, NocAsset, QueryStatus } from "../types";
+import { loadLatestDataFreshness, searchLegacyNodes, searchNocAssets } from "../lib/nocQueries";
+import type { DataFreshness, LegacyNode, NocAsset, QueryStatus } from "../types";
 
 const cmtsOptions = ["E6K01", "E6K02", "E6K03", "E6K04", "E6K05", "E6K06", "E6K07", "E6K08", "E6K09", "E6K10", "E6K11"];
 
@@ -95,6 +96,27 @@ export function NodeLookupPage() {
   const [legacyNodes, setLegacyNodes] = useState<LegacyNode[]>([]);
   const [status, setStatus] = useState<QueryStatus>("idle");
   const [message, setMessage] = useState("請輸入關鍵字後查詢。");
+  const [freshness, setFreshness] = useState<DataFreshness | null>(null);
+  const [freshnessError, setFreshnessError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    setFreshnessError("");
+    loadLatestDataFreshness(mode === "legacy" ? "legacy_node" : "cmts")
+      .then((data) => {
+        if (!cancelled) setFreshness(data);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setFreshness(null);
+          setFreshnessError("讀取失敗");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
 
   async function runSearch(showScope = false) {
     if (!query.trim() && !showScope) {
@@ -139,6 +161,7 @@ export function NodeLookupPage() {
         <span>資料查詢</span>
         <h1>光點 / CMTS / Hub 查詢</h1>
         <p>保留原本查光點、線編、Hub、Port、MUX、DEMUX、EDFA 與機櫃資訊的流程，資料改從 Supabase 讀取。</p>
+        <DataFreshnessLine freshness={freshness} error={freshnessError} />
       </section>
 
       <section className="query-bar">
