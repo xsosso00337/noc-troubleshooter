@@ -45,6 +45,7 @@ export function DashboardPage() {
     () => [
       { to: "/pon", title: "全光 PON 查詢", meta: ["OLT 群組", "完工狀態", "Supabase"], accent: "teal" },
       { to: "/nodes", title: "光點查詢", meta: ["CMTS", "Port", "Hub"], accent: "blue" },
+      { to: "/sop/troubleshooting", title: "機房查修 SOP", meta: ["光纖查修", "RF 查修", "查修紀錄"], accent: "slate" },
       { to: "/sop/optical", title: "光平衡 SOP", meta: ["光平衡", "查光功率", "圖片流程"], accent: "amber" },
       { to: "/sop/cm-upgrade", title: "CM 升版 SOP", meta: ["CM 升版", "BCC", "版本確認"], accent: "slate" },
       { to: "/sop/static-ip", title: "固 I SOP", meta: ["固定 IP", "BCC", "ISC_CPE"], accent: "teal" },

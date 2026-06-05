@@ -1,4 +1,4 @@
-import { DatabaseZap, KeyRound, LogOut, Menu, Network, RadioTower, Route, ShieldCheck, Users, Wrench, X } from "lucide-react";
+import { ClipboardList, DatabaseZap, KeyRound, LogOut, Menu, Network, RadioTower, Route, ShieldCheck, Users, Wrench, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -9,6 +9,7 @@ const baseNav = [
   { to: "/", label: "查修首頁", icon: Wrench },
   { to: "/nodes", label: "光點查詢", icon: Network },
   { to: "/pon", label: "PON 查詢", icon: RadioTower },
+  { to: "/sop/troubleshooting", label: "機房查修 SOP", icon: ClipboardList },
   { to: "/sop/optical", label: "光平衡 SOP", icon: Route },
   { to: "/sop/cm-upgrade", label: "CM 升版 SOP", icon: ShieldCheck },
   { to: "/sop/static-ip", label: "固 I SOP", icon: KeyRound },

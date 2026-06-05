@@ -122,12 +122,14 @@ export function SopPage() {
   const { kind } = useParams();
   const [cmAssets, setCmAssets] = useState<SopAsset[]>([]);
   const [staticAssets, setStaticAssets] = useState<SopAsset[]>([]);
+  const [troubleshootingAssets, setTroubleshootingAssets] = useState<SopAsset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(false);
   const [assetError, setAssetError] = useState("");
 
   const isOptical = kind === "optical";
   const isCmUpgrade = kind === "cm-upgrade";
   const isStaticIp = kind === "static-ip";
+  const isTroubleshooting = kind === "troubleshooting";
 
   const loadProtectedAssets = async () => {
     setLoadingAssets(true);
@@ -139,6 +141,10 @@ export function SopPage() {
       if (isStaticIp) {
         setStaticAssets(await loadSopAssets("static_ip"));
       }
+      if (isTroubleshooting) {
+        const assets = await loadSopAssets("optical");
+        setTroubleshootingAssets(assets.filter((asset) => asset.slug.startsWith("troubleshooting-")));
+      }
     } catch (error) {
       setAssetError(error instanceof Error ? error.message : "SOP 圖片讀取失敗");
     } finally {
@@ -147,8 +153,8 @@ export function SopPage() {
   };
 
   useEffect(() => {
-    if (isCmUpgrade || isStaticIp) void loadProtectedAssets();
-  }, [isCmUpgrade, isStaticIp]);
+    if (isCmUpgrade || isStaticIp || isTroubleshooting) void loadProtectedAssets();
+  }, [isCmUpgrade, isStaticIp, isTroubleshooting]);
 
   const cmImages = useMemo<DisplayImage[]>(
     () => cmAssets.map((asset) => ({
@@ -174,11 +180,25 @@ export function SopPage() {
     [staticAssets],
   );
 
-  if (!isOptical && !isCmUpgrade && !isStaticIp) return <Navigate to="/" replace />;
+  const troubleshootingImages = useMemo<DisplayImage[]>(
+    () => troubleshootingAssets.map((asset) => ({
+      id: asset.slug,
+      title: asset.title,
+      caption: asset.caption,
+      src: toDataUrl(asset),
+      width: asset.width,
+      height: asset.height,
+    })),
+    [troubleshootingAssets],
+  );
 
-  const pageTitle = isOptical ? "光平衡 SOP" : isCmUpgrade ? "CM 升版 SOP" : "固 I 設定 SOP";
+  if (!isOptical && !isCmUpgrade && !isStaticIp && !isTroubleshooting) return <Navigate to="/" replace />;
+
+  const pageTitle = isOptical ? "光平衡 SOP" : isTroubleshooting ? "機房查修 SOP" : isCmUpgrade ? "CM 升版 SOP" : "固 I 設定 SOP";
   const pageDescription = isOptical
     ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。"
+    : isTroubleshooting
+      ? "光纖查修、RF 查修、查修紀錄與 CM 連線架構；SOP 內容由 Supabase RLS 保護，登入後才會載入。"
     : isCmUpgrade
       ? "CM 升版流程由 Supabase RLS 保護，登入後才會載入。"
       : "BCC 固 I 與 ISC_CPE 排除名單流程；SOP 內容由 Supabase RLS 保護，登入後才會載入。";
@@ -193,6 +213,17 @@ export function SopPage() {
 
       {isOptical ? (
         <SopImageGrid images={opticalImages} />
+      ) : isTroubleshooting ? (
+        <section className="panel">
+          <h2>機房查修流程</h2>
+          <SopImageGrid
+            images={troubleshootingImages}
+            loading={loadingAssets}
+            error={assetError}
+            emptyText="尚未匯入機房查修 SOP。"
+            onRetry={loadProtectedAssets}
+          />
+        </section>
       ) : isCmUpgrade ? (
         <section className="panel">
           <h2>CM 升版流程</h2>
