@@ -787,6 +787,15 @@ textarea:focus {
   width: 100%;
 }
 
+.sop-image--scroll {
+  overflow-x: auto;
+}
+
+.sop-image--scroll img {
+  max-width: none;
+  width: max(100%, 1040px);
+}
+
 .sop-loader,
 .sop-error {
   width: 100%;

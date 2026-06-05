@@ -89,7 +89,7 @@ function SopImageGrid({ images, loading, error, emptyText, onRetry }: {
         </div>
       )}
       {images.map((image) => (
-        <figure className="sop-image" key={image.id}>
+        <figure className={`sop-image${image.canOpen === false ? " sop-image--scroll" : ""}`} key={image.id}>
           <figcaption className="sop-image-head">
             <span>
               <strong>{image.title}</strong>
