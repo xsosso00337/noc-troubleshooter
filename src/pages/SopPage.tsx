@@ -11,6 +11,7 @@ type DisplayImage = {
   src: string;
   width?: number | null;
   height?: number | null;
+  canOpen?: boolean;
 };
 
 const opticalImages: DisplayImage[] = [
@@ -19,12 +20,14 @@ const opticalImages: DisplayImage[] = [
     title: "第一套：寬宇接收機光平衡",
     caption: "測試站 / 光盒選擇、光站 A/B 組選擇與光站設定調整。",
     src: new URL("../../assets/optical-balance-receiver-sop.svg", import.meta.url).href,
+    canOpen: true,
   },
   {
     id: "optical-gx2",
     title: "第二套：GX2 光平衡 / 查光功率",
     caption: "保留光平衡與查光功率兩個流程，方便現場對照按鍵順序。",
     src: new URL("../../assets/optical-balance-sop.svg", import.meta.url).href,
+    canOpen: true,
   },
 ];
 
@@ -92,13 +95,17 @@ function SopImageGrid({ images, loading, error, emptyText, onRetry }: {
               <strong>{image.title}</strong>
               {image.caption && <small>{image.caption}</small>}
             </span>
-            <a className="ghost-button sop-open-link" href={image.src} target="_blank" rel="noopener noreferrer">
-              <ExternalLink size={16} />
-              <span>開圖</span>
-            </a>
+            {image.canOpen && (
+              <a className="ghost-button sop-open-link" href={image.src} target="_blank" rel="noopener noreferrer">
+                <ExternalLink size={16} />
+                <span>開圖</span>
+              </a>
+            )}
           </figcaption>
           {failed[image.id] ? (
-            <div className="empty-state danger">圖片載入失敗，請按「開圖」或重新整理頁面。</div>
+            <div className="empty-state danger">
+              {image.canOpen ? "SOP 載入失敗，請按「開圖」或重新整理頁面。" : "SOP 載入失敗，請重新整理頁面。"}
+            </div>
           ) : (
             <img
               src={image.src}
@@ -164,6 +171,7 @@ export function SopPage() {
       src: toDataUrl(asset),
       width: asset.width,
       height: asset.height,
+      canOpen: asset.content_type !== "image/svg+xml",
     })),
     [cmAssets],
   );
@@ -176,6 +184,7 @@ export function SopPage() {
       src: toDataUrl(asset),
       width: asset.width,
       height: asset.height,
+      canOpen: asset.content_type !== "image/svg+xml",
     })),
     [staticAssets],
   );
@@ -188,6 +197,7 @@ export function SopPage() {
       src: toDataUrl(asset),
       width: asset.width,
       height: asset.height,
+      canOpen: asset.content_type !== "image/svg+xml",
     })),
     [troubleshootingAssets],
   );
@@ -198,7 +208,7 @@ export function SopPage() {
   const pageDescription = isOptical
     ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。"
     : isTroubleshooting
-      ? "光纖查修、RF 查修、查修紀錄與 CM 連線架構；SOP 內容由 Supabase RLS 保護，登入後才會載入。"
+      ? "光纖查修、RF 查修與查修紀錄；SOP 內容由 Supabase RLS 保護，登入後才會載入。"
     : isCmUpgrade
       ? "CM 升版流程由 Supabase RLS 保護，登入後才會載入。"
       : "BCC 固 I 與 ISC_CPE 排除名單流程；SOP 內容由 Supabase RLS 保護，登入後才會載入。";
