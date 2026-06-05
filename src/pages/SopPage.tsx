@@ -126,18 +126,19 @@ export function SopPage() {
   const [assetError, setAssetError] = useState("");
 
   const isOptical = kind === "optical";
+  const isCmUpgrade = kind === "cm-upgrade";
   const isStaticIp = kind === "static-ip";
 
-  const loadStaticAssets = async () => {
+  const loadProtectedAssets = async () => {
     setLoadingAssets(true);
     setAssetError("");
     try {
-      const [cmUpgradeAssets, staticIpAssets] = await Promise.all([
-        loadSopAssets("cm_upgrade"),
-        loadSopAssets("static_ip"),
-      ]);
-      setCmAssets(cmUpgradeAssets);
-      setStaticAssets(staticIpAssets);
+      if (isCmUpgrade) {
+        setCmAssets(await loadSopAssets("cm_upgrade"));
+      }
+      if (isStaticIp) {
+        setStaticAssets(await loadSopAssets("static_ip"));
+      }
     } catch (error) {
       setAssetError(error instanceof Error ? error.message : "SOP 圖片讀取失敗");
     } finally {
@@ -146,8 +147,8 @@ export function SopPage() {
   };
 
   useEffect(() => {
-    if (isStaticIp) void loadStaticAssets();
-  }, [isStaticIp]);
+    if (isCmUpgrade || isStaticIp) void loadProtectedAssets();
+  }, [isCmUpgrade, isStaticIp]);
 
   const cmImages = useMemo<DisplayImage[]>(
     () => cmAssets.map((asset) => ({
@@ -173,34 +174,41 @@ export function SopPage() {
     [staticAssets],
   );
 
-  if (!isOptical && !isStaticIp) return <Navigate to="/" replace />;
+  if (!isOptical && !isCmUpgrade && !isStaticIp) return <Navigate to="/" replace />;
+
+  const pageTitle = isOptical ? "光平衡 SOP" : isCmUpgrade ? "CM 升版 SOP" : "固 I 設定 SOP";
+  const pageDescription = isOptical
+    ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。"
+    : isCmUpgrade
+      ? "CM 升版流程由 Supabase RLS 保護，登入後才會載入。"
+      : "BCC 固 I 與 ISC_CPE 排除名單流程；SOP 內容由 Supabase RLS 保護，登入後才會載入。";
 
   return (
     <main className="page-stack">
       <section className="page-title">
         <span>SOP</span>
-        <h1>{isOptical ? "光平衡 SOP" : "CM 升版 / 固 I 設定 SOP"}</h1>
-        <p>{isOptical ? "寬宇接收機光平衡、GX2 光平衡與查光功率流程。" : "CM 升版、BCC 固 I 與 ISC_CPE 排除名單流程；SOP 內容由 Supabase RLS 保護，登入後才會載入。"}</p>
+        <h1>{pageTitle}</h1>
+        <p>{pageDescription}</p>
       </section>
 
       {isOptical ? (
         <SopImageGrid images={opticalImages} />
+      ) : isCmUpgrade ? (
+        <section className="panel">
+          <h2>CM 升版流程</h2>
+          <SopImageGrid
+            images={cmImages}
+            loading={loadingAssets}
+            error={assetError}
+            emptyText="尚未匯入 CM 升版 SOP，請由匯入頁上傳最新 Excel。"
+            onRetry={loadProtectedAssets}
+          />
+        </section>
       ) : (
         <>
           <div className="sop-guide-grid">
             <StepPanel title="固 I 設定流程" steps={staticIpSteps} />
           </div>
-
-          <section className="panel">
-            <h2>CM 升版 SOP</h2>
-            <SopImageGrid
-              images={cmImages}
-              loading={loadingAssets}
-              error={assetError}
-              emptyText="尚未匯入 CM 升版 SOP，請由匯入頁上傳最新 Excel。"
-              onRetry={loadStaticAssets}
-            />
-          </section>
 
           <section className="panel">
             <h2>固 I 欄位對照</h2>
@@ -231,7 +239,7 @@ export function SopPage() {
             loading={loadingAssets}
             error={assetError}
             emptyText="尚未匯入固 I SOP 圖片。"
-            onRetry={loadStaticAssets}
+            onRetry={loadProtectedAssets}
           />
         </>
       )}
