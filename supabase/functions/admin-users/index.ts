@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
       role,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unexpected error";
-    return jsonResponse({ error: message }, 500);
+    console.error("admin-users unhandled error:", error);
+    return jsonResponse({ error: "An internal error occurred. Please try again." }, 500);
   }
 });
