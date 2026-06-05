@@ -588,18 +588,19 @@ Deno.serve(async (req) => {
       sheet_name: spreadsheet.sheetName,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unexpected error";
+    const internalMessage = error instanceof Error ? error.message : "Unexpected error";
+    console.error("noc-import-excel unhandled error:", error);
     if (adminClient && jobId) {
       await adminClient
         .from("noc_import_jobs")
         .update({
           status: "failed",
-          error_message: message,
+          error_message: internalMessage,
           completed_at: new Date().toISOString(),
         })
         .eq("id", jobId);
     }
 
-    return jsonResponse({ error: message }, 500);
+    return jsonResponse({ error: "匯入失敗，請稍後再試或聯絡管理員。" }, 500);
   }
 });
