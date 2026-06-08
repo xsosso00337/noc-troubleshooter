@@ -13,6 +13,12 @@ type ImportResult = {
   table: ImportTarget;
   rows: number;
   sheet_name: string;
+  quality?: {
+    total: number;
+    missing_key: number;
+    duplicate_rows: number;
+    key_columns: string[];
+  };
 };
 
 const maxUploadBytes = 10 * 1024 * 1024;
@@ -189,6 +195,25 @@ export function ImportPage() {
               </tr>
             </tbody>
           </table>
+          {result.quality && (
+            <div style={{ marginTop: 16 }}>
+              <h3 style={{ margin: "0 0 8px" }}>資料品質</h3>
+              <div className="quality-grid">
+                <div className="quality-card">
+                  <strong>{result.quality.total}</strong>
+                  <span>總筆數</span>
+                </div>
+                <div className={`quality-card${result.quality.missing_key > 0 ? " warn" : ""}`}>
+                  <strong>{result.quality.missing_key}</strong>
+                  <span>關鍵欄位空白（{result.quality.key_columns.join(" + ")}）</span>
+                </div>
+                <div className={`quality-card${result.quality.duplicate_rows > 0 ? " warn" : ""}`}>
+                  <strong>{result.quality.duplicate_rows}</strong>
+                  <span>重複資料（依關鍵欄位）</span>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       )}
     </main>
