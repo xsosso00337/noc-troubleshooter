@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { RefreshCw, Trash2, UserPlus } from "lucide-react";
+import { RefreshCw, Trash2, UserPlus, Users2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useIsAdmin } from "../lib/useIsAdmin";
@@ -13,6 +13,8 @@ type AdminUser = {
   roles: string[];
 };
 
+type Role = "admin" | "editor" | "viewer";
+
 function fmt(dt: string | null) {
   if (!dt) return "—";
   try {
@@ -22,8 +24,29 @@ function fmt(dt: string | null) {
   }
 }
 
+function relTime(dt: string | null) {
+  if (!dt) return "從未登入";
+  const diff = Date.now() - new Date(dt).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "剛剛";
+  if (mins < 60) return `${mins} 分鐘前`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} 小時前`;
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days} 天前`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} 個月前`;
+  return `${Math.floor(months / 12)} 年前`;
+}
+
 function isProtectedAdmin(user: AdminUser) {
   return user.roles.includes("admin");
+}
+
+function RoleBadge({ role }: { role: string }) {
+  const cls =
+    role === "admin" ? "role-badge admin" : role === "editor" ? "role-badge editor" : "role-badge viewer";
+  return <span className={cls}>{role}</span>;
 }
 
 export function AdminPage() {
@@ -35,8 +58,13 @@ export function AdminPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"admin" | "editor" | "viewer">("viewer");
+  const [role, setRole] = useState<Role>("viewer");
   const [submitting, setSubmitting] = useState(false);
+
+  const [batchEmails, setBatchEmails] = useState("");
+  const [batchRole, setBatchRole] = useState<Role>("viewer");
+  const [batchSubmitting, setBatchSubmitting] = useState(false);
+  const [batchReport, setBatchReport] = useState<Array<{ email: string; ok: boolean; error?: string }>>([]);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -76,6 +104,37 @@ export function AdminPage() {
     setEmail("");
     setPassword("");
     setRole("viewer");
+    void loadUsers();
+  }
+
+  async function batchInvite(event: FormEvent) {
+    event.preventDefault();
+    setBatchSubmitting(true);
+    setBatchReport([]);
+    setError("");
+    setMessage("");
+    const emails = batchEmails
+      .split(/[\s,;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (!emails.length) {
+      setError("請至少輸入一個 email。");
+      setBatchSubmitting(false);
+      return;
+    }
+    const { data, error: err } = await supabase.functions.invoke("admin-users", {
+      body: { action: "batch-invite", emails, role: batchRole },
+    });
+    setBatchSubmitting(false);
+    if (err || data?.error) {
+      setError(err?.message || data?.error || "批次邀請失敗");
+      return;
+    }
+    const results = (data.results ?? []) as Array<{ email: string; ok: boolean; error?: string }>;
+    setBatchReport(results);
+    const ok = results.filter((r) => r.ok).length;
+    setMessage(`批次邀請完成：成功 ${ok} / 失敗 ${results.length - ok}`);
+    setBatchEmails("");
     void loadUsers();
   }
 
@@ -120,7 +179,7 @@ export function AdminPage() {
             <input type="password" required minLength={6} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="至少 6 碼" />
           </label>
           <label>角色
-            <select value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
+            <select value={role} onChange={(e) => setRole(e.target.value as Role)}>
               <option value="viewer">viewer（一般查詢）</option>
               <option value="editor">editor（可匯入）</option>
               <option value="admin">admin（管理員）</option>
@@ -134,9 +193,57 @@ export function AdminPage() {
             </button>
           </label>
         </form>
-        {message && <div className="notice" style={{ marginTop: 12, background: "#edf8f1", border: "1px solid #b9e3c7", color: "#16743f" }}>{message}</div>}
-        {error && <div className="notice danger" style={{ marginTop: 12 }}>{error}</div>}
       </section>
+
+      <section className="panel">
+        <h2>批次邀請</h2>
+        <p style={{ color: "var(--muted)", marginTop: 0 }}>一次貼上多個 email（以逗號、空白或換行分隔），系統會寄出邀請信並指派角色。</p>
+        <form onSubmit={batchInvite} style={{ display: "grid", gap: 12 }}>
+          <label>Email 清單
+            <textarea
+              value={batchEmails}
+              onChange={(e) => setBatchEmails(e.target.value)}
+              placeholder={"user1@example.com\nuser2@example.com"}
+              rows={5}
+              style={{ minHeight: 120 }}
+            />
+          </label>
+          <div className="form-grid two">
+            <label>預設角色
+              <select value={batchRole} onChange={(e) => setBatchRole(e.target.value as Role)}>
+                <option value="viewer">viewer</option>
+                <option value="editor">editor</option>
+                <option value="admin">admin</option>
+              </select>
+            </label>
+            <label style={{ alignSelf: "end" }}>
+              <span style={{ visibility: "hidden" }}>送出</span>
+              <button className="primary-button" type="submit" disabled={batchSubmitting}>
+                <Users2 size={17} />
+                <span>{batchSubmitting ? "邀請中…" : "送出批次邀請"}</span>
+              </button>
+            </label>
+          </div>
+        </form>
+        {!!batchReport.length && (
+          <div style={{ marginTop: 12 }}>
+            <table className="field-table wide">
+              <thead><tr><th>Email</th><th>結果</th></tr></thead>
+              <tbody>
+                {batchReport.map((r) => (
+                  <tr key={r.email}>
+                    <td>{r.email}</td>
+                    <td>{r.ok ? <span className="pill" style={{ background: "#edf8f1", color: "#16743f" }}>成功</span> : <span className="pill warn-pill">{r.error ?? "失敗"}</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {message && <div className="notice" style={{ background: "#edf8f1", border: "1px solid #b9e3c7", color: "#16743f" }}>{message}</div>}
+      {error && <div className="notice danger">{error}</div>}
 
       <section className="panel">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 10 }}>
@@ -147,7 +254,7 @@ export function AdminPage() {
           </button>
         </div>
         <div style={{ overflowX: "auto" }}>
-          <table className="field-table wide" style={{ minWidth: 720 }}>
+          <table className="field-table wide" style={{ minWidth: 820 }}>
             <thead>
               <tr>
                 <th>Email</th>
@@ -164,8 +271,15 @@ export function AdminPage() {
                     {u.email}
                     {!u.email_confirmed_at && <span className="pill warn-pill" style={{ marginLeft: 6 }}>未驗證</span>}
                   </td>
-                  <td>{u.roles.length ? u.roles.join(", ") : "—"}</td>
-                  <td>{fmt(u.last_sign_in_at)}</td>
+                  <td>
+                    {u.roles.length
+                      ? <span style={{ display: "inline-flex", gap: 4, flexWrap: "wrap" }}>{u.roles.map((r) => <RoleBadge key={r} role={r} />)}</span>
+                      : "—"}
+                  </td>
+                  <td>
+                    <div>{fmt(u.last_sign_in_at)}</div>
+                    <small style={{ color: "var(--muted)" }}>{relTime(u.last_sign_in_at)}</small>
+                  </td>
                   <td>{fmt(u.created_at)}</td>
                   <td>
                     {isProtectedAdmin(u) ? (
