@@ -558,6 +558,36 @@ textarea:focus {
   color: var(--amber);
 }
 
+.role-badge {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.role-badge.admin { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.role-badge.editor { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.role-badge.viewer { background: #e5e7eb; color: #374151; border: 1px solid #cbd5e1; }
+
+.quality-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 12px;
+}
+.quality-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+.quality-card strong { display: block; font-size: 22px; }
+.quality-card span { color: var(--muted); font-size: 13px; }
+.quality-card.warn { background: #fff7e8; border-color: #f1d49c; }
+.quality-card.warn strong { color: var(--amber); }
+
 .field-table {
   border-collapse: collapse;
   width: 100%;
