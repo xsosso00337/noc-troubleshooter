@@ -570,6 +570,41 @@ Deno.serve(async (req) => {
       importedRows = payloads.length;
     }
 
+    // ---- Data quality report (noc tables only) ----
+    let quality: Record<string, unknown> | undefined;
+    if (spreadsheet.kind === "noc") {
+      const keyMap: Record<TargetTable, string[]> = {
+        noc_assets: ["cmts", "node"],
+        noc_pon_assets: ["olt_card", "olt_port_id"],
+        noc_legacy_nodes: ["node"],
+      };
+      const targetTable = table as TargetTable;
+      const keys = keyMap[targetTable];
+      const payloads = spreadsheet.rows.map((row, index) =>
+        payloadFor(targetTable, row, sourceFileId, fileName, spreadsheet.sheetName, index + 2)
+      ) as unknown as Array<Record<string, string | null>>;
+
+      let missingKey = 0;
+      const composite = new Map<string, number>();
+      for (const p of payloads) {
+        const parts = keys.map((k) => (p[k] ?? "").toString().trim());
+        if (parts.some((s) => !s)) {
+          missingKey += 1;
+          continue;
+        }
+        const k = parts.join("|");
+        composite.set(k, (composite.get(k) ?? 0) + 1);
+      }
+      const duplicates = Array.from(composite.values()).filter((n) => n > 1).reduce((a, b) => a + (b - 1), 0);
+      quality = {
+        total: payloads.length,
+        missing_key: missingKey,
+        duplicate_rows: duplicates,
+        key_columns: keys,
+      };
+    }
+
+
     await adminClient
       .from("noc_import_jobs")
       .update({
@@ -586,6 +621,7 @@ Deno.serve(async (req) => {
       table,
       rows: importedRows,
       sheet_name: spreadsheet.sheetName,
+      quality,
     });
   } catch (error) {
     const internalMessage = error instanceof Error ? error.message : "Unexpected error";

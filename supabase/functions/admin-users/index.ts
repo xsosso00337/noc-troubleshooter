@@ -4,8 +4,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 type Role = "admin" | "editor" | "viewer";
 
 type AdminUserRequest = {
-  action?: "invite" | "create" | "list" | "delete";
+  action?: "invite" | "create" | "list" | "delete" | "batch-invite";
   email?: string;
+  emails?: string[];
   password?: string;
   role?: Role;
   redirectTo?: string;
@@ -117,6 +118,32 @@ Deno.serve(async (req) => {
       const { error: delErr } = await adminClient.auth.admin.deleteUser(body.userId);
       if (delErr) return jsonResponse({ error: delErr.message }, 400);
       return jsonResponse({ ok: true });
+    }
+
+    // ---- BATCH INVITE ----
+    if (action === "batch-invite") {
+      const role = normalizeRole(body.role);
+      const list = (body.emails ?? [])
+        .map((e) => String(e ?? "").trim().toLowerCase())
+        .filter(Boolean);
+      const unique = Array.from(new Set(list));
+      const results: Array<{ email: string; ok: boolean; error?: string }> = [];
+      for (const email of unique) {
+        if (!isValidEmail(email)) {
+          results.push({ email, ok: false, error: "invalid email" });
+          continue;
+        }
+        const r = await adminClient.auth.admin.inviteUserByEmail(email, { redirectTo: body.redirectTo });
+        if (r.error || !r.data.user) {
+          results.push({ email, ok: false, error: r.error?.message ?? "invite failed" });
+          continue;
+        }
+        const { error: upsertErr } = await adminClient
+          .from("user_roles")
+          .upsert({ user_id: r.data.user.id, role, created_by: user.id }, { onConflict: "user_id,role" });
+        results.push({ email, ok: !upsertErr, error: upsertErr?.message });
+      }
+      return jsonResponse({ ok: true, role, results });
     }
 
     // ---- CREATE / INVITE ----

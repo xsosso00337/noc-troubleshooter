@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminPage } from "./pages/AdminPage";
+import { AuditLogsPage } from "./pages/AuditLogsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ImportPage } from "./pages/ImportPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/sop/:kind" element={<SopPage />} />
           <Route path="/import" element={<ImportPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/audit" element={<AuditLogsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
