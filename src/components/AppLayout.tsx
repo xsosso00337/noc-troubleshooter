@@ -1,4 +1,4 @@
-import { ClipboardList, DatabaseZap, KeyRound, LogOut, Menu, Network, RadioTower, Route, ShieldCheck, Users, Wrench, X } from "lucide-react";
+import { ClipboardList, DatabaseZap, KeyRound, LogOut, Menu, Network, RadioTower, Route, ScrollText, ShieldCheck, Users, Wrench, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -26,6 +26,7 @@ export function AppLayout() {
     ...baseNav,
     ...(canImport ? [{ to: "/import", label: "資料匯入", icon: DatabaseZap }] : []),
     ...(isAdmin ? [{ to: "/admin", label: "使用者管理", icon: Users }] : []),
+    ...(isAdmin ? [{ to: "/admin/audit", label: "稽核日誌", icon: ScrollText }] : []),
   ];
 
   useEffect(() => {
