@@ -18,6 +18,19 @@ function likePattern(value: string) {
   return `%${cleanQuery(value).replace(/[%_]/g, "\\$&")}%`;
 }
 
+function cmtsFromQuery(value: string) {
+  const match = cleanQuery(value).match(/E6K0?(\d{1,2})/i);
+  if (!match) return "";
+  return `E6K${match[1].padStart(2, "0")}`;
+}
+
+function lineCodeFromQuery(value: string) {
+  const compact = cleanQuery(value).replace(/\s+/g, "");
+  const explicit = compact.match(/(?:線編|線碼|linecode|line_code|line)[:：#-]?([A-Za-z0-9_-]+)/i);
+  const raw = explicit?.[1] ?? (/^\d{1,4}$/.test(compact) ? compact : "");
+  return raw.replace(/^0+(?=\d)/, "");
+}
+
 export async function searchNocAssets(params: {
   query: string;
   cmts?: string;
@@ -34,8 +47,16 @@ export async function searchNocAssets(params: {
     .order("node", { ascending: true })
     .limit(params.limit ?? 300);
 
-  if (params.cmts) request = request.eq("cmts", params.cmts);
-  if (cleanQuery(params.query)) request = request.ilike("search_text", likePattern(params.query));
+  const query = cleanQuery(params.query);
+  const cmts = params.cmts || cmtsFromQuery(query);
+  const lineCode = lineCodeFromQuery(query);
+
+  if (cmts) request = request.eq("cmts", cmts);
+  if (lineCode) {
+    request = request.eq("line_code", lineCode);
+  } else if (query) {
+    request = request.ilike("search_text", likePattern(query));
+  }
 
   const { data, error } = await request;
   if (error) throw error;

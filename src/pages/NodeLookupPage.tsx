@@ -21,7 +21,7 @@ function AssetCard({ asset }: { asset: NocAsset }) {
         <div className="pill-row">
           {asset.line_code && <span className="pill">線編 {asset.line_code}</span>}
           {asset.cmts && <span className="pill">{asset.cmts}</span>}
-          {asset.status && <span className="pill muted-pill">{asset.status}</span>}
+          {asset.status && asset.status.trim().toUpperCase() !== "OK" && <span className="pill muted-pill">{asset.status}</span>}
         </div>
       </div>
       <FieldTable
