@@ -5,8 +5,10 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
+    "strict": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
+    "declaration": true,
     "outDir": "./dist-node-types"
   },
   "include": ["vite.config.ts"]
