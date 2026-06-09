@@ -18,6 +18,9 @@ export type NocAsset = {
   upstream_port: string | null;
   upstream_connector: string | null;
   downstream_port: string | null;
+  power_level: number | null;
+  power_level_raw: number | null;
+  power_level_imported_at: string | null;
   receiver: string | null;
   return_source: string | null;
   receiver_brand: string | null;

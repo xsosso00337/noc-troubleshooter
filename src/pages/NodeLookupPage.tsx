@@ -8,6 +8,11 @@ import type { DataFreshness, LegacyNode, NocAsset, QueryStatus } from "../types"
 
 const cmtsOptions = ["E6K01", "E6K02", "E6K03", "E6K04", "E6K05", "E6K06", "E6K07", "E6K08", "E6K09", "E6K10", "E6K11"];
 
+function formatPowerLevel(value: number | null) {
+  if (value === null) return null;
+  return `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)} dBmV`;
+}
+
 function AssetCard({ asset }: { asset: NocAsset }) {
   return (
     <article className="data-card">
@@ -25,6 +30,7 @@ function AssetCard({ asset }: { asset: NocAsset }) {
           ["上行 Slot", asset.upstream_port],
           ["Connector", asset.upstream_connector],
           ["下行 Slot", asset.downstream_port],
+          ["Power Level", formatPowerLevel(asset.power_level)],
           ["線編", asset.line_code],
           ["接收機", asset.receiver],
           ["反向 Source", asset.return_source],

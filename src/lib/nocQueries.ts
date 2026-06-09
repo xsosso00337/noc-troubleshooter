@@ -28,7 +28,7 @@ export async function searchNocAssets(params: {
   let request = supabase
     .from("noc_assets")
     .select(
-      "id,cmts,node,line_code,mac_domain,upstream_port,upstream_connector,downstream_port,receiver,return_source,receiver_brand,receiver_rack,sst,hub_max,max_rack,demax_rack,demux_wavelength,dwdm_splitter,edfa,wdm,mux,dcm,demux_a,demux_b,tx_a,tx_channel,tx_a_rack,pre_amp,fiber_down_a,fiber_up_a,tx_b,tx_b_rack,source_row,status,source_file,source_sheet",
+      "id,cmts,node,line_code,mac_domain,upstream_port,upstream_connector,downstream_port,power_level,power_level_raw,power_level_imported_at,receiver,return_source,receiver_brand,receiver_rack,sst,hub_max,max_rack,demax_rack,demux_wavelength,dwdm_splitter,edfa,wdm,mux,dcm,demux_a,demux_b,tx_a,tx_channel,tx_a_rack,pre_amp,fiber_down_a,fiber_up_a,tx_b,tx_b_rack,source_row,status,source_file,source_sheet",
     )
     .order("cmts", { ascending: true })
     .order("node", { ascending: true })
